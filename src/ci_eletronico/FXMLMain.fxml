@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <Pane prefHeight="66.0" prefWidth="1280.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER_LEFT">
+         <children>
+            <Button contentDisplay="TOP" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" style="-fx-accent: #0093ff; -fx-focus-color: #0093ff;" text="Nova CI">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/Nova_CI.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button contentDisplay="TOP" layoutX="100.0" layoutY="5.0" mnemonicParsing="false" text="Nova CI -circular">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/Nova_CI_Circular.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button contentDisplay="TOP" layoutX="240.0" layoutY="5.0" mnemonicParsing="false" text="Nova CI -confidencial">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/Nova_CI_Confidencial.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button cancelButton="true" contentDisplay="TOP" layoutX="1196.0" layoutY="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Sair">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/logout.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button contentDisplay="TOP" layoutX="1099.0" layoutY="7.0" mnemonicParsing="false" text="Trocar senha">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/User_password.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </Pane>
+   </top>
+   <left>
+      <SplitPane dividerPositions="0.20239880059970014" prefHeight="706.0" prefWidth="512.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="734.0" prefWidth="135.0">
+               <children>
+                  <Button alignment="BASELINE_LEFT" layoutX="46.0" layoutY="252.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button alignment="BASELINE_LEFT" layoutX="46.0" layoutY="293.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de saida" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+                  <Button alignment="BASELINE_LEFT" layoutX="46.0" layoutY="329.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de pendências" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                  <Button alignment="BASELINE_LEFT" layoutX="46.0" layoutY="377.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de arquivadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+               </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="704.0" prefWidth="283.0">
+               <children>
+                  <TableView layoutY="31.0" prefHeight="297.0" prefWidth="400.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="28.0" layoutY="6.0" text="Caixa de entrada">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </left>
+   <bottom>
+      <Pane prefHeight="28.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="BASELINE_LEFT" layoutY="6.0" text="Usuario:" />
+         </children>
+      </Pane>
+   </bottom>
+   <center>
+      <SplitPane dividerPositions="0.9261363636363636" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutY="197.0" prefHeight="200.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Button layoutX="127.0" mnemonicParsing="false" text="Aprovar CI" wrapText="true" AnchorPane.leftAnchor="127.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/Ok.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="250.0" mnemonicParsing="false" text="Encaminhar CI" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/Forward_document.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Imprimir CI" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/print.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="383.0" mnemonicParsing="false" text="Arquivar CI" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/arquivar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="492.0" mnemonicParsing="false" text="Desarquivar CI" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/Desarquivar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="622.0" mnemonicParsing="false" text="Cancelar CI" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/Cancel.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>
