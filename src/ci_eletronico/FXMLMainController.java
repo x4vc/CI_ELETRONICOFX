@@ -7,10 +7,10 @@ package ci_eletronico;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 /**
  *
@@ -19,17 +19,56 @@ import javafx.scene.control.Label;
 public class FXMLMainController implements Initializable {
     
     @FXML
-    private Label label;
+    private Label lblIdUsuario;
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    private Label lblNomeUsuario;
+    
+    @FXML
+    private Label lblIdUO;
+    
+    @FXML
+    private Label lblNomeUO;
+    
+    @FXML
+    private Label lblIdPerfil;
+    
+    @FXML
+    private Label lblNomePerfil;
+    
+    @FXML
+    private Label lblCaixa;
+    
+    String strIdUsuario, strNomeUsuario;
+    
+    
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        strIdUsuario = getStrIdUsuario();
+        strNomeUsuario = getStrNomeUsuario();
+        lblIdUsuario.setText(strIdUsuario);
+        lblNomeUsuario.setText(strNomeUsuario);
+        
+                
     }    
+    
+    public String getStrIdUsuario() {
+        return strIdUsuario;
+    }
+
+    public void setStrIdUsuario(String strIdUsuario) {
+        this.strIdUsuario = strIdUsuario;
+    }
+
+    public String getStrNomeUsuario() {
+        return strNomeUsuario;
+    }
+
+    public void setStrNomeUsuario(String strNomeUsuario) {
+        this.strNomeUsuario = strNomeUsuario;
+    }
     
 }
