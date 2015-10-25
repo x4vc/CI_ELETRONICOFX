@@ -46,7 +46,7 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField pwdSenha;
     @FXML
-    private ComboBox cmbUO;
+    private ComboBox cmbUO;   
     @FXML
     private Label lblUO;
     
@@ -65,15 +65,17 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         //listaUsuarios = consulta.listaTbUsuario();
-        ComponentesVisible(false);            
+        ComponentesVisible(false);         
         
-        btnOK.setDefaultButton(true);
+        btnAcessar.setDefaultButton(true);
     } 
     
     @FXML
     private void handleBtnAcessarAction(ActionEvent event) throws IOException, Exception {
         
-        FXMLMainController mainController = new FXMLMainController();
+        //FXMLLoader loader = new FXMLLoader();
+        
+        //FXMLMainController mainController = 
         
         String strUserLogin ="";
         strUserLogin = txtUsername.getText();
@@ -91,30 +93,73 @@ public class LoginController implements Initializable {
                     if(strEnc.equals(l.getUsuSenha())){
                         ComponentesVisible(true);
                         ComponentesDisable(true);
+                        btnAcessar.setDefaultButton(false);
+                        btnOK.setDefaultButton(true);
                         //Verificamos qual UO faz parte
                         TbUsuario nIdUsuario = new TbUsuario(l.getIdUsuario()); //= 0;
                         String strUsername = "";
+                        String strUO = "";
                         //nIdUsuario.setIdUsuario(l.getIdUsuario());
                         strUsername = l.getUsuNomeCompleto();
-                        mainController.setStrIdUsuario(l.getIdUsuario().toString());
-                        mainController.setStrNomeUsuario(strUsername);
+                        
                         
                         listaUO = consulta_TB_USUARIO_PERFIL_UO.listaUO(nIdUsuario);   
-                        listaJoin = consulta_TB_USUARIO_PERFIL_UO.listaJoinUO(nIdUsuario);
-                        if (listaUO.size()>0 && listaUO.size() < 2){
+                        //listaUO = consulta_TB_USUARIO_PERFIL_UO.listaJoinUO2(nIdUsuario);  
+                         for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){
+                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional());
+                             System.out.println("TbUsuarioPerfilUo campo 2 - " + lUO.getIdUnidadeOrganizacional().getUnorNome());
+                             System.out.println("TbUsuarioPerfilUo campo 3 - " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
+                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUsuarioPerfil().getPeusDescricao());
+                             cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + "-" + lUO.getIdUnidadeOrganizacional().getUnorNome() + "-" + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+"-"+lUO.getIdUsuarioPerfil().getPeusDescricao());
+                         }
+                        //listaJoin = consulta_TB_USUARIO_PERFIL_UO.listaJoinUO(nIdUsuario);
+                                                
+//                        for(Object[] lista: listaJoin){
+//                                System.out.println("campo 1 - " + lista[0]);
+//                                System.out.println("campo 2 - " + lista[1]);
+//                                System.out.println("campo 3 - " + lista[2]);
+//                                System.out.println("campo 4 - " + lista[3]);
+//                                
+//                                //cmbUO.getItems().add(lista[1]+ " - "+ lista[3]);
+//                                
+//                            }
+                        
+                        cmbUO.getSelectionModel().selectFirst();
+                        
+                        if (listaUO.size()>0 && listaUO.size() < 2) {
+                        //if (listaUO.size()>0 && listaUO.size() < 2){
+                            strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
+                            System.out.println("Valor do combobox selecionado: " + strUO);
                             
+                            //loader.setLocation(FXMLMainController.class.getResource("/ci_eletronico/FXMLMain.fxml"));
+                                                      
                             //Ocultamos a janela de login
                             (((Node)event.getSource()).getScene()).getWindow().hide();
+                            //--------- FIM Ocultar janela de Login ------------
+                            
+//                            FXMLLoader loader = new FXMLLoader();
+//                            loader.setLocation(FXMLMainController.class.getResource("/ci_eletronico/FXMLMain.fxml"));
+//                            
+//                            FXMLMainController controller = loader.getController();
+//                            
+//                            controller.setStrIdUsuario(l.getIdUsuario().toString());
+//                            controller.setStrNomeUsuario(strUsername);
 
 
                             //Mostramos uma nova janela chamada MainWindow
+                            
                             Parent parent;
+                            
+                            
 
                             parent = FXMLLoader.load(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
 
-
+                            
+                            
                             Scene scene = new Scene(parent);
-                            scene.setUserData(mainController);
+                            //scene.setUserData(mainController);
+                            
+                          
                             
                             Stage stage = new Stage();
                             stage.setTitle("CI-eletrônico");
@@ -134,11 +179,11 @@ public class LoginController implements Initializable {
                             int n = 0;
                             
                             for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){
-                               ol_listUO.add(lUO.getIdUsuario()+ " - " + lUO.getIdUnidadeOrganizacional() + " - " + lUO.getIdUsuarioPerfil());                               
-                               str = ol_listUO.get(n);
-                               str = ol_listUO.toString();
-                               n++;
-                               cmbUO.getItems().add(lUO.getIdUsuario().getIdUsuario()+ "-"+ lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional()+ "-" + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
+//                               ol_listUO.add(lUO.getIdUsuario()+ " - " + lUO.getIdUnidadeOrganizacional() + " - " + lUO.getIdUsuarioPerfil());                               
+//                               str = ol_listUO.get(n);
+//                               str = ol_listUO.toString();
+//                               n++;
+                               //cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + "-" + lUO.getUnorNome().getUnorNome() + "-" + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+"-"+lUO.getPeusDescricao().getPeusDescricao());
                             }
 //                            cmbUO.getItems().addAll(listaUO.g)
 //                            cmbUO.setItems(ol_listUO);                            
@@ -177,6 +222,12 @@ public class LoginController implements Initializable {
     
     @FXML
     private void handleBtnOKAction(ActionEvent event) throws IOException {
+        String strUO;
+        String strPerfil;
+       
+        strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
+        System.out.println("Valor do combobox selecionado: " + strUO);
+      
         
     }
     private void ComponentesVisible(boolean bCondicao){

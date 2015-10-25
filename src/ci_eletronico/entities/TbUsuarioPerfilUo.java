@@ -30,7 +30,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbUsuarioPerfilUo.findByIdUsuarioPerfilUo", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.idUsuarioPerfilUo = :idUsuarioPerfilUo"),
     @NamedQuery(name = "TbUsuarioPerfilUo.findByUspuAtivo", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.uspuAtivo = :uspuAtivo"),
     @NamedQuery(name = "TbUsuarioPerfilUo.findByIdUsuario", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.idUsuario = :idUsuario AND t.uspuAtivo = 1"),
-    @NamedQuery(name = "TbUsuarioPerfilUo.findByJoinIdUsuario", query = "select t.idUnidadeOrganizacional, uo.unorNome, t.idUsuarioPerfil,tp.peusDescricao "
+    @NamedQuery(name = "TbUsuarioPerfilUo.findByJoinIdUsuario", query = "SELECT "
+            + "t.idUnidadeOrganizacional, uo.unorNome, t.idUsuarioPerfil,tp.peusDescricao "
+            + "FROM TbUsuarioPerfilUo t "
+            + "join t.idUnidadeOrganizacional uo "
+            + "join t.idUsuarioPerfil tp "
+            + "WHERE t.idUsuario = :idUsuario AND t.uspuAtivo = 1"),
+    @NamedQuery(name = "TbUsuarioPerfilUo.findByJoinIdUsuario2", query = "SELECT "
+            + "t.idUnidadeOrganizacional, uo.unorNome, t.idUsuarioPerfil,tp.peusDescricao "
             + "FROM TbUsuarioPerfilUo t "
             + "join t.idUnidadeOrganizacional uo "
             + "join t.idUsuarioPerfil tp "
@@ -39,6 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 public class TbUsuarioPerfilUo implements Serializable {
     private static final long serialVersionUID = 1L;
+            
     @Id
     @Basic(optional = false)
     @Column(name = "ID_USUARIO_PERFIL_UO")

@@ -8,11 +8,11 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
    <children>
-      <TextField fx:id="txtUsername" layoutX="151.0" layoutY="39.0" />
-      <PasswordField fx:id="pwdSenha" layoutX="151.0" layoutY="83.0" />
-      <ComboBox fx:id="cmbUO" layoutX="151.0" layoutY="130.0" prefWidth="150.0" promptText="Selecionar UO" />
-      <Button fx:id="btnAcessar" layoutX="330.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleBtnAcessarAction" text="Acessar" />
-      <Button fx:id="btnOK" layoutX="330.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleBtnOKAction" text="OK" />
+      <TextField fx:id="txtUsername" layoutX="151.0" layoutY="39.0" prefHeight="25.0" prefWidth="231.0" />
+      <PasswordField fx:id="pwdSenha" layoutX="151.0" layoutY="83.0" prefHeight="25.0" prefWidth="231.0" />
+      <ComboBox fx:id="cmbUO" layoutX="151.0" layoutY="130.0" prefHeight="25.0" prefWidth="231.0" promptText="Selecionar UO" />
+      <Button fx:id="btnAcessar" layoutX="399.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleBtnAcessarAction" text="Acessar" />
+      <Button fx:id="btnOK" layoutX="399.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleBtnOKAction" prefHeight="25.0" prefWidth="57.0" text="OK" />
       <Label layoutX="67.0" layoutY="43.0" text="Login:" />
       <Label layoutX="67.0" layoutY="87.0" text="Senha:" />
       <Label fx:id="lblUO" layoutX="67.0" layoutY="134.0" text="Selecionar UO:" />

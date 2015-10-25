@@ -56,4 +56,12 @@ public class LoginQuery {
                 .getResultList();
         
     }
+    public List<TbUsuarioPerfilUo> listaJoinUO2(TbUsuario nIdUsuario) {       
+        
+         //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
+        return em.createNamedQuery("TbUsuarioPerfilUo.findByJoinIdUsuario2",TbUsuarioPerfilUo.class)
+                .setParameter("idUsuario", nIdUsuario )
+                .getResultList();
+        
+        }
 }

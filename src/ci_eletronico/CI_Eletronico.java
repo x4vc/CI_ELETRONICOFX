@@ -25,6 +25,7 @@ public class CI_Eletronico extends Application {
         
         Scene scene = new Scene(root);
         //scene.getStylesheets().add("resources/PersonalStyleSheet.css");
+        stage.setTitle("CI-eletrônico - Página Login");
         stage.getIcons().add(new Image("/resources/CI_FX02.png"));
         stage.setScene(scene);
         
