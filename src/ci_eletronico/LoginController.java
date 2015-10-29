@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -37,6 +40,7 @@ import javafx.stage.Stage;
  * @author victorcmaf
  */
 public class LoginController implements Initializable {
+//public class LoginController {
     @FXML
     private Button btnAcessar;
     @FXML
@@ -57,12 +61,22 @@ public class LoginController implements Initializable {
     private LoginQuery consulta_TB_USUARIO_PERFIL_UO  = new LoginQuery();  
     
     ObservableList<String> ol_listUO = FXCollections.observableArrayList();
+    
+    private Scene scene;
+    
+    String strIdUsuario = "";
+    String strUsername = "";
+    String strIdUO = "";
+    String strNomeUO = "";
+    String strIdUsuarioPerfil = "";
+    String strDescricaoPerfil = "";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+    //public void initialize() {
         // TODO
         //listaUsuarios = consulta.listaTbUsuario();
         ComponentesVisible(false);         
@@ -72,6 +86,7 @@ public class LoginController implements Initializable {
     
     @FXML
     private void handleBtnAcessarAction(ActionEvent event) throws IOException, Exception {
+        
         
         //FXMLLoader loader = new FXMLLoader();
         
@@ -97,9 +112,16 @@ public class LoginController implements Initializable {
                         btnOK.setDefaultButton(true);
                         //Verificamos qual UO faz parte
                         TbUsuario nIdUsuario = new TbUsuario(l.getIdUsuario()); //= 0;
-                        String strUsername = "";
+//                        String strIdUsuario = "";
+//                        String strUsername = "";
+//                        String strIdUO = "";
+//                        String strNomeUO = "";
+//                        String strIdUsuarioPerfil = "";
+//                        String strDescricaoPerfil = "";
+                        
                         String strUO = "";
                         //nIdUsuario.setIdUsuario(l.getIdUsuario());
+                        strIdUsuario = l.getIdUsuario().toString();
                         strUsername = l.getUsuNomeCompleto();
                         
                         
@@ -110,7 +132,7 @@ public class LoginController implements Initializable {
                              System.out.println("TbUsuarioPerfilUo campo 2 - " + lUO.getIdUnidadeOrganizacional().getUnorNome());
                              System.out.println("TbUsuarioPerfilUo campo 3 - " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
                              System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUsuarioPerfil().getPeusDescricao());
-                             cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + "-" + lUO.getIdUnidadeOrganizacional().getUnorNome() + "-" + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+"-"+lUO.getIdUsuarioPerfil().getPeusDescricao());
+                             cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + " - " + lUO.getIdUnidadeOrganizacional().getUnorNome() + " ; " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+" - "+lUO.getIdUsuarioPerfil().getPeusDescricao());
                          }
                         //listaJoin = consulta_TB_USUARIO_PERFIL_UO.listaJoinUO(nIdUsuario);
                                                 
@@ -131,6 +153,14 @@ public class LoginController implements Initializable {
                             strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
                             System.out.println("Valor do combobox selecionado: " + strUO);
                             
+                            for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){
+                             strIdUO = lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional().toString();
+                             strNomeUO = lUO.getIdUnidadeOrganizacional().getUnorNome();
+                             strIdUsuarioPerfil = lUO.getIdUsuarioPerfil().getIdUsuarioPerfil().toString();
+                             strDescricaoPerfil = lUO.getIdUsuarioPerfil().getPeusDescricao();                             
+                         }
+                            
+                            
                             //loader.setLocation(FXMLMainController.class.getResource("/ci_eletronico/FXMLMain.fxml"));
                                                       
                             //Ocultamos a janela de login
@@ -144,23 +174,37 @@ public class LoginController implements Initializable {
 //                            
 //                            controller.setStrIdUsuario(l.getIdUsuario().toString());
 //                            controller.setStrNomeUsuario(strUsername);
+                            
+                            //Mostramos MainWindow com dados do usuário logado
+                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil);
+//                            try{
+//                                scene = new Scene(new BorderPane());
+//                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
+//                                scene.setRoot((Parent) loader.load());
+//                                FXMLMainController controller = loader.<FXMLMainController>getController();
+//                                controller.setVariaveisAmbiente(this,strIdUsuario,strUsername,strIdUO,strNomeUO,strIdUsuarioPerfil,strDescricaoPerfil);
+//                                
+//                                Stage stage = new Stage();
+//                                stage.setTitle("CI-eletrônico");
+//                                //set icon
+//                                stage.getIcons().add(new Image("/resources/CI_FX02.png"));
+//
+//                                stage.setScene(scene);
+//                                stage.show();
+////                                
+//                            }catch (IOException ex) {
+//                                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
 
 
                             //Mostramos uma nova janela chamada MainWindow
-                            
+                           /* 
                             Parent parent;
+                            parent = FXMLLoader.load(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));                           
                             
-                            
-
-                            parent = FXMLLoader.load(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
-
-                            
-                            
-                            Scene scene = new Scene(parent);
-                            //scene.setUserData(mainController);
-                            
+                            //Scene scene = new Scene(parent);
+                            scene = new Scene(parent);
                           
-                            
                             Stage stage = new Stage();
                             stage.setTitle("CI-eletrônico");
                             //set icon
@@ -168,6 +212,7 @@ public class LoginController implements Initializable {
 
                             stage.setScene(scene);
                             stage.show();
+                                   */
                         } else {
                             // Show the error message.
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -175,6 +220,7 @@ public class LoginController implements Initializable {
                             alert.setHeaderText("Usuário possui mais de uma UO");
                             alert.setContentText("Por favor selecione só uma UO do combobox");
                             alert.showAndWait();
+                                                                                   
                             String str;
                             int n = 0;
                             
@@ -222,11 +268,27 @@ public class LoginController implements Initializable {
     
     @FXML
     private void handleBtnOKAction(ActionEvent event) throws IOException {
-        String strUO;
-        String strPerfil;
-       
-        strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
-        System.out.println("Valor do combobox selecionado: " + strUO);
+        
+        String strcmbUO;        
+        strcmbUO = cmbUO.getSelectionModel().getSelectedItem().toString();
+        
+        System.out.println("Valor do combobox selecionado: " + strcmbUO);
+        //String delimiters = "\\s+|;\\s*|\\-\\s*";
+        String delimiters = "-|\\;";
+        String[] parts = strcmbUO.split(delimiters);
+        strIdUO = parts[0].trim(); // 004
+        strNomeUO = parts[1].trim(); // 034556
+        strIdUsuarioPerfil = parts[2].trim();
+        strDescricaoPerfil = parts[3].trim();
+        for (String token: parts){
+            System.out.println(token);
+        }
+        
+         //Ocultamos a janela de login
+        (((Node)event.getSource()).getScene()).getWindow().hide();
+        //--------- FIM Ocultar janela de Login ------------
+        
+        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil);
       
         
     }
@@ -241,5 +303,29 @@ public class LoginController implements Initializable {
         pwdSenha.setDisable(bCondicao);
         btnAcessar.setDisable(bCondicao);
     }
+    
+    private void ShowMainWindowCIe(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil){
+        try{
+            
+                scene = new Scene(new BorderPane());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
+                scene.setRoot((Parent) loader.load());
+                FXMLMainController controller = loader.<FXMLMainController>getController();
+                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil);
+
+                Stage stage = new Stage();
+                stage.setTitle("CI-eletrônico");
+                //set icon
+                stage.getIcons().add(new Image("/resources/CI_FX02.png"));
+
+                stage.setScene(scene);
+                stage.show();
+//                                
+            }catch (IOException ex) {
+                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     
 }

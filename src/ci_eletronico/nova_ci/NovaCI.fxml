@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane dividerPositions="0.25752508361204013" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.nova_ci.NovaCIController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="798.0">
+         <children>
+            <Button fx:id="btnPara" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Para..." AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="10.0" />
+            <Button fx:id="btnComCopia" layoutX="263.0" layoutY="45.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Cc..." AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="45.0" />
+            <Button fx:id="btnEnviarNovaCI" contentDisplay="TOP" layoutY="27.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="65.0" text="Enviar CI" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="10.0">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../../resources/CI_FX03.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField fx:id="txtPara" layoutX="242.0" layoutY="10.0" prefHeight="25.0" prefWidth="546.0" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="10.0" />
+            <TextField fx:id="txtComCopia" layoutX="333.0" layoutY="45.0" prefHeight="25.0" prefWidth="546.0" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="45.0" />
+            <TextField fx:id="txtAssunto" layoutX="333.0" layoutY="80.0" prefHeight="25.0" prefWidth="546.0" AnchorPane.leftAnchor="240.0" AnchorPane.topAnchor="80.0" />
+            <Label layoutX="263.0" layoutY="80.0" prefHeight="25.0" prefWidth="60.0" text="Assunto" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="80.0" />
+            <Button fx:id="btnAnexarArquivos" contentDisplay="TOP" layoutX="90.0" layoutY="10.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="65.0" text="Anexar Arquivo" textAlignment="CENTER" wrapText="true" AnchorPane.topAnchor="10.0">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../../resources/mail_attachment.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label layoutX="170.0" layoutY="113.0" prefHeight="25.0" prefWidth="60.0" text="Anexado" />
+            <TextField fx:id="txtAnexado" layoutX="240.0" layoutY="113.0" prefHeight="25.0" prefWidth="546.0" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="438.0" prefWidth="798.0">
+         <children>
+            <HTMLEditor fx:id="htmlEditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="55.0" layoutY="52.0" prefHeight="200.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>
