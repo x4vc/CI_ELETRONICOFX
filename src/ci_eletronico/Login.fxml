@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="160.0" prefWidth="475.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
    <children>
-      <TextField fx:id="txtUsername" layoutX="100.0" layoutY="39.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="10.0" />
-      <PasswordField fx:id="pwdSenha" layoutX="100.0" layoutY="83.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="50.0" />
-      <ComboBox fx:id="cmbUO" layoutX="100.0" layoutY="130.0" prefHeight="25.0" prefWidth="282.0" promptText="Selecionar UO" AnchorPane.topAnchor="90.0" />
-      <Button fx:id="btnAcessar" layoutX="399.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleBtnAcessarAction" text="Acessar" AnchorPane.topAnchor="50.0" />
-      <Button fx:id="btnOK" layoutX="399.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleBtnOKAction" prefHeight="25.0" prefWidth="57.0" text="OK" AnchorPane.topAnchor="90.0" />
-      <Label layoutX="67.0" layoutY="43.0" text="Login:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-      <Label layoutX="67.0" layoutY="87.0" text="Senha:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
-      <Label fx:id="lblUO" layoutX="67.0" layoutY="134.0" text="Selecionar UO:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0" />
+      <TextField fx:id="txtUsername" layoutX="121.0" layoutY="147.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="150.0" />
+      <PasswordField fx:id="pwdSenha" layoutX="121.0" layoutY="187.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="195.0" />
+      <ComboBox fx:id="cmbUO" layoutX="121.0" layoutY="227.0" prefHeight="25.0" prefWidth="282.0" promptText="Selecionar UO" AnchorPane.topAnchor="235.0" />
+      <Button fx:id="btnAcessar" layoutX="420.0" layoutY="187.0" mnemonicParsing="false" onAction="#handleBtnAcessarAction" prefHeight="25.0" prefWidth="68.0" text="Acessar" AnchorPane.topAnchor="195.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Button fx:id="btnOK" layoutX="420.0" layoutY="227.0" mnemonicParsing="false" onAction="#handleBtnOKAction" prefHeight="25.0" prefWidth="68.0" text="OK" AnchorPane.topAnchor="235.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Label layoutX="14.0" layoutY="148.0" text="Login:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="150.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="18.0" layoutY="192.0" text="Senha:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="195.0">
+         <font>
+            <Font name="Arial Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblUO" layoutX="10.0" layoutY="232.0" text="Selecionar UO:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="235.0">
+         <font>
+            <Font name="Arial Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

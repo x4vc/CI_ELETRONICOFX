@@ -22,7 +22,9 @@ public class CI_Eletronico extends Application {
     public void start(Stage stage) throws Exception {
         //Parent root = FXMLLoader.load(getClass().getResource("FXMLMain.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        
+        root.setStyle("-fx-background-image: url('/resources/logo_prefeitura_salvador.png')");
+        //root.setStyle("-fx-background-image: url('/resources/logo_prefeitura_salvador.png')");
+        //root.setStyle("-fx-background-image: url('/resources/transalvador.png')");
         Scene scene = new Scene(root);
         //scene.getStylesheets().add("resources/PersonalStyleSheet.css");
         stage.setTitle("CI-eletrônico - Página Login");
