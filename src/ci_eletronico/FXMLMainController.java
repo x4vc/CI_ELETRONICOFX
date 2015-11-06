@@ -157,7 +157,7 @@ public class FXMLMainController implements Initializable {
                 stage.getIcons().add(new Image("/resources/Nova_CI.png"));
 
                 stage.setScene(scene);
-                stage.show();
+                stage.showAndWait();
 //                                
             }catch (IOException ex) {
                 Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);

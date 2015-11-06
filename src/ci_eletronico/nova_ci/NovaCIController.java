@@ -18,11 +18,16 @@ import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -30,6 +35,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -68,12 +74,14 @@ public class NovaCIController implements Initializable {
     TextFlow txtFAnexado;
     
     
-    // Clases para tartar Anexar Arquivos
+    // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
     private Stage stage = new Stage();
     //-----------------------------------
     
     private Hyperlink linkArquivoSelecionado = new Hyperlink() ;
+    
+    private Scene scene;
     
      
     /**
@@ -126,8 +134,7 @@ public class NovaCIController implements Initializable {
         final FileChooser fileChooser = new FileChooser();
         configureFileChooser(fileChooser);
         int nContador = 0;
-        List<File> list =
-                        fileChooser.showOpenMultipleDialog(stage);
+        List<File> list = fileChooser.showOpenMultipleDialog(stage);
                     if (list != null) {
                         for (File file : list) {
                             System.out.println();
@@ -214,9 +221,29 @@ public class NovaCIController implements Initializable {
     }
     private static void configureFileChooser(final FileChooser fileChooser){                           
         fileChooser.setTitle("Selecionar arquivo");
-        fileChooser.setInitialDirectory(
-            new File(System.getProperty("user.home"))
-        ); 
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "//Downloads")); 
+    }
+    @FXML
+    private void handleBtnPara(ActionEvent event) throws IOException {
+       
+                scene = new Scene(new StackPane());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/Win_Para_Comcopia.fxml"));
+                scene.setRoot((Parent) loader.load());
+               
+//                ci_eletronico.nova_ci.NovaCIController nova_ci_controller = loader.<ci_eletronico.nova_ci.NovaCIController>getController();     
+//                nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);
+               
+
+                Stage stage = new Stage();
+                stage.setTitle("Selecionar UOs");
+                //set icon
+                stage.getIcons().add(new Image("/resources/Nova_CI.png"));
+                stage.initModality(Modality.WINDOW_MODAL);
+
+                stage.setScene(scene);
+                stage.showAndWait();
+//                                
+       
     }
     
     @FXML

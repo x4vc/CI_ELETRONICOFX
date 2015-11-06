@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #FFD699;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
    <children>
       <TextField fx:id="txtUsername" layoutX="121.0" layoutY="147.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="150.0" />
       <PasswordField fx:id="pwdSenha" layoutX="121.0" layoutY="187.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="195.0" />
@@ -35,5 +36,10 @@
             <Font name="Arial Bold" size="12.0" />
          </font>
       </Label>
+      <ImageView fitHeight="41.0" fitWidth="200.0" layoutX="150.0" layoutY="90.0" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="20.0">
+         <image>
+            <Image url="@../resources/logo_transalvador.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

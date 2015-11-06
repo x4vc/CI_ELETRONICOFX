@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController">
-    
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="650.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController">
+   <children>
+      <Label layoutX="26.0" layoutY="14.0" text="Pesquisar" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtPesquisarUO" layoutX="26.0" layoutY="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="370.0" AnchorPane.topAnchor="40.0" />
+      <Button fx:id="btnPesquisarUO" layoutX="293.0" layoutY="40.0" mnemonicParsing="false" prefWidth="40.0" text="Ir" AnchorPane.rightAnchor="315.0" AnchorPane.topAnchor="40.0" />
+      <ListView fx:id="boxUOs" layoutX="15.0" layoutY="137.0" prefHeight="415.0" prefWidth="260.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="115.0" />
+      <ListView fx:id="boxUOsPara" layoutX="373.0" layoutY="110.0" prefHeight="200.0" prefWidth="260.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="375.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="115.0" />
+      <Button fx:id="btnAddAll" layoutX="312.0" layoutY="216.0" mnemonicParsing="false" prefWidth="40.0" text="&gt;&gt;" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="215.0" />
+      <Button fx:id="btnAdd" layoutX="312.0" layoutY="252.0" mnemonicParsing="false" onAction="#handleBtnAdd" prefWidth="40.0" text="&gt;" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="260.0" />
+      <Button fx:id="btnRemove" layoutX="312.0" layoutY="291.0" mnemonicParsing="false" onAction="#handleBtnRemove" prefWidth="40.0" text="&lt;" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="305.0" />
+      <Button fx:id="btnRemoveAll" layoutX="312.0" layoutY="338.0" mnemonicParsing="false" prefWidth="40.0" text="&lt;&lt;" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="350.0" />
+      <Label layoutX="459.0" layoutY="90.0" text="Para:" AnchorPane.topAnchor="90.0" />
+      <Separator layoutY="81.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="80.0" />
+      <Button fx:id="btnOK" layoutX="131.0" layoutY="550.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="OK" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="92.0" />
+      <Button fx:id="btnCancelar" layoutX="217.0" layoutY="550.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Cancelar" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="15.0" />
+   </children>
 </AnchorPane>

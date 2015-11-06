@@ -14,7 +14,7 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="798.0">
          <children>
-            <Button fx:id="btnPara" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Para..." AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="10.0" />
+            <Button fx:id="btnPara" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBtnPara" prefHeight="25.0" prefWidth="60.0" text="Para..." AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="10.0" />
             <Button fx:id="btnComCopia" layoutX="263.0" layoutY="45.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Cc..." AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="45.0" />
             <Button fx:id="btnEnviarNovaCI" contentDisplay="TOP" layoutY="27.0" mnemonicParsing="false" onAction="#handleBtnEnviarNovaCI" prefHeight="95.0" prefWidth="65.0" text="Enviar CI" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="10.0">
                <graphic>
