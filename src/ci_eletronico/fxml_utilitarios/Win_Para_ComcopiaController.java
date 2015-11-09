@@ -5,7 +5,6 @@
  */
 package ci_eletronico.fxml_utilitarios;
 
-import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico_queries.ListView_UO_Query;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -61,7 +61,8 @@ public class Win_Para_ComcopiaController implements Initializable {
     private ObservableList<String> UOsAvailable = FXCollections.observableArrayList("ASSTI","DESENV","GTRAN","SEAPE","REDE");
 
     private ObservableList<String> UOSelecionado = FXCollections.observableArrayList(ArraySelecionado);
-
+    private ObservableList<String> selectedItens;
+//    private int nTipoDestinatario = 0;
     /**
      * Initializes the controller class.
      */
@@ -87,7 +88,27 @@ public class Win_Para_ComcopiaController implements Initializable {
 
         //boxUOs.setItems(UOsAvailable);
         boxUOsPara.setItems(UOSelecionado);
-    }    
+        btnCancelar.setCancelButton(true);
+    }
+    @FXML
+    private void handleBtnAddAll(ActionEvent action){
+        String strUOSelected = "";
+        int nContador, nSize;
+        nContador = 0; nSize = 0;        
+        
+        //ObservableList<String> selectedItens = boxUOs.getItems();
+        selectedItens = boxUOs.getItems();
+        nSize = selectedItens.size();
+        
+//        for (String strUO: selectedItens){
+//            UOSelecionado.add(strUO);            
+//        }
+        for (nContador = 0;nContador<nSize;nContador++){
+            strUOSelected = selectedItens.get(nContador);
+            UOSelecionado.add(nContador, strUOSelected);            
+        }
+        obsList_listaUO.clear();
+    }   
     @FXML
     private void handleBtnAdd(ActionEvent action){
         String selectedItem = boxUOs.getSelectionModel().getSelectedItem();
@@ -96,11 +117,51 @@ public class Win_Para_ComcopiaController implements Initializable {
        
     }
     @FXML
+    private void handleBtnRemoveAll(ActionEvent action){
+        String strUOSelected = "";
+        int nContador, nSize;
+        nContador = 0; nSize = 0;        
+        
+        //ObservableList<String> selectedItens = boxUOsPara.getItems();
+        selectedItens = boxUOsPara.getItems();
+        nSize = selectedItens.size();
+        
+//        for (String strUO: selectedItens){
+//            UOSelecionado.add(strUO);            
+//        }
+        for (nContador = 0;nContador<nSize;nContador++){
+            strUOSelected = selectedItens.get(nContador);
+            obsList_listaUO.add(nContador, strUOSelected);            
+        }
+        UOSelecionado.clear();
+        
+    }
+    @FXML
     private void handleBtnRemove(ActionEvent action){
         String selectedItem = boxUOsPara.getSelectionModel().getSelectedItem();
         UOSelecionado.remove(selectedItem);
         obsList_listaUO.add(selectedItem);
     }
-    
+    @FXML
+    private void handleBtnCancel(ActionEvent action){
+        //Ocultamos a janela de login
+        (((Node)action.getSource()).getScene()).getWindow().hide();
+        //--------- FIM Ocultar janela de seleção UOs ------------
+    }
+    @FXML
+    private void handleBtnOK(ActionEvent event){
+        selectedItens = boxUOsPara.getItems();
+        //Ocultamos a janela de login
+        (((Node)event.getSource()).getScene()).getWindow().hide();
+        //--------- FIM Ocultar janela de seleção UOs ------------
+    }
+    public ObservableList<String> getUOsPara(){
+        return selectedItens;
+    }
+//    public void setTipoDestinatario(int nTipoDestinatario){
+//        // 1 - Para
+//        // 2 - Com copia
+//        this.nTipoDestinatario = nTipoDestinatario;
+//    }
 }
 
