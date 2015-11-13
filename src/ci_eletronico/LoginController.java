@@ -64,12 +64,13 @@ public class LoginController implements Initializable {
     
     private Scene scene;
     
-    String strIdUsuario = "";
-    String strUsername = "";
-    String strIdUO = "";
-    String strNomeUO = "";
-    String strIdUsuarioPerfil = "";
-    String strDescricaoPerfil = "";
+    private String strIdUsuario = "";
+    private String strUsername = "";
+    private String strIdUO = "";
+    private String strNomeUO = "";
+    private String strIdUsuarioPerfil = "";
+    private String strDescricaoPerfil = "";
+    private String strHtmlAssinatura = "";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -112,6 +113,13 @@ public class LoginController implements Initializable {
                         btnOK.setDefaultButton(true);
                         //Verificamos qual UO faz parte
                         TbUsuario nIdUsuario = new TbUsuario(l.getIdUsuario()); //= 0;
+                        
+                        //Getting assinatura do Usuario
+                        strHtmlAssinatura = l.getUsuAssinatura();
+                        if (null == strHtmlAssinatura){
+                            strHtmlAssinatura = "";
+                        }
+                        //-------------------------------------
 //                        String strIdUsuario = "";
 //                        String strUsername = "";
 //                        String strIdUO = "";
@@ -157,7 +165,7 @@ public class LoginController implements Initializable {
                              strIdUO = lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional().toString();
                              strNomeUO = lUO.getIdUnidadeOrganizacional().getUnorNome();
                              strIdUsuarioPerfil = lUO.getIdUsuarioPerfil().getIdUsuarioPerfil().toString();
-                             strDescricaoPerfil = lUO.getIdUsuarioPerfil().getPeusDescricao();                             
+                             strDescricaoPerfil = lUO.getIdUsuarioPerfil().getPeusDescricao();                                 
                          }
                             
                             
@@ -176,7 +184,7 @@ public class LoginController implements Initializable {
 //                            controller.setStrNomeUsuario(strUsername);
                             
                             //Mostramos MainWindow com dados do usuário logado
-                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil);
+                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura);
 //                            try{
 //                                scene = new Scene(new BorderPane());
 //                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
@@ -288,7 +296,7 @@ public class LoginController implements Initializable {
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
         
-        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil);
+        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura);
       
         
     }
@@ -305,14 +313,14 @@ public class LoginController implements Initializable {
     }
     
     private void ShowMainWindowCIe(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura){
         try{
             
                 scene = new Scene(new BorderPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
                 scene.setRoot((Parent) loader.load());
                 FXMLMainController controller = loader.<FXMLMainController>getController();
-                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil);
+                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura);
 
                 Stage stage = new Stage();
                 stage.setTitle("CI-eletrônico");
