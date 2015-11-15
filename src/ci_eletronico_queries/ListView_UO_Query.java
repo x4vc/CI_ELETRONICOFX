@@ -6,6 +6,7 @@
 package ci_eletronico_queries;
 
 import ci_eletronico.entities.TbUnidadeOrganizacional;
+import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,12 +26,12 @@ public class ListView_UO_Query {
         
         em.getTransaction().begin();
     }
-     public List<TbUnidadeOrganizacional> listaUO() {       
+    public List<TbUnidadeOrganizacional> listaUO() {       
         
-         //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
+        //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
         return em.createNamedQuery("TbUnidadeOrganizacional.findAll",TbUnidadeOrganizacional.class).getResultList();
         
         }
-    
+       
     
 }

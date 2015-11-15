@@ -55,6 +55,7 @@ public class NovaCIController implements Initializable {
     private String strDescricaoPerfil = "";
     private String strNomeUO = "";
     private String strHtmlAssinatura = "";
+    private int nTipoCI = 0;
     
     @FXML
     Button btnPara;
@@ -100,7 +101,7 @@ public class NovaCIController implements Initializable {
     }   
     
     public void setVariaveisAmbienteNovaCI(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -113,6 +114,7 @@ public class NovaCIController implements Initializable {
         
         //Preencher o editor Html com assinatura do usuário
         htmlEditor.setHtmlText(this.strHtmlAssinatura);
+        this.nTipoCI = nTipoCI;
         
         
     }
@@ -278,21 +280,32 @@ public class NovaCIController implements Initializable {
     @FXML
     private void handleBtnEnviarNovaCI(ActionEvent event) throws IOException {
         
-        String htmlText = "";
-        htmlText = htmlEditor.getHtmlText();
-        if ((htmlText.isEmpty()) || (txtAssunto.getText().isEmpty())){
+        String strAssunto = "";
+        String strConteudoHtmlText = "";
+        
+        strAssunto = txtAssunto.getText();
+        strConteudoHtmlText = htmlEditor.getHtmlText();
+        if (txtAssunto.getText().isEmpty()){
             // Show the error message.
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Campos Assunto/Conteúdo sem dados");
-            alert.setHeaderText("Favor preencher os campos Assunto/Conteúdo da CI-e");
-            alert.setContentText("O campo Assunto e o campo Conteúdo da CI-e devem possuir dados");
+            alert.setTitle("Campo Assunto sem dados");
+            alert.setHeaderText("Favor preencher o campo Assunto");
+            alert.setContentText("O campo Assunto deve possuir dados");
             alert.showAndWait();
             
-        } else {
-            System.out.println("htmlEditor  = " + htmlText );            
+        } else if (0 == txtFPara.getChildren().size()) {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campo Para sem dados");
+            alert.setHeaderText("Favor preencher o campo Para");
+            alert.setContentText("O campo Para deve possuir ao menos uma UO selecionada");
+            alert.showAndWait();
+        } else{
+            //ntipoCI   1 - CI normal
+            //          2 - CI circular
+            //          3 - CI confidencial
+            salvarCI(nTipoCI);
         }
-        
-        
         
         //Verificamos se existem anexos a serem salvos
         Integer nSize;
@@ -439,7 +452,8 @@ public class NovaCIController implements Initializable {
                 }
             }
         });
-        
+    }
+    private void salvarCI(int nTipoCI){
         
     }
 }

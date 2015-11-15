@@ -5,6 +5,8 @@
  */
 package ci_eletronico;
 
+import ci_eletronico.entities.TbUnidadeOrganizacional;
+import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.Seguranca;
 import ci_eletronico_queries.LoginQuery;
@@ -56,9 +58,11 @@ public class LoginController implements Initializable {
     
     private List<ci_eletronico.entities.TbUsuario> listaUsuarios = new ArrayList<>();
     private List<ci_eletronico.entities.TbUsuarioPerfilUo> listaUO = new ArrayList<>();
+    private List<ci_eletronico.entities.TbUnidadeOrganizacionalGestor> listaUOGestor = new ArrayList<>();
     private List<Object[]> listaJoin; 
     private LoginQuery consulta_TB_USUARIO  = new LoginQuery();  
     private LoginQuery consulta_TB_USUARIO_PERFIL_UO  = new LoginQuery();  
+    private LoginQuery consulta_TB_UO_GESTOR  = new LoginQuery();  
     
     ObservableList<String> ol_listUO = FXCollections.observableArrayList();
     
@@ -71,6 +75,7 @@ public class LoginController implements Initializable {
     private String strIdUsuarioPerfil = "";
     private String strDescricaoPerfil = "";
     private String strHtmlAssinatura = "";
+    private int nIdUOGestor = 0;
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -113,7 +118,7 @@ public class LoginController implements Initializable {
                         btnOK.setDefaultButton(true);
                         //Verificamos qual UO faz parte
                         TbUsuario nIdUsuario = new TbUsuario(l.getIdUsuario()); //= 0;
-                        
+                                                
                         //Getting assinatura do Usuario
                         strHtmlAssinatura = l.getUsuAssinatura();
                         if (null == strHtmlAssinatura){
@@ -154,19 +159,25 @@ public class LoginController implements Initializable {
 //                                
 //                            }
                         
-                        cmbUO.getSelectionModel().selectFirst();
-                        
+                        cmbUO.getSelectionModel().selectFirst(); 
+                        //TbUnidadeOrganizacional nIdUO;
                         if (listaUO.size()>0 && listaUO.size() < 2) {
                         //if (listaUO.size()>0 && listaUO.size() < 2){
                             strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
                             System.out.println("Valor do combobox selecionado: " + strUO);
+                            TbUnidadeOrganizacional nIdUO;
                             
-                            for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){
-                             strIdUO = lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional().toString();
-                             strNomeUO = lUO.getIdUnidadeOrganizacional().getUnorNome();
-                             strIdUsuarioPerfil = lUO.getIdUsuarioPerfil().getIdUsuarioPerfil().toString();
-                             strDescricaoPerfil = lUO.getIdUsuarioPerfil().getPeusDescricao();                                 
-                         }
+                            for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){   
+                                nIdUO = new TbUnidadeOrganizacional(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional());
+                                strIdUO = lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional().toString();
+                                strNomeUO = lUO.getIdUnidadeOrganizacional().getUnorNome();
+                                strIdUsuarioPerfil = lUO.getIdUsuarioPerfil().getIdUsuarioPerfil().toString();
+                                strDescricaoPerfil = lUO.getIdUsuarioPerfil().getPeusDescricao();                             
+                                listaUOGestor = consulta_TB_UO_GESTOR.getIdUOGestor(nIdUO);
+                            } 
+                            for (ci_eletronico.entities.TbUnidadeOrganizacionalGestor lUOGestor: listaUOGestor){
+                                nIdUOGestor = lUOGestor.getIdUoGestor();
+                            }
                             
                             
                             //loader.setLocation(FXMLMainController.class.getResource("/ci_eletronico/FXMLMain.fxml"));
@@ -277,7 +288,9 @@ public class LoginController implements Initializable {
     @FXML
     private void handleBtnOKAction(ActionEvent event) throws IOException {
         
-        String strcmbUO;        
+        String strcmbUO;    
+        TbUnidadeOrganizacional nIdUO;        
+        
         strcmbUO = cmbUO.getSelectionModel().getSelectedItem().toString();
         
         System.out.println("Valor do combobox selecionado: " + strcmbUO);
@@ -287,9 +300,16 @@ public class LoginController implements Initializable {
         strIdUO = parts[0].trim(); // 004
         strNomeUO = parts[1].trim(); // 034556
         strIdUsuarioPerfil = parts[2].trim();
-        strDescricaoPerfil = parts[3].trim();
+        strDescricaoPerfil = parts[3].trim();        
         for (String token: parts){
             System.out.println(token);
+        }
+        
+        nIdUO = new TbUnidadeOrganizacional(Integer.parseInt(strIdUO));
+        listaUOGestor = consulta_TB_UO_GESTOR.getIdUOGestor(nIdUO);
+        
+        for (ci_eletronico.entities.TbUnidadeOrganizacionalGestor lUOGestor: listaUOGestor){
+            nIdUOGestor = lUOGestor.getIdUoGestor();
         }
         
          //Ocultamos a janela de login

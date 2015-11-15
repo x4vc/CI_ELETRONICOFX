@@ -76,6 +76,7 @@ public class FXMLMainController implements Initializable {
     private String strIdPerfil = "";
     private String strDescricaoPerfil = "";
     private String strHtmlAssinatura="";
+    private int nTipoCI = 0;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -140,18 +141,19 @@ public class FXMLMainController implements Initializable {
         strNomeUO = lblNomeUO.getText();  
         strIdPerfil = lblIdPerfil.getText();
         strDescricaoPerfil = lblNomePerfil.getText();
-        ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura);
+        nTipoCI = 1;
+        ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI);
                         
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
                 scene.setRoot((Parent) loader.load());
                 
                 ci_eletronico.nova_ci.NovaCIController nova_ci_controller = loader.<ci_eletronico.nova_ci.NovaCIController>getController();     
-                nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura);
+                nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();

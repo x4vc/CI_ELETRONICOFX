@@ -28,7 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findAll", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t"),
     @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByIdUoge", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.idUoge = :idUoge"),
     @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByIdUoGestor", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.idUoGestor = :idUoGestor"),
-    @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByUogeAtivo", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.uogeAtivo = :uogeAtivo")})
+    @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByUogeAtivo", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.uogeAtivo = :uogeAtivo"),
+    @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByIdUo", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional")
+})
+    
 public class TbUnidadeOrganizacionalGestor implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

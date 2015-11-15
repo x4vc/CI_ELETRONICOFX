@@ -5,6 +5,8 @@
  */
 package ci_eletronico_queries;
 
+import ci_eletronico.entities.TbUnidadeOrganizacional;
+import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.entities.TbUsuarioPerfilUo;
 import java.util.List;
@@ -61,6 +63,14 @@ public class LoginQuery {
          //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
         return em.createNamedQuery("TbUsuarioPerfilUo.findByJoinIdUsuario2",TbUsuarioPerfilUo.class)
                 .setParameter("idUsuario", nIdUsuario )
+                .getResultList();
+        
+        }
+    public List<TbUnidadeOrganizacionalGestor> getIdUOGestor(TbUnidadeOrganizacional nIdUO) {       
+        
+        //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
+        return em.createNamedQuery("TbUnidadeOrganizacionalGestor.findByIdUo",TbUnidadeOrganizacionalGestor.class)
+                .setParameter("idUnidadeOrganizacional", nIdUO )
                 .getResultList();
         
         }
