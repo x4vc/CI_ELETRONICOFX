@@ -16,9 +16,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 
 /**
  * FXML Controller class
@@ -89,6 +91,11 @@ public class Win_Para_ComcopiaController implements Initializable {
         //boxUOs.setItems(UOsAvailable);
         boxUOsPara.setItems(UOSelecionado);
         btnCancelar.setCancelButton(true);
+        btnAddAll.setTooltip(new Tooltip("Adicionar todas as UOs na caixa \"Selecionado(s)\""));     
+        btnAdd.setTooltip(new Tooltip("Adicionar UO na caixa \"Selecionado(s)\""));     
+        btnRemove.setTooltip(new Tooltip("Tirar UO da caixa \"Selecionado(s)\""));
+        btnRemoveAll.setTooltip(new Tooltip("Tirar todas as UOs da caixa \"Selecionado(s)\""));
+       
     }
     @FXML
     private void handleBtnAddAll(ActionEvent action){
@@ -112,8 +119,17 @@ public class Win_Para_ComcopiaController implements Initializable {
     @FXML
     private void handleBtnAdd(ActionEvent action){
         String selectedItem = boxUOs.getSelectionModel().getSelectedItem();
-        obsList_listaUO.remove(selectedItem);
-        UOSelecionado.add(selectedItem);
+        if (null != selectedItem){
+            obsList_listaUO.remove(selectedItem);
+            UOSelecionado.add(selectedItem);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro - UO não foi selecionado");
+            alert.setHeaderText("Nenhuma UO foi selecionada");
+            alert.setContentText("Por favor, selecione UO");
+            alert.showAndWait();
+            
+        }
        
     }
     @FXML
@@ -139,8 +155,16 @@ public class Win_Para_ComcopiaController implements Initializable {
     @FXML
     private void handleBtnRemove(ActionEvent action){
         String selectedItem = boxUOsPara.getSelectionModel().getSelectedItem();
-        UOSelecionado.remove(selectedItem);
-        obsList_listaUO.add(selectedItem);
+        if(null != selectedItem){
+            UOSelecionado.remove(selectedItem);
+            obsList_listaUO.add(selectedItem);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro - UO não foi selecionado");
+            alert.setHeaderText("Nenhuma UO foi selecionada");
+            alert.setContentText("Por favor, selecione UO");
+            alert.showAndWait();
+        }
     }
     @FXML
     private void handleBtnCancel(ActionEvent action){

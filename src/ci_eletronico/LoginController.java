@@ -195,7 +195,7 @@ public class LoginController implements Initializable {
 //                            controller.setStrNomeUsuario(strUsername);
                             
                             //Mostramos MainWindow com dados do usuário logado
-                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura);
+                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
 //                            try{
 //                                scene = new Scene(new BorderPane());
 //                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
@@ -316,7 +316,7 @@ public class LoginController implements Initializable {
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
         
-        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura);
+        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
       
         
     }
@@ -333,14 +333,14 @@ public class LoginController implements Initializable {
     }
     
     private void ShowMainWindowCIe(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor){
         try{
             
                 scene = new Scene(new BorderPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
                 scene.setRoot((Parent) loader.load());
                 FXMLMainController controller = loader.<FXMLMainController>getController();
-                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura);
+                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
 
                 Stage stage = new Stage();
                 stage.setTitle("CI-eletrônico");

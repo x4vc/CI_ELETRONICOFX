@@ -77,6 +77,7 @@ public class FXMLMainController implements Initializable {
     private String strDescricaoPerfil = "";
     private String strHtmlAssinatura="";
     private int nTipoCI = 0;
+    private int nIdUOGestor = 0;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -99,7 +100,7 @@ public class FXMLMainController implements Initializable {
     }
     
     public void setVariaveisAmbiente(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor) {
         lblIdUsuario.setText(strIdUsuario);
         lblNomeUsuario.setText(strNomeUsuario);
         lblIdUO.setText(strIdUO);
@@ -109,6 +110,7 @@ public class FXMLMainController implements Initializable {
         
         this.strHtmlAssinatura = strHtmlAssinatura;
         nTipoPerfil = Integer.parseInt(strIdPerfil);
+        this.nIdUOGestor = nIdUOGestor;
         System.out.print("Tipo de Perfil metodo setVariaveisAmbiente = " + nTipoPerfil);
         
         setBotoesMainWindow(nTipoPerfil);
@@ -142,18 +144,18 @@ public class FXMLMainController implements Initializable {
         strIdPerfil = lblIdPerfil.getText();
         strDescricaoPerfil = lblNomePerfil.getText();
         nTipoCI = 1;
-        ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI);
+        ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor);
                         
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
                 scene.setRoot((Parent) loader.load());
                 
                 ci_eletronico.nova_ci.NovaCIController nova_ci_controller = loader.<ci_eletronico.nova_ci.NovaCIController>getController();     
-                nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI);
+                nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();

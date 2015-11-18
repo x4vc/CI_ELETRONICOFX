@@ -56,6 +56,7 @@ public class NovaCIController implements Initializable {
     private String strNomeUO = "";
     private String strHtmlAssinatura = "";
     private int nTipoCI = 0;
+    private int nIdUOGestor = 0;
     
     @FXML
     Button btnPara;
@@ -101,7 +102,7 @@ public class NovaCIController implements Initializable {
     }   
     
     public void setVariaveisAmbienteNovaCI(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -115,6 +116,7 @@ public class NovaCIController implements Initializable {
         //Preencher o editor Html com assinatura do usuário
         htmlEditor.setHtmlText(this.strHtmlAssinatura);
         this.nTipoCI = nTipoCI;
+        this.nIdUOGestor = nIdUOGestor;
         
         
     }
@@ -301,9 +303,12 @@ public class NovaCIController implements Initializable {
             alert.setContentText("O campo Para deve possuir ao menos uma UO selecionada");
             alert.showAndWait();
         } else{
+            System.out.println("ID UO Gestora = " + nIdUOGestor);
             //ntipoCI   1 - CI normal
             //          2 - CI circular
             //          3 - CI confidencial
+            //          4 - CI encaminhado
+            
             salvarCI(nTipoCI);
         }
         
@@ -454,6 +459,7 @@ public class NovaCIController implements Initializable {
         });
     }
     private void salvarCI(int nTipoCI){
+        
         
     }
 }
