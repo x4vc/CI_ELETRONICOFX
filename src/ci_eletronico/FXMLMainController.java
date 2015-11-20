@@ -64,6 +64,8 @@ public class FXMLMainController implements Initializable {
     private Button btnNovaCICircular;
     @FXML
     private Button btnNovaCIConfidencial;
+    @FXML
+    private TableView TbViewGeral;
    
     private Integer nTipoPerfil = 0;
     
@@ -169,5 +171,35 @@ public class FXMLMainController implements Initializable {
             }catch (IOException ex) {
                 Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
             }
+    }
+    @FXML
+    private void handleBtnPendentesAprovacao(ActionEvent event) throws IOException {
+        lblCaixa.setText("");
+        lblCaixa.setText("CIs pendentes de aprovação");
+        
+    }
+    @FXML
+    private void handleBtnCaixaEntrada(ActionEvent event) throws IOException {
+        lblCaixa.setText("");
+        lblCaixa.setText("Caixa de entrada");
+        
+    }
+    @FXML
+    private void handleBtnCaixaSaida(ActionEvent event) throws IOException {
+        lblCaixa.setText("");
+        lblCaixa.setText("Caixa de saida");
+        
+    }
+    @FXML
+    private void handleBtnCaixaPendencias(ActionEvent event) throws IOException {
+        lblCaixa.setText("");
+        lblCaixa.setText("Caixa de pendências");
+        
+    }
+    @FXML
+    private void handleBtnCaixaArquivadas(ActionEvent event) throws IOException {
+        lblCaixa.setText("");
+        lblCaixa.setText("Caixa de CIs arquivadas");
+        
     }
 }

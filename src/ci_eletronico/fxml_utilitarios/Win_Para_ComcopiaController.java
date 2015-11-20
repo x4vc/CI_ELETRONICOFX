@@ -60,7 +60,7 @@ public class Win_Para_ComcopiaController implements Initializable {
     //private ObservableList<TbUnidadeOrganizacional> obsList_listaUO = FXCollections.observableArrayList();
     private ObservableList<String> obsList_listaUO = FXCollections.observableArrayList();
     
-    private ObservableList<String> UOsAvailable = FXCollections.observableArrayList("ASSTI","DESENV","GTRAN","SEAPE","REDE");
+    //private ObservableList<String> UOsAvailable = FXCollections.observableArrayList("ASSTI","DESENV","GTRAN","SEAPE","REDE");
 
     private ObservableList<String> UOSelecionado = FXCollections.observableArrayList(ArraySelecionado);
     private ObservableList<String> selectedItens;
@@ -168,7 +168,7 @@ public class Win_Para_ComcopiaController implements Initializable {
     }
     @FXML
     private void handleBtnCancel(ActionEvent action){
-        //Ocultamos a janela de login
+        //Ocultamos a janela de seleção UOs
         (((Node)action.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de seleção UOs ------------
     }

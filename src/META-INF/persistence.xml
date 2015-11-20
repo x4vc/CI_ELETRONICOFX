@@ -7,6 +7,11 @@
     <class>ci_eletronico.entities.TbUnidadeOrganizacional</class>
     <class>ci_eletronico.entities.TbUsuarioPerfilUo</class>
     <class>ci_eletronico.entities.TbUnidadeOrganizacionalGestor</class>
+    <class>ci_eletronico.entities.TbComunicacaoInterna</class>
+    <class>ci_eletronico.entities.TbAnexo</class>
+    <class>ci_eletronico.entities.TbTipoEnvio</class>
+    <class>ci_eletronico.entities.TbTipoComunicacoInterna</class>
+    <class>ci_eletronico.entities.TbCiDestinatario</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost\SQLEXPRESS:1433;databaseName=CI_ELETRONICO"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>

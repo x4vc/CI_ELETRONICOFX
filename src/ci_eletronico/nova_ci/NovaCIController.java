@@ -6,12 +6,21 @@
 package ci_eletronico.nova_ci;
 
 import ci_eletronico.FXMLMainController;
+import ci_eletronico.entities.TbAnexo;
+import ci_eletronico.entities.TbCiDestinatario;
+import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,6 +36,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -40,6 +50,10 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  * FXML Controller class
@@ -57,6 +71,9 @@ public class NovaCIController implements Initializable {
     private String strHtmlAssinatura = "";
     private int nTipoCI = 0;
     private int nIdUOGestor = 0;
+    
+    EntityManager em;
+    EntityManagerFactory emf;
     
     @FXML
     Button btnPara;
@@ -78,6 +95,8 @@ public class NovaCIController implements Initializable {
     TextFlow txtFPara;
     @FXML
     TextFlow txtFComCopia;
+    @FXML
+    ComboBox cmbApensamento;
     
     
     // Clases para tratar Anexar Arquivos
@@ -310,21 +329,24 @@ public class NovaCIController implements Initializable {
             //          4 - CI encaminhado
             
             salvarCI(nTipoCI);
+            //Ocultamos a janela de seleção UOs
+            (((Node)event.getSource()).getScene()).getWindow().hide();
+            //--------- FIM Ocultar janela de seleção UOs ------------
         }
         
-        //Verificamos se existem anexos a serem salvos
-        Integer nSize;
-        nSize = txtFAnexado.getChildren().size();
-        
-        if (nSize > 0) {
-            //Existem arquivos a serem salvos
-            ObservableList<Node> nodes = txtFAnexado.getChildren();
-            StringBuilder sb = new StringBuilder();
-            for (Node node : nodes) { sb.append((((Text)node).getText()));
-            }
-            String txt = sb.toString();
-            System.out.println("TxtFAnexado  = " + txt );
-        }
+//        //Verificamos se existem anexos a serem salvos
+//        Integer nSize;
+//        nSize = txtFAnexado.getChildren().size();
+//        
+//        if (nSize > 0) {
+//            //Existem arquivos a serem salvos
+//            ObservableList<Node> nodes = txtFAnexado.getChildren();
+//            StringBuilder sb = new StringBuilder();
+//            for (Node node : nodes) { sb.append((((Text)node).getText()));
+//            }
+//            String txt = sb.toString();
+//            System.out.println("TxtFAnexado  = " + txt );
+//        }
     }
     private void showListViewDestinatarios(int nTipoDestinatario) throws IOException{
         scene = new Scene(new StackPane());
@@ -458,8 +480,169 @@ public class NovaCIController implements Initializable {
             }
         });
     }
-    private void salvarCI(int nTipoCI){
+    private void salvarCI(int nTipoCI){       
+        try{
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();        
+        em.getTransaction().begin();
+        
+        //Verificamos e seteamos as variaveis a serem persistidos dentro da tabela TB_COMUNICACAO_INTERNA
+        boolean bCoinAutorizado = false;
+        boolean bCoinUOArquivado = false;
+        boolean bCoinUOGestorArquivado = false;
+        boolean bCoinReadOnly = false;
+        TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
+        int nSequencialUO = 0;
+        
+        //Seteamos Datas
+        String strToday = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date data_criacao; 
+        java.util.Date data_autorizado;
+        Calendar data = Calendar.getInstance();
+        int nYear = data.get(Calendar.YEAR);
+        int nSize = 0;
+        data_criacao = new Date();
+        strToday = df.format(data_criacao);        
+        
+        //Seteamos entity TB_COMUNICACAO_INTERNA e TB_CI_DESTINATARIO
+        TbTipoComunicacoInterna TipoCI = new TbTipoComunicacoInterna(nTipoCI);
+         
+        
+        TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
+        TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
+        
+        //Verificamos se CI precisa ser autorizado        
+       
+        
+        if ((nIdUO == nIdUOGestor)){
+            switch (nTipoPerfil) {
+                case 1: //Perfil de Gestor
+                    bCoinAutorizado = true;
+                    data_autorizado = data_criacao;
+                    newTbCI.setCoinDataAutorizado(data_autorizado);
+                    break;
+                default:
+                    bCoinAutorizado = false;
+                    break;
+            }           
+        } else {
+            bCoinAutorizado = false;
+        }
+        
+        //Seteamos número sequencial da CI de acordo ao UO Remitente
+        try {
+            TypedQuery<Integer> query = em.createQuery("SELECT max(c.coinNumero) FROM TbComunicacaoInterna c WHERE c.idUnidadeOrganizacional = :idUnidadeOrganizacional AND FUNCTION('YEAR',c.coinDataCriacao) = :Ano",Integer.class)            
+                                            .setParameter("idUnidadeOrganizacional", nIdUO)
+                                            .setParameter("Ano", nYear);
+            Integer Resultado = query.getSingleResult();
+            
+            if (null != Resultado){
+                nSequencialUO = Resultado.intValue();
+                nSequencialUO++;
+            } else {
+                nSequencialUO = 0;
+                nSequencialUO++;
+            }
+        } catch(Exception ex){
+            nSequencialUO = 0;
+            nSequencialUO++;
+        }
+            
         
         
+        //Seteamos entity TB_COMUNICACAO_INTERNA
+//        TbTipoComunicacoInterna TipoCI = new TbTipoComunicacoInterna(nTipoCI);
+//        
+//        TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
+        newTbCI.setCoinAssunto(txtAssunto.getText());
+        newTbCI.setCoinConteudo(htmlEditor.getHtmlText());
+        newTbCI.setIdUsuario(nIdUsuario);
+        newTbCI.setIdUnidadeOrganizacional(nIdUO);
+        newTbCI.setIdUoGestor(nIdUOGestor);
+        newTbCI.setCoinAutorizado(bCoinAutorizado);
+        newTbCI.setIdTipoCoin(TipoCI);
+        newTbCI.setCoinApensamento("");
+        newTbCI.setCoinNumero(nSequencialUO);
+        newTbCI.setCoinUoArquivado(bCoinUOArquivado);
+        newTbCI.setCoinUoGestorArquivado(bCoinUOGestorArquivado);
+        newTbCI.setCoinDataCriacao(data_criacao);
+//        newTbCI.setCoinDataAutorizado(data_autorizado);
+        newTbCI.setCoinReadOnly(bCoinReadOnly);       
+        
+        
+        em.persist(newTbCI);
+        em.flush();
+        long IdCoin = newTbCI.getIdCoin();
+        
+        //Verificamos se existem anexos a serem salvos        
+        nSize = txtFAnexado.getChildren().size();        
+        if (nSize > 0) {
+            TbAnexo newAnexo = new TbAnexo();
+            //Existem arquivos a serem salvos            
+            String strFilePath = "";
+            long nlen = 0;
+            ObservableList<Node> nodes = txtFAnexado.getChildren();
+            StringBuilder sb = new StringBuilder();
+            for (Node node : nodes) { 
+                sb.append((((Text)node).getText())); 
+                
+            }
+            strFilePath = sb.toString();            
+            for (String retval: strFilePath.split(";")){
+                retval = ltrim(retval);
+                retval = rtrim(retval);
+                
+                // Procuramos o arquivo a ser anexado
+                try {
+                    File file = new File(retval);
+                    FileInputStream fis = new FileInputStream(file);
+                    nlen = (int)file.length();
+                } catch (Exception e){
+                    e.printStackTrace();                    
+                }
+                
+            }
+        }
+        
+        
+        
+        em.getTransaction().commit();            
+        em.close();
+        emf.close();
+        // Show the error message.
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação");
+        alert.setHeaderText("Envio de CI");
+        alert.setContentText("A informação foi salva e enviada ao destinatário(s) ");
+        alert.showAndWait();
+        
+        } catch (javax.persistence.PersistenceException e) {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Falha no envio da CI");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            //e.printStackTrace();
+            em.close();
+            emf.close();
+        }        
     }
+    public static String rtrim(String s) {
+        int i = s.length()-1;
+        while (i >= 0 && Character.isWhitespace(s.charAt(i))) {
+            i--;
+        }
+        return s.substring(0,i+1);
+    }
+    public static String ltrim(String s) {
+        int i = 0;
+        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
+            System.out.println("s.charAt(i)  "+s.charAt(i));
+            i++;
+        }
+        return s.substring(i);
+    }
+    
 }

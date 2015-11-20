@@ -59,21 +59,21 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="636.0" prefWidth="141.0">
                <children>
-                  <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="252.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
-                  <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="293.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de saida" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
-                  <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="329.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de pendências" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-                  <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="377.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de arquivadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
-                  <Button fx:id="btnPendentesAprovacao" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="191.0" mnemonicParsing="false" stylesheets="@../resources/PersonalStyleSheet.css" text="CIs pendentes de aprovação" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="252.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntrada" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+                  <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="293.0" mnemonicParsing="false" onAction="#handleBtnCaixaSaida" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de saida" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                  <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="329.0" mnemonicParsing="false" onAction="#handleBtnCaixaPendencias" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de pendências" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+                  <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="377.0" mnemonicParsing="false" onAction="#handleBtnCaixaArquivadas" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de arquivadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+                  <Button fx:id="btnPendentesAprovacao" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="191.0" mnemonicParsing="false" onAction="#handleBtnPendentesAprovacao" stylesheets="@../resources/PersonalStyleSheet.css" text="CIs pendentes de aprovação" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="704.0" prefWidth="441.0">
                <children>
-                  <TableView layoutY="30.0" prefHeight="297.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                  <TableView fx:id="TbViewGeral" layoutY="30.0" prefHeight="297.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="C1" />
                       <TableColumn prefWidth="75.0" text="C2" />
                     </columns>
                   </TableView>
-                  <Label fx:id="lblCaixa" layoutX="28.0" layoutY="6.0" text="Caixa de entrada">
+                  <Label fx:id="lblCaixa" layoutX="28.0" layoutY="6.0" text="Caixa de entrada" AnchorPane.leftAnchor="10.0">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
