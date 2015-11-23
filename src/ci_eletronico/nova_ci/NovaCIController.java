@@ -15,6 +15,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -467,21 +468,21 @@ public class NovaCIController implements Initializable {
                     clicked.setFill(Color.RED);
                     clicked.setFont(Font.font("Arial", FontPosture.ITALIC, 12));
                     clicked.setUnderline(true);
-                    System.out.println(clicked.getText());
+                    //System.out.println(clicked.getText());
                     //txtFAnexado.getChildren().remove(ev.getTarget());
                 }                            
             }
             if (2 == ev.getClickCount()){
                 if(ev.getTarget() instanceof Text) {
                     Text clicked = (Text) ev.getTarget();
-                    System.out.println(clicked.getText());
+                    //System.out.println(clicked.getText());
                     txtFComCopia.getChildren().remove(ev.getTarget());
                 }
             }
         });
     }
     private void salvarCI(int nTipoCI){       
-        try{
+    try{
         emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
         em = emf.createEntityManager();        
         em.getTransaction().begin();
@@ -491,8 +492,12 @@ public class NovaCIController implements Initializable {
         boolean bCoinUOArquivado = false;
         boolean bCoinUOGestorArquivado = false;
         boolean bCoinReadOnly = false;
+        boolean bCoinTemAnexos = false;
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
         int nSequencialUO = 0;
+        String strPara="";
+        String strComCopia = "";
+        String strDelimiters = "-|\\;";
         
         //Seteamos Datas
         String strToday = "";
@@ -512,9 +517,13 @@ public class NovaCIController implements Initializable {
         TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
         TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
         
-        //Verificamos se CI precisa ser autorizado        
-       
+        //Verificamos se CI vai possuir anexos
+        nSize = txtFAnexado.getChildren().size();        
+        if (nSize > 0) {
+            bCoinTemAnexos = true;
+        }
         
+        //Verificamos se CI precisa ser autorizado   
         if ((nIdUO == nIdUOGestor)){
             switch (nTipoPerfil) {
                 case 1: //Perfil de Gestor
@@ -529,6 +538,48 @@ public class NovaCIController implements Initializable {
         } else {
             bCoinAutorizado = false;
         }
+        
+        //Seteamos variavel e html Para:
+        ObservableList<Node> nodesPara = txtFPara.getChildren();
+        StringBuilder sbPara = new StringBuilder();
+        for (Node node : nodesPara) { 
+            sbPara.append((((Text)node).getText()));                 
+        }
+        strPara = sbPara.toString();
+        strPara = ltrim(strPara);
+        strPara = rtrim(strPara);
+        
+        String[] strParts = strPara.split(strDelimiters);
+        strPara = "Para: ";
+        String strUONome = "";
+        String strIdUO = "";
+        String strIdsUOPara = "";
+        int j = 1;
+        for (int i = 0; i < strParts.length; i++){
+            System.out.println(strParts[i]);
+            if ((j%2) == 0){
+                strUONome = strParts[i]; 
+                strPara=strPara.concat(strUONome);
+                strPara=strPara.concat("; ");
+            } else {
+                strIdUO = strParts[i];
+                strIdsUOPara = strIdsUOPara.concat(strIdUO);
+                strIdsUOPara = ltrim(strIdsUOPara);
+                strIdsUOPara = rtrim(strIdsUOPara);
+                strIdsUOPara = strIdsUOPara.concat(";");
+            }
+            j++;
+            
+        }
+        System.out.println(strPara);
+        System.out.println(strIdsUOPara);
+        for (String retval: strParts){            
+            retval = ltrim(retval);
+            retval = rtrim(retval);
+
+            //System.out.println(retval);
+        }
+        //Seteamos variavel e html Com cópia:
         
         //Seteamos número sequencial da CI de acordo ao UO Remitente
         try {
@@ -547,14 +598,10 @@ public class NovaCIController implements Initializable {
         } catch(Exception ex){
             nSequencialUO = 0;
             nSequencialUO++;
-        }
-            
-        
-        
+        }            
+               
         //Seteamos entity TB_COMUNICACAO_INTERNA
-//        TbTipoComunicacoInterna TipoCI = new TbTipoComunicacoInterna(nTipoCI);
-//        
-//        TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
+
         newTbCI.setCoinAssunto(txtAssunto.getText());
         newTbCI.setCoinConteudo(htmlEditor.getHtmlText());
         newTbCI.setIdUsuario(nIdUsuario);
@@ -568,44 +615,60 @@ public class NovaCIController implements Initializable {
         newTbCI.setCoinUoGestorArquivado(bCoinUOGestorArquivado);
         newTbCI.setCoinDataCriacao(data_criacao);
 //        newTbCI.setCoinDataAutorizado(data_autorizado);
-        newTbCI.setCoinReadOnly(bCoinReadOnly);       
-        
+        newTbCI.setCoinReadOnly(bCoinReadOnly);
+        newTbCI.setCoinTemAnexos(bCoinTemAnexos);
         
         em.persist(newTbCI);
         em.flush();
         long IdCoin = newTbCI.getIdCoin();
         
         //Verificamos se existem anexos a serem salvos        
-        nSize = txtFAnexado.getChildren().size();        
-        if (nSize > 0) {
-            TbAnexo newAnexo = new TbAnexo();
+        //nSize = txtFAnexado.getChildren().size();        
+        if (bCoinTemAnexos) {
+            //TbAnexo newAnexo = new TbAnexo();
+            //TbComunicacaoInterna nCoinId = new TbComunicacaoInterna(newTbCI.getIdCoin());
+            TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
             //Existem arquivos a serem salvos            
             String strFilePath = "";
-            long nlen = 0;
+            int nlen = 0;
+            
             ObservableList<Node> nodes = txtFAnexado.getChildren();
             StringBuilder sb = new StringBuilder();
             for (Node node : nodes) { 
-                sb.append((((Text)node).getText())); 
-                
+                sb.append((((Text)node).getText()));                 
             }
-            strFilePath = sb.toString();            
+            strFilePath = sb.toString();
+            strFilePath = ltrim(strFilePath);
+            strFilePath = rtrim(strFilePath);
+            //System.out.println(strFilePath);
             for (String retval: strFilePath.split(";")){
+                TbAnexo newAnexo = new TbAnexo();
                 retval = ltrim(retval);
                 retval = rtrim(retval);
+                
+                //System.out.println(retval);
                 
                 // Procuramos o arquivo a ser anexado
                 try {
                     File file = new File(retval);
                     FileInputStream fis = new FileInputStream(file);
                     nlen = (int)file.length();
+                    newAnexo.setAnexoTamanho(nlen);
+                    newAnexo.setAnexoNome(file.getName());
+                    newAnexo.setIdCoin(nCoinId);
+                    newAnexo.setAnexoBlob(readImageOldWay(file));
+                    em.persist(newAnexo);
+                   
                 } catch (Exception e){
                     e.printStackTrace();                    
-                }
-                
+                }                
             }
         }
+        //------------ FIM da rotina de anexos a serem salvos -----
         
+        //-------Inicio da rotina para salvar a CI na tabela TB_CI_DESTINATARIO
         
+        //----------FIM da rotina para salvar a CI na tabela TB_CI_DESTINATARIO
         
         em.getTransaction().commit();            
         em.close();
@@ -614,7 +677,7 @@ public class NovaCIController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Informação");
         alert.setHeaderText("Envio de CI");
-        alert.setContentText("A informação foi salva e enviada ao destinatário(s) ");
+        alert.setContentText("A informação foi salva e enviada ao(s) destinatário(s)");
         alert.showAndWait();
         
         } catch (javax.persistence.PersistenceException e) {
@@ -629,6 +692,43 @@ public class NovaCIController implements Initializable {
             emf.close();
         }        
     }
+    
+    public byte[] readImageOldWay(File file) throws IOException {
+    //Logger.getLogger(Main.class.getName()).log(Level.INFO, "[Open File] " + file.getAbsolutePath());
+    InputStream is = new FileInputStream(file);
+    // Get the size of the file
+    long length = file.length();
+    // You cannot create an array using a long type.
+    // It needs to be an int type.
+    // Before converting to an int type, check
+    // to ensure that file is not larger than Integer.MAX_VALUE.
+    if (length > Integer.MAX_VALUE){
+        // File is too large
+        // Show the error message.
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erro");
+        alert.setHeaderText("Falha no envio do Arquivo");
+        alert.setContentText("Arquivo é grande demais para ser enviado através da CI-e");
+        alert.showAndWait();
+    }
+    // Create the byte array to hold the data
+    byte[] bytes = new byte[(int) length];
+    // Read in the bytes
+    int offset = 0;
+    int numRead = 0;
+    while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+    {
+      offset += numRead;
+    }
+    // Ensure all the bytes have been read in
+    if (offset < bytes.length)
+    {
+      throw new IOException("Não foi possível concluir a leitura do arquivo: " + file.getName());
+    }
+    // Close the input stream and return bytes
+    is.close();
+    return bytes;
+}
     public static String rtrim(String s) {
         int i = s.length()-1;
         while (i >= 0 && Character.isWhitespace(s.charAt(i))) {
