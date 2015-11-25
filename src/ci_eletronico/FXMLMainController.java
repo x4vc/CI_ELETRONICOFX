@@ -5,9 +5,13 @@
  */
 package ci_eletronico;
 
-import ci_eletronico.nova_ci.NovaCIController;
+import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico_queries.MainWindowQueries;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,6 +70,14 @@ public class FXMLMainController implements Initializable {
     private Button btnNovaCIConfidencial;
     @FXML
     private TableView TbViewGeral;
+    @FXML
+    private TableColumn ClDataEnvio; 
+    @FXML
+    private TableColumn ClUORemitente; 
+    @FXML
+    private TableColumn ClAutorRemitente; 
+    @FXML
+    private TableColumn ClAssunto; 
    
     private Integer nTipoPerfil = 0;
     
@@ -81,15 +93,17 @@ public class FXMLMainController implements Initializable {
     private int nTipoCI = 0;
     private int nIdUOGestor = 0;
     
+    //
+    private MainWindowQueries consulta;
+    private List<TbComunicacaoInterna> listaCiSemAprovar = new ArrayList<>();
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 //    public void initialize() {
         // TODO 
     System.out.print("Tipo de Perfil metodo initialize = " + nTipoPerfil);
-        
-        
-        
-        
+    
     }
     
     @FXML
@@ -176,6 +190,22 @@ public class FXMLMainController implements Initializable {
     private void handleBtnPendentesAprovacao(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("CIs pendentes de aprovação");
+        
+//        String strUONome="";
+//        String strAssunto="";
+//        Date dataEnvio;
+//        
+//        listaCiSemAprovar = consulta.listaCIParaAutorizar(nIdUOGestor);
+//        for(TbComunicacaoInterna l : listaCiSemAprovar){
+//                strUONome = Integer.toString(l.getIdUnidadeOrganizacional());
+//                strAssunto = l.getCoinAssunto();
+//                dataEnvio = l.getCoinDataCriacao();
+//                
+//                
+//
+//                //o_listaTipoExame.add(new TblViewTipoExame(l.getIdTipoExame(),l.getNomeTipoExame(),d,l.getTipoExameAtivo(),"01012015"));                        
+//            }     
+        //TbViewGeral
         
     }
     @FXML

@@ -10,7 +10,11 @@ import ci_eletronico.entities.TbAnexo;
 import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbTipoComunicacoInterna;
+import ci_eletronico.entities.TbTipoEnvio;
+import ci_eletronico.entities.TbUnidadeOrganizacional;
+import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController;
+import ci_eletronico_queries.MainWindowQueries;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
@@ -487,17 +491,30 @@ public class NovaCIController implements Initializable {
         em = emf.createEntityManager();        
         em.getTransaction().begin();
         
+//        TbUsuario nIdUser= new TbUsuario(nIdUsuario);
+//        TbUnidadeOrganizacional nIdUnidadeOrganizacional = new TbUnidadeOrganizacional(nIdUO);        
+        
         //Verificamos e seteamos as variaveis a serem persistidos dentro da tabela TB_COMUNICACAO_INTERNA
         boolean bCoinAutorizado = false;
         boolean bCoinUOArquivado = false;
         boolean bCoinUOGestorArquivado = false;
         boolean bCoinReadOnly = false;
         boolean bCoinTemAnexos = false;
+        boolean bCoinDestinatarioGestorAutorizado = false;
+        boolean bCoinRemitenteGestorAutorizado = false;
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
+        TbUnidadeOrganizacionalGestor UOGestorDestinatario = new TbUnidadeOrganizacionalGestor();
+        MainWindowQueries consultaUOGestor = new MainWindowQueries();
         int nSequencialUO = 0;
         String strPara="";
         String strComCopia = "";
         String strDelimiters = "-|\\;";
+        String strHtmlConteudo = "";
+        
+        int [] nArrayCCIdUODestinatario = new int[0]; // = new int[strParts.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+        int [] nArrayCCIdUOGestor = new int[0];// = new int[strParts.length/2];
+        String [] strArrayCCUONomeDestinatario = new String[0];  
+        
         
         //Seteamos Datas
         String strToday = "";
@@ -515,7 +532,7 @@ public class NovaCIController implements Initializable {
          
         
         TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
-        TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
+       
         
         //Verificamos se CI vai possuir anexos
         nSize = txtFAnexado.getChildren().size();        
@@ -530,9 +547,11 @@ public class NovaCIController implements Initializable {
                     bCoinAutorizado = true;
                     data_autorizado = data_criacao;
                     newTbCI.setCoinDataAutorizado(data_autorizado);
+                    bCoinRemitenteGestorAutorizado = true;
                     break;
                 default:
                     bCoinAutorizado = false;
+                    bCoinRemitenteGestorAutorizado = false;
                     break;
             }           
         } else {
@@ -550,39 +569,140 @@ public class NovaCIController implements Initializable {
         strPara = rtrim(strPara);
         
         String[] strParts = strPara.split(strDelimiters);
-        strPara = "Para: ";
+        int nSavePara = 0;
+        int nSaveComCopia = 0;
+        nSavePara = strParts.length/2;
+        int [] nArrayIdUODestinatario = new int[strParts.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+        int [] nArrayIdUOGestor = new int[strParts.length/2];
+        
+        String [] strArrayUONomeDestinatario = new String[strParts.length/2];
+        strPara = "";
+        strPara = "<br><hr><br>De: <b>" + strNomeUO + "</b><br>";
+        strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+        strPara = strPara.concat("Para: <b>");
         String strUONome = "";
         String strIdUO = "";
         String strIdsUOPara = "";
-        int j = 1;
+        int j = 1;  //Variavel utilizada para saber se contador é multiplo de 2
+        int y = 0;  //variavel utilizada  para setear o indice de array de String
+        int z = 0;  //variavel utilizada  para setear o indice de array de int
+        TbUnidadeOrganizacional nIdUOTemp;
         for (int i = 0; i < strParts.length; i++){
             System.out.println(strParts[i]);
             if ((j%2) == 0){
+                strArrayUONomeDestinatario[y] = strParts[i].trim();
                 strUONome = strParts[i]; 
                 strPara=strPara.concat(strUONome);
                 strPara=strPara.concat("; ");
+                y++;
             } else {
+                nArrayIdUODestinatario[z] = Integer.parseInt(strParts[i].trim());
+                nIdUOTemp = new TbUnidadeOrganizacional(Integer.parseInt(strParts[i].trim()));
                 strIdUO = strParts[i];
                 strIdsUOPara = strIdsUOPara.concat(strIdUO);
                 strIdsUOPara = ltrim(strIdsUOPara);
                 strIdsUOPara = rtrim(strIdsUOPara);
                 strIdsUOPara = strIdsUOPara.concat(";");
+                //Seteamos UO Gestora do destinatario
+                UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
+                nArrayIdUOGestor[z] = UOGestorDestinatario.getIdUoGestor();
+                //---------------------------------
+                              
+                z++;
             }
             j++;
             
         }
+        strPara = strPara.concat("</b><br>");
+        
         System.out.println(strPara);
         System.out.println(strIdsUOPara);
-        for (String retval: strParts){            
-            retval = ltrim(retval);
-            retval = rtrim(retval);
-
-            //System.out.println(retval);
-        }
-        //Seteamos variavel e html Com cópia:
+        System.out.println(strArrayUONomeDestinatario);
+        System.out.println(nArrayIdUODestinatario);
+        System.out.println(nArrayIdUOGestor);
         
+        // ---- FIM: Seteamos variavel e html Para -------        
+        
+        //Seteamos variavel e html Com cópia:
+        strComCopia = "";
+        strComCopia = strComCopia.concat("Com cópia: <br>");
+        if (txtFComCopia.getChildren().size() > 0) {
+            
+            ObservableList<Node> nodesComCopia = txtFComCopia.getChildren();
+            StringBuilder sbComCopia = new StringBuilder();
+            for (Node node : nodesComCopia) { 
+                sbComCopia.append((((Text)node).getText()));                 
+            }
+            strComCopia = sbComCopia.toString();
+            strComCopia = ltrim(strComCopia);
+            strComCopia = rtrim(strComCopia);
+            
+            strParts = strComCopia.split(strDelimiters);
+            //int nSaveComCopia = 0;
+            nSaveComCopia = strParts.length/2;
+//            int [] nArrayCCIdUODestinatario = new int[strParts.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+//            int [] nArrayCCIdUOGestor = new int[strParts.length/2];
+            nArrayCCIdUODestinatario = new int[strParts.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+            nArrayCCIdUOGestor = new int[strParts.length/2];
+            //String [] strArrayCCUONomeDestinatario = new String[strParts.length/2];
+            strArrayCCUONomeDestinatario = new String[strParts.length/2];
+            strComCopia = "";            
+            strComCopia = strComCopia.concat("Com cópia: <b>");
+            //strComCopia = strComCopia.concat("<b>");
+            strUONome = "";
+            strIdUO = "";
+            String strIdsUOComCopia = "";
+            j = 1;  //Variavel utilizada para saber se contador é multiplo de 2
+            y = 0;  //variavel utilizada  para setear o indice de array de String
+            z = 0;  //variavel utilizada  para setear o indice de array de int
+        for (int i = 0; i < strParts.length; i++){
+            System.out.println(strParts[i]);
+            if ((j%2) == 0){
+                strArrayCCUONomeDestinatario[y] = strParts[i].trim();
+                strUONome = strParts[i]; 
+                strComCopia=strComCopia.concat(strUONome);
+                strComCopia=strComCopia.concat("; ");
+                y++;
+            } else {
+                nArrayCCIdUODestinatario[z] = Integer.parseInt(strParts[i].trim());
+                nIdUOTemp = new TbUnidadeOrganizacional(Integer.parseInt(strParts[i].trim()));
+                strIdUO = strParts[i];
+                strIdsUOComCopia = strIdsUOComCopia.concat(strIdUO);
+                strIdsUOComCopia = ltrim(strIdsUOComCopia);
+                strIdsUOComCopia = rtrim(strIdsUOComCopia);
+                strIdsUOComCopia = strIdsUOComCopia.concat(";");
+                
+               //Seteamos UO Gestora do destinatario
+                UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
+                nArrayCCIdUOGestor[z] = UOGestorDestinatario.getIdUoGestor();
+                //---------------------------------
+                
+                z++;
+            }
+            j++;
+            
+        }
+        strComCopia = strComCopia.concat("</b><br>");
+        
+        System.out.println(strComCopia);
+        System.out.println(strIdsUOComCopia);
+        System.out.println(nArrayCCIdUODestinatario);
+        System.out.println(strArrayCCUONomeDestinatario);         
+        System.out.println(nArrayCCIdUOGestor); 
+        System.out.println();
+            
+        }
+        
+        strPara = strPara.concat(strComCopia);
+        strPara = strPara.concat("<hr><br>");
+        
+        strHtmlConteudo = htmlEditor.getHtmlText();
+        
+        strPara = strPara.concat(strHtmlConteudo);
+        
+        System.out.println();
         //Seteamos número sequencial da CI de acordo ao UO Remitente
-        try {
+        try{
             TypedQuery<Integer> query = em.createQuery("SELECT max(c.coinNumero) FROM TbComunicacaoInterna c WHERE c.idUnidadeOrganizacional = :idUnidadeOrganizacional AND FUNCTION('YEAR',c.coinDataCriacao) = :Ano",Integer.class)            
                                             .setParameter("idUnidadeOrganizacional", nIdUO)
                                             .setParameter("Ano", nYear);
@@ -599,13 +719,17 @@ public class NovaCIController implements Initializable {
             nSequencialUO = 0;
             nSequencialUO++;
         }            
-               
+        
+        
         //Seteamos entity TB_COMUNICACAO_INTERNA
 
         newTbCI.setCoinAssunto(txtAssunto.getText());
-        newTbCI.setCoinConteudo(htmlEditor.getHtmlText());
+        //newTbCI.setCoinConteudo(htmlEditor.getHtmlText());
+        newTbCI.setCoinConteudo(strPara);
         newTbCI.setIdUsuario(nIdUsuario);
+        newTbCI.setUsuNomeCompleto(strNomeUsuario);
         newTbCI.setIdUnidadeOrganizacional(nIdUO);
+        newTbCI.setUnorDescricao(strNomeUO);
         newTbCI.setIdUoGestor(nIdUOGestor);
         newTbCI.setCoinAutorizado(bCoinAutorizado);
         newTbCI.setIdTipoCoin(TipoCI);
@@ -617,17 +741,21 @@ public class NovaCIController implements Initializable {
 //        newTbCI.setCoinDataAutorizado(data_autorizado);
         newTbCI.setCoinReadOnly(bCoinReadOnly);
         newTbCI.setCoinTemAnexos(bCoinTemAnexos);
+        //newTbCI.setCoinEnviadoPara("");
+        //newTbCI.setCoinEnviadoComCopia("");
         
         em.persist(newTbCI);
         em.flush();
+        
+        
         long IdCoin = newTbCI.getIdCoin();
         
         //Verificamos se existem anexos a serem salvos        
         //nSize = txtFAnexado.getChildren().size();        
+        TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
         if (bCoinTemAnexos) {
-            //TbAnexo newAnexo = new TbAnexo();
-            //TbComunicacaoInterna nCoinId = new TbComunicacaoInterna(newTbCI.getIdCoin());
-            TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
+            //TbAnexo newAnexo = new TbAnexo();            
+            //TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
             //Existem arquivos a serem salvos            
             String strFilePath = "";
             int nlen = 0;
@@ -668,8 +796,109 @@ public class NovaCIController implements Initializable {
         
         //-------Inicio da rotina para salvar a CI na tabela TB_CI_DESTINATARIO
         
-        //----------FIM da rotina para salvar a CI na tabela TB_CI_DESTINATARIO
+        //-------Salvamos de acordo campo Para
+        //Seteamos o tipo de Envio
+        TbTipoEnvio nIdTipoEnvio = new TbTipoEnvio(1); //1 - Tipo = ENVIADO "PARA"
+        try{        
+            for(int n =0 ; n < nSavePara;n++ ){
+                TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
+                //Seteamos boolean bCoinDestinatarioGestorAutorizado
+                if(nArrayIdUODestinatario[n] == nArrayIdUOGestor[n]){
+                    bCoinDestinatarioGestorAutorizado = true;  
+                    //se o UO remitente for UO remitente GEstos então seteamos data
+                    if (bCoinAutorizado){
+                        data_autorizado = data_criacao;
+                        newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);                    
+                    }
+                }else{
+                    bCoinDestinatarioGestorAutorizado = false;                    
+                }  
+            //Seteamos Para
+
+            newTbCIDestinatario.setIdCoin(nCoinId);
+            newTbCIDestinatario.setIdUsuarioRemitente(nIdUsuario);
+            newTbCIDestinatario.setUsuNomeCompletoRemitente(strNomeUsuario);
+            newTbCIDestinatario.setIdUoRemitente(nIdUO);
+            newTbCIDestinatario.setInorDescricaoRemitente(strNomeUO);
+            newTbCIDestinatario.setIdUoDestinatario(nArrayIdUODestinatario[n]);
+            newTbCIDestinatario.setUnorDescricaoDestinatario(strArrayUONomeDestinatario[n]);
+            newTbCIDestinatario.setIdUoGestorDestinatario(nArrayIdUOGestor[n]);
+            newTbCIDestinatario.setCoinDestinatarioGestorAutorizado(bCoinDestinatarioGestorAutorizado);
+            newTbCIDestinatario.setCoinDestinatarioUoArquivado(false);
+            newTbCIDestinatario.setCoinDestinatarioUoGestorArquivado(false);
+            newTbCIDestinatario.setCoinDestinatarioAssunto(txtAssunto.getText());
+            newTbCIDestinatario.setCoinDestinatarioConteudo(strPara);
+            newTbCIDestinatario.setCoinDestinatarioPendente(false);
+            newTbCIDestinatario.setCoinDestinatarioLido(false);
+            newTbCIDestinatario.setCoinDestinatarioDataCriacao(data_criacao);
+            newTbCIDestinatario.setIdTipoEnvio(nIdTipoEnvio);
+            newTbCIDestinatario.setCoinDestinatarioNumero(nSequencialUO);
+            newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
+            newTbCIDestinatario.setCoinDestinatarioTemAnexos(bCoinTemAnexos);
+            newTbCIDestinatario.setCoinRemitenteGestorAutorizado(bCoinRemitenteGestorAutorizado);
+            em.persist(newTbCIDestinatario);            
+        }
+        }catch(javax.persistence.PersistenceException e){
+            //e.printStackTrace();
+            em.close();
+            emf.close();            
+        }
         
+        //-------Salvamos de acordo campo Com Cópia
+        if (txtFComCopia.getChildren().size() > 0) {
+            //nArrayCCIdUODestinatario = new int[nSaveComCopia];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+            //nArrayCCIdUOGestor = new int[nSaveComCopia];
+            //Seteamos o tipo de Envio
+            nIdTipoEnvio = new TbTipoEnvio(2); //2 - Tipo = ENVIADO "COM COPIA"
+            try{        
+                for(int n =0 ; n < nSaveComCopia;n++ ){
+                    TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
+                    //Seteamos boolean bCoinDestinatarioGestorAutorizado
+                    //if(nArrayIdUODestinatario[n] == nArrayIdUOGestor[n]){
+                    if(nArrayCCIdUODestinatario[n] == nArrayCCIdUOGestor[n]){
+                        bCoinDestinatarioGestorAutorizado = true;  
+                        //se o UO remitente for UO remitente GEstos então seteamos data
+                        if (bCoinAutorizado){
+                            data_autorizado = data_criacao;
+                            newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);                    
+                        }
+                    }else{
+                        bCoinDestinatarioGestorAutorizado = false;                    
+                    }  
+                //Seteamos Com Copia
+
+                newTbCIDestinatario.setIdCoin(nCoinId);
+                newTbCIDestinatario.setIdUsuarioRemitente(nIdUsuario);
+                newTbCIDestinatario.setUsuNomeCompletoRemitente(strNomeUsuario);
+                newTbCIDestinatario.setIdUoRemitente(nIdUO);
+                newTbCIDestinatario.setInorDescricaoRemitente(strNomeUO);
+                newTbCIDestinatario.setIdUoDestinatario(nArrayCCIdUODestinatario[n]);
+                newTbCIDestinatario.setUnorDescricaoDestinatario(strArrayCCUONomeDestinatario[n]);
+                newTbCIDestinatario.setIdUoGestorDestinatario(nArrayCCIdUOGestor[n]);
+                newTbCIDestinatario.setCoinDestinatarioGestorAutorizado(bCoinDestinatarioGestorAutorizado);
+                newTbCIDestinatario.setCoinDestinatarioUoArquivado(false);
+                newTbCIDestinatario.setCoinDestinatarioUoGestorArquivado(false);
+                newTbCIDestinatario.setCoinDestinatarioAssunto(txtAssunto.getText());
+                newTbCIDestinatario.setCoinDestinatarioConteudo(strPara);
+                newTbCIDestinatario.setCoinDestinatarioPendente(false);
+                newTbCIDestinatario.setCoinDestinatarioLido(false);
+                newTbCIDestinatario.setCoinDestinatarioDataCriacao(data_criacao);
+                newTbCIDestinatario.setIdTipoEnvio(nIdTipoEnvio);
+                newTbCIDestinatario.setCoinDestinatarioNumero(nSequencialUO);
+                newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
+                newTbCIDestinatario.setCoinDestinatarioTemAnexos(bCoinTemAnexos);
+                newTbCIDestinatario.setCoinRemitenteGestorAutorizado(bCoinRemitenteGestorAutorizado);
+                em.persist(newTbCIDestinatario);            
+            }
+            }catch(javax.persistence.PersistenceException e){
+                //e.printStackTrace();
+                em.close();
+                emf.close();            
+            }
+        }
+        
+        
+        //----------FIM da rotina para salvar a CI na tabela TB_CI_DESTINATARIO        
         em.getTransaction().commit();            
         em.close();
         emf.close();

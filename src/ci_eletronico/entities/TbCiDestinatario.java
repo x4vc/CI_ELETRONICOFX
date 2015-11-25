@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -48,10 +50,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioLido", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioLido = :coinDestinatarioLido"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioDataCriacao", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioDataCriacao = :coinDestinatarioDataCriacao"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioNumero", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioNumero = :coinDestinatarioNumero"),
-    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioReadOnly", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioReadOnly = :coinDestinatarioReadOnly")})
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioReadOnly", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioReadOnly = :coinDestinatarioReadOnly"),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioTemAnexos", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioTemAnexos = :coinDestinatarioTemAnexos"),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinRemitenteGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinRemitenteGestorAutorizado = :coinRemitenteGestorAutorizado")})
 public class TbCiDestinatario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_COIN_DESTINATARIO")
     private Integer idCoinDestinatario;
@@ -88,10 +93,9 @@ public class TbCiDestinatario implements Serializable {
     @Basic(optional = false)
     @Column(name = "COIN_DESTINATARIO_UO_GESTOR_ARQUIVADO")
     private boolean coinDestinatarioUoGestorArquivado;
-    @Basic(optional = false)
-    @Lob
+    @Basic(optional = false)    
     @Column(name = "COIN_DESTINATARIO_ASSUNTO")
-    private byte[] coinDestinatarioAssunto;
+    private String coinDestinatarioAssunto;
     @Basic(optional = false)
     @Column(name = "COIN_DESTINATARIO_CONTEUDO")
     private String coinDestinatarioConteudo;
@@ -112,6 +116,12 @@ public class TbCiDestinatario implements Serializable {
     @Basic(optional = false)
     @Column(name = "COIN_DESTINATARIO_READ_ONLY")
     private boolean coinDestinatarioReadOnly;
+    @Basic(optional = false)
+    @Column(name = "COIN_DESTINATARIO_TEM_ANEXOS")
+    private boolean coinDestinatarioTemAnexos;
+    @Basic(optional = false)
+    @Column(name = "COIN_REMITENTE_GESTOR_AUTORIZADO")
+    private boolean coinRemitenteGestorAutorizado;
     @JoinColumn(name = "ID_COIN", referencedColumnName = "ID_COIN")
     @ManyToOne(optional = false)
     private TbComunicacaoInterna idCoin;
@@ -126,7 +136,7 @@ public class TbCiDestinatario implements Serializable {
         this.idCoinDestinatario = idCoinDestinatario;
     }
 
-    public TbCiDestinatario(Integer idCoinDestinatario, int idUsuarioRemitente, String usuNomeCompletoRemitente, int idUoRemitente, String inorDescricaoRemitente, int idUoDestinatario, String unorDescricaoDestinatario, int idUoGestorDestinatario, String unorDescricaoGestorDestinatario, boolean coinDestinatarioGestorAutorizado, boolean coinDestinatarioUoArquivado, boolean coinDestinatarioUoGestorArquivado, byte[] coinDestinatarioAssunto, String coinDestinatarioConteudo, boolean coinDestinatarioPendente, Date coinDestinatarioDataCriacao, boolean coinDestinatarioReadOnly) {
+    public TbCiDestinatario(Integer idCoinDestinatario, int idUsuarioRemitente, String usuNomeCompletoRemitente, int idUoRemitente, String inorDescricaoRemitente, int idUoDestinatario, String unorDescricaoDestinatario, int idUoGestorDestinatario, String unorDescricaoGestorDestinatario, boolean coinDestinatarioGestorAutorizado, boolean coinDestinatarioUoArquivado, boolean coinDestinatarioUoGestorArquivado, String coinDestinatarioAssunto, String coinDestinatarioConteudo, boolean coinDestinatarioPendente, Date coinDestinatarioDataCriacao, boolean coinDestinatarioReadOnly, boolean coinDestinatarioTemAnexos, boolean coinRemitenteGestorAutorizado) {
         this.idCoinDestinatario = idCoinDestinatario;
         this.idUsuarioRemitente = idUsuarioRemitente;
         this.usuNomeCompletoRemitente = usuNomeCompletoRemitente;
@@ -144,6 +154,8 @@ public class TbCiDestinatario implements Serializable {
         this.coinDestinatarioPendente = coinDestinatarioPendente;
         this.coinDestinatarioDataCriacao = coinDestinatarioDataCriacao;
         this.coinDestinatarioReadOnly = coinDestinatarioReadOnly;
+        this.coinDestinatarioTemAnexos = coinDestinatarioTemAnexos;
+        this.coinRemitenteGestorAutorizado = coinRemitenteGestorAutorizado;
     }
 
     public Integer getIdCoinDestinatario() {
@@ -242,11 +254,11 @@ public class TbCiDestinatario implements Serializable {
         this.coinDestinatarioUoGestorArquivado = coinDestinatarioUoGestorArquivado;
     }
 
-    public byte[] getCoinDestinatarioAssunto() {
+    public String getCoinDestinatarioAssunto() {
         return coinDestinatarioAssunto;
     }
 
-    public void setCoinDestinatarioAssunto(byte[] coinDestinatarioAssunto) {
+    public void setCoinDestinatarioAssunto(String coinDestinatarioAssunto) {
         this.coinDestinatarioAssunto = coinDestinatarioAssunto;
     }
 
@@ -304,6 +316,22 @@ public class TbCiDestinatario implements Serializable {
 
     public void setCoinDestinatarioReadOnly(boolean coinDestinatarioReadOnly) {
         this.coinDestinatarioReadOnly = coinDestinatarioReadOnly;
+    }
+
+    public boolean getCoinDestinatarioTemAnexos() {
+        return coinDestinatarioTemAnexos;
+    }
+
+    public void setCoinDestinatarioTemAnexos(boolean coinDestinatarioTemAnexos) {
+        this.coinDestinatarioTemAnexos = coinDestinatarioTemAnexos;
+    }
+
+    public boolean getCoinRemitenteGestorAutorizado() {
+        return coinRemitenteGestorAutorizado;
+    }
+
+    public void setCoinRemitenteGestorAutorizado(boolean coinRemitenteGestorAutorizado) {
+        this.coinRemitenteGestorAutorizado = coinRemitenteGestorAutorizado;
     }
 
     public TbComunicacaoInterna getIdCoin() {

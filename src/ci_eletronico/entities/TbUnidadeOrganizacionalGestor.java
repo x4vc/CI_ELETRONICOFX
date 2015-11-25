@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByUogeAtivo", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.uogeAtivo = :uogeAtivo"),
     @NamedQuery(name = "TbUnidadeOrganizacionalGestor.findByIdUo", query = "SELECT t FROM TbUnidadeOrganizacionalGestor t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional")
 })
-    
 public class TbUnidadeOrganizacionalGestor implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -48,8 +48,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinUoGestorArquivado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinUoGestorArquivado = :coinUoGestorArquivado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinDataCriacao", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinDataCriacao = :coinDataCriacao"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinDataAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinDataAutorizado = :coinDataAutorizado"),
-    @NamedQuery(name = "TbComunicacaoInterna.findByCoinReadOnly", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinReadOnly = :coinReadOnly")})
+    @NamedQuery(name = "TbComunicacaoInterna.findByCoinReadOnly", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinReadOnly = :coinReadOnly"),
+    @NamedQuery(name = "TbComunicacaoInterna.findByCoinTemAnexos", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinTemAnexos = :coinTemAnexos")})
 public class TbComunicacaoInterna implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "USU_NOME_COMPLETO")
+    private String usuNomeCompleto;
+    @Basic(optional = false)
+    @Column(name = "UNOR_DESCRICAO")
+    private String unorDescricao;    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,6 +101,9 @@ public class TbComunicacaoInterna implements Serializable {
     @Basic(optional = false)
     @Column(name = "COIN_READ_ONLY")
     private boolean coinReadOnly;
+    @Basic(optional = false)
+    @Column(name = "COIN_TEM_ANEXOS")
+    private boolean coinTemAnexos;
     @JoinColumn(name = "ID_TIPO_COIN", referencedColumnName = "ID_TIPO_COIN")
     @ManyToOne(optional = false)
     private TbTipoComunicacoInterna idTipoCoin;
@@ -109,7 +119,7 @@ public class TbComunicacaoInterna implements Serializable {
         this.idCoin = idCoin;
     }
 
-    public TbComunicacaoInterna(Integer idCoin, String coinAssunto, String coinConteudo, int idUsuario, int idUnidadeOrganizacional, int idUoGestor, boolean coinAutorizado, boolean coinUoArquivado, boolean coinUoGestorArquivado, Date coinDataCriacao, boolean coinReadOnly) {
+    public TbComunicacaoInterna(Integer idCoin, String coinAssunto, String coinConteudo, int idUsuario, int idUnidadeOrganizacional, int idUoGestor, boolean coinAutorizado, boolean coinUoArquivado, boolean coinUoGestorArquivado, Date coinDataCriacao, boolean coinReadOnly, boolean coinTemAnexos) {
         this.idCoin = idCoin;
         this.coinAssunto = coinAssunto;
         this.coinConteudo = coinConteudo;
@@ -121,6 +131,7 @@ public class TbComunicacaoInterna implements Serializable {
         this.coinUoGestorArquivado = coinUoGestorArquivado;
         this.coinDataCriacao = coinDataCriacao;
         this.coinReadOnly = coinReadOnly;
+        this.coinTemAnexos = coinTemAnexos;
     }
 
     public Integer getIdCoin() {
@@ -235,6 +246,14 @@ public class TbComunicacaoInterna implements Serializable {
         this.coinReadOnly = coinReadOnly;
     }
 
+    public boolean getCoinTemAnexos() {
+        return coinTemAnexos;
+    }
+
+    public void setCoinTemAnexos(boolean coinTemAnexos) {
+        this.coinTemAnexos = coinTemAnexos;
+    }
+
     public TbTipoComunicacoInterna getIdTipoCoin() {
         return idTipoCoin;
     }
@@ -285,5 +304,23 @@ public class TbComunicacaoInterna implements Serializable {
     public String toString() {
         return "ci_eletronico.entities.TbComunicacaoInterna[ idCoin=" + idCoin + " ]";
     }
+
+    public String getUsuNomeCompleto() {
+        return usuNomeCompleto;
+    }
+
+    public void setUsuNomeCompleto(String usuNomeCompleto) {
+        this.usuNomeCompleto = usuNomeCompleto;
+    }
+
+    public String getUnorDescricao() {
+        return unorDescricao;
+    }
+
+    public void setUnorDescricao(String unorDescricao) {
+        this.unorDescricao = unorDescricao;
+    }
+
+    
     
 }
