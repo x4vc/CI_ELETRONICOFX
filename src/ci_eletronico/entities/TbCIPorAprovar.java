@@ -50,8 +50,6 @@ public class TbCIPorAprovar {
     public TbCIPorAprovar() {
     }
     
-    
-
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
             Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 
             String strUO, Integer nIdUOGestor, boolean bAutorizado, 
@@ -84,7 +82,7 @@ public class TbCIPorAprovar {
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
             Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 
-            String strUO, Date dataCriacao, String strDataCriacao,
+            String strUO, Integer nCoinNumero, Date dataCriacao, String strDataCriacao, 
             boolean bCoinTemAnexos, Integer nIdTabelaFonte) {
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -93,6 +91,7 @@ public class TbCIPorAprovar {
         strp_UsuarioNomeCompleto = new SimpleStringProperty(strUsuarioNomeCompleto);
         intp_idUORemitente = new SimpleIntegerProperty(nIdUO);
         strp_DescricaoUORemitente = new SimpleStringProperty(strUO);
+        intp_idCoinNumero = new SimpleIntegerProperty(nCoinNumero);
         this.dataCriacao = dataCriacao; 
         strp_dataCriacao = new SimpleStringProperty(strDataCriacao);
         boolp_CoinTemAnexos = new SimpleBooleanProperty(bCoinTemAnexos);
@@ -209,12 +208,12 @@ public class TbCIPorAprovar {
         this.strp_Apensamento = strp_Apensamento;
     }
 
-    public IntegerProperty getIntp_idCoinNumero() {
-        return intp_idCoinNumero;
+    public Integer getIntp_idCoinNumero() {
+        return intp_idCoinNumero.getValue();
     }
 
-    public void setIntp_idCoinNumero(IntegerProperty intp_idCoinNumero) {
-        this.intp_idCoinNumero = intp_idCoinNumero;
+    public void setIntp_idCoinNumero(Integer intp_idCoinNumero) {
+        this.intp_idCoinNumero.setValue(intp_idCoinNumero);
     }
 
     public BooleanProperty getBoolp_ArquivadoUORemitente() {

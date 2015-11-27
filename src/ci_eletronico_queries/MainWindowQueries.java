@@ -9,6 +9,8 @@ package ci_eletronico_queries;
 import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
+import ci_eletronico.entities.TbUsuario;
+import ci_eletronico.utilitarios.Seguranca;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,5 +49,28 @@ public class MainWindowQueries {
 //                .getResultList();
         
         }
+    public boolean UpdateTrocarSenha(int nIdUsuario, String strNovaSenha)throws Exception{
+       
+        
+        try {
+            String strEnc = Seguranca.encriptar(strNovaSenha);
+            TbUsuario novaSenha = em.find(TbUsuario.class, nIdUsuario);
+            
+            //Codigo para Create new record
+            novaSenha.setUsuSenha(strEnc);
+            
+            em.merge(novaSenha);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return true;           
+            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }        
+    }
     
 }

@@ -112,6 +112,8 @@ public class FXMLMainController implements Initializable {
     private Button btnDesarquivarCI;
     @FXML
     private HTMLEditor htmlEditorCI;
+    @FXML
+    private Label lblNumeroSequencialCI;
                
    
     private Integer nTipoPerfil = 0;
@@ -130,8 +132,8 @@ public class FXMLMainController implements Initializable {
     private int nIdUOGestor = 0;
     private int nIdUnidadeOrganizacional = 0;
     
-    //
-    private MainWindowQueries consulta = new MainWindowQueries();
+    //private MainWindowQueries consulta = new MainWindowQueries();
+    private MainWindowQueries consulta;
     private List<TbComunicacaoInterna> listaCiSemAprovar = new ArrayList<TbComunicacaoInterna>();
     //private ObservableList<TbComunicacaoInterna> obslistaTbComunicacaoInterna;
     private ObservableList<TbCIPorAprovar> obslistaTbCIPorAprovar;
@@ -141,7 +143,7 @@ public class FXMLMainController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 //    public void initialize() {
         // TODO 
-    System.out.print("Tipo de Perfil metodo initialize = " + nTipoPerfil);
+    //System.out.print("Tipo de Perfil metodo initialize = " + nTipoPerfil);
     
     
     
@@ -155,14 +157,18 @@ public class FXMLMainController implements Initializable {
         //--------- FIM Ocultar janela de Main ------------
         
     }
+    @FXML
+    private void handleBtnTrocarAssinatura(ActionEvent event){
+        setBotoesMainWindow(nTipoPerfil);
+    }
     
     @FXML
     private void handleBtnTrocarSenha(ActionEvent event) throws IOException{        
-        
+        setBotoesMainWindow(nTipoPerfil);
         trocarSenha(nIdUsuarioLogado);               
     }
     
-    public void trocarSenha(int nIdUserUO){
+    public void trocarSenha(int nIdUserUO) {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Trocar senha");
         dialog.setHeaderText(null);
@@ -208,20 +214,40 @@ public class FXMLMainController implements Initializable {
         dialog.setResultConverter(dialogButton -> {
             String strSenha1 = "";
             String strSenha2 = "";
+            boolean bUpdate = false;
             if (dialogButton == loginButtonType) {
                 System.out.println("OK button pressed");
                 strSenha1 = username.getText();
                 strSenha2 = password.getText();
                 if(username.getText().equals(password.getText())){
                     // Senhas batem. Update senha no banco de dados
-                    System.out.println("IdUsuario = " + nIdUserUO);
-                    System.out.println("Update deve acontecer");
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informação");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Sua senha foi trocada com sucesso.");
-                    alert.showAndWait();
-                    return new Pair<>(username.getText(), password.getText());
+                    try{
+                    consulta  = new MainWindowQueries();
+                    bUpdate = consulta.UpdateTrocarSenha(nIdUserUO, username.getText());
+                    if (bUpdate){
+//                        System.out.println("IdUsuario = " + nIdUserUO);
+//                        System.out.println("Update deve acontecer");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Informação");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Sua senha foi trocada com sucesso.");
+                        alert.showAndWait();
+                        return new Pair<>(username.getText(), password.getText());
+                    }
+                    else{
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Trocar senha");
+                        alert.setHeaderText("Senha não foi atualizada");
+                        alert.setContentText("Favor contatar Administrador do sistema");
+                        alert.showAndWait();
+                    }
+                    }catch(Exception e){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Trocar senha");
+                        alert.setHeaderText(null);
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();                        
+                    }                        
                 }
                 else{
                     // Erro. A nova senha não bate
@@ -278,6 +304,9 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
+                //Labels
+                lblNumeroSequencialCI.setText("");
+                
                 break;
                     
             case 2: //ROLE_MNG - Usuario da UO
@@ -294,6 +323,9 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
+                //Labels
+                lblNumeroSequencialCI.setText("");
+                
                 break;
                 
             case 3: // ROLE_USER - Usuario Comum
@@ -309,6 +341,9 @@ public class FXMLMainController implements Initializable {
                 btnEncaminharCI.setDisable(true);
                 btnArquivarCI.setDisable(true);
                 btnDesarquivarCI.setDisable(true);
+                
+                //Labels
+                lblNumeroSequencialCI.setText("");
                 
                 break;
             default:
@@ -361,33 +396,53 @@ public class FXMLMainController implements Initializable {
     @FXML
     private void handleBtnPendentesAprovacao(ActionEvent event) throws IOException {
         lblCaixa.setText("");
-        lblCaixa.setText("CIs pendentes de aprovação");
+        lblCaixa.setText("CIs pendentes de aprovação");       
         
         setBotoesMainWindow(nTipoPerfil);
         
         btnEncaminharCI.setDisable(true);
         btnDesarquivarCI.setDisable(true);
         
+        if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
+            btnAprovarCI.setDisable(false);
+        }else{
+            btnAprovarCI.setDisable(true);
+        }
+            
+        
+        
+        
         //List<TbComunicacaoInterna> listaCiSemAprovar = new ArrayList<>();
         int nIdCoin = 0;
+        int nSequencial = 0;
         String strAssunto = "";
         String strConteudo = "";
         int nIdUsuario = 0;
         String strUsuarioNomeCompleto = "";
+        String strApensamento = "";
         int nIdUO = 0;
+        int nIdUOGestor = 0;
+        int nTipoCoin = 0;
+        int nIdTabelaFonte = 0;
         String strUODescricao = "";
-        Date dataCriacao;        
+        Date dataCriacao;      
+        Date dataAutorizado;
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");        
         String strDataCriacao = "";
         boolean bTemAnexos = false;
         boolean bAutorizado = false;
         boolean bGestorArquivado = false;
+        boolean bArquivadoUO = false;
+        boolean bArquivadoUOGestor = false;
+        boolean bCoinReadOnly = false;
         
         obslistaTbCIPorAprovar = FXCollections.observableArrayList();
         
-        listaCiSemAprovar = consulta.getlistaTbComunicacaoInternaPorAprovar(nIdUOGestor);
+        consulta  = new MainWindowQueries();
+        listaCiSemAprovar = consulta.getlistaTbComunicacaoInternaPorAprovar(this.nIdUOGestor);
         
         for(TbComunicacaoInterna l : listaCiSemAprovar){
+            try {
             nIdCoin = l.getIdCoin();
             strAssunto = l.getCoinAssunto();
             strConteudo = l.getCoinConteudo();
@@ -395,17 +450,26 @@ public class FXMLMainController implements Initializable {
             strUsuarioNomeCompleto = l.getUsuNomeCompleto();
             nIdUO = l.getIdUnidadeOrganizacional();
             strUODescricao = l.getUnorDescricao();
-            dataCriacao = l.getCoinDataCriacao();
+            nIdUOGestor = l.getIdUoGestor();
             bAutorizado = l.getCoinAutorizado();
-            bGestorArquivado = l.getCoinUoGestorArquivado();
-            strDataCriacao = df.format(dataCriacao);
+            nTipoCoin = l.getIdTipoCoin().getIdTipoCoin();
+            strApensamento = l.getCoinApensamento();            
+            nSequencial = l.getCoinNumero();
+            bArquivadoUO = l.getCoinUoArquivado();
+            bArquivadoUOGestor = l.getCoinUoGestorArquivado();            
+            dataCriacao = l.getCoinDataCriacao();
+            strDataCriacao = df.format(dataCriacao);            
+            dataAutorizado = l.getCoinDataAutorizado();
+            bCoinReadOnly = l.getCoinReadOnly();
             bTemAnexos = l.getCoinTemAnexos();
-                                        
-//            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(l.getIdCoin(),l.getCoinAssunto(),l.getCoinConteudo(),l.getIdUsuario(),l.getUsuNomeCompleto(),
-//                        l.getIdUnidadeOrganizacional(),l.getUnorDescricao(),l.getCoinDataCriacao(),l.getCoinTemAnexos(),1));
-            try {
-            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
-                        nIdUO,strUODescricao,dataCriacao,strDataCriacao,bTemAnexos,1));
+            nIdTabelaFonte = 1;
+            
+            
+//            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
+//                        nIdUO,strUODescricao,nSequencial,dataCriacao,strDataCriacao,bAutorizado,bTemAnexos,1));
+                obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
+                        nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
+                        dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte));
             } catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -432,10 +496,24 @@ public class FXMLMainController implements Initializable {
                 //TableView<TbCIPorAprovar> TbViewGeral = new TableView<>();
                 if(TbViewGeral.getSelectionModel().getSelectedItem() != null){
                     //TbCIPorAprovar tbCiPorAprovar = TbViewGeral.getSelectionModel().getSelectedItem();
-                    TbCIPorAprovar tbtbCiPorAprovar = new TbCIPorAprovar();
+                    //TbCIPorAprovar tbtbCiPorAprovar = new TbCIPorAprovar();
                     TbCIPorAprovar tbCiPorAprovar = TbViewGeral.getSelectionModel().getSelectedItem();
+                    int nCISequencial = 0;
+                    String strDescricaoUO = "";
+                    String strYear = "";
+                    Date dataCriacao;
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy");
+                    
+                    strDescricaoUO = tbCiPorAprovar.getStrp_DescricaoUORemitente();
+                    nCISequencial = tbCiPorAprovar.getIntp_idCoinNumero();
+                    
+                    dataCriacao = tbCiPorAprovar.getDataCriacao();
+                    
+                    strYear = df.format(dataCriacao);
+                    
                     htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());
-
+                    
+                    lblNumeroSequencialCI.setText(strDescricaoUO + " " + String.format("%05d",nCISequencial)+"/" + strYear);
                 }
             }catch (Exception e) {
                     e.printStackTrace();
