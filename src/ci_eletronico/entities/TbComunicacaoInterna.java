@@ -41,6 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUsuario", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUsuario = :idUsuario"),
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUnidadeOrganizacional", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional"),
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor"),
+    @NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinAutorizado = :coinAutorizado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinApensamento", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinApensamento = :coinApensamento"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinNumero", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinNumero = :coinNumero"),

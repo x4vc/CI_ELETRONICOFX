@@ -6,6 +6,7 @@
 package ci_eletronico_queries;
 
 //import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import java.util.List;
@@ -34,6 +35,17 @@ public class MainWindowQueries {
                 .getSingleResult();
         
         }
-    
+    public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar(int nidUoGestor) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestor",TbComunicacaoInterna.class) 
+                .setParameter("idUoGestor", nidUoGestor)
+                .getResultList();      
+        
+//        return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestor",TbComunicacaoInterna.class)                
+//                .setParameter("idUoGestor",nidUoGestor)
+//                .getResultList();
+        
+        }
     
 }

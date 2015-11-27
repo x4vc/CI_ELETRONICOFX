@@ -69,9 +69,10 @@
                <children>
                   <TableView fx:id="TbViewGeral" layoutY="30.0" prefHeight="297.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                     <columns>
-                      <TableColumn fx:id="ClDataEnvio" prefWidth="91.0" text="Data de envio" />
-                      <TableColumn fx:id="ClUORemitente" prefWidth="89.0" text="UO Remitente" />
-                        <TableColumn fx:id="ClAutorRemitente" prefWidth="108.0" text="Autor Remitente" />
+                        <TableColumn fx:id="ClIdCoin" prefWidth="40.0" text="ID" />
+                      <TableColumn fx:id="ClDataEnvio" prefWidth="98.0" text="Data de envio" />
+                      <TableColumn fx:id="ClUORemitente" prefWidth="97.0" text="UO Remitente" />
+                        <TableColumn fx:id="ClAutorRemitente" prefWidth="128.0" text="Autor Remitente" />
                         <TableColumn fx:id="ClAssunto" prefWidth="138.0" text="Assunto" />
                     </columns>
                   </TableView>
@@ -96,11 +97,20 @@
             <Label layoutY="50.0" text="Perfil:" />
             <Label fx:id="lblIdPerfil" layoutX="300.0" layoutY="50.0" text="Label" />
             <Label fx:id="lblNomePerfil" layoutX="65.0" layoutY="50.0" text="Label" />
-            <Button fx:id="btnTrocarSenha" contentDisplay="TOP" layoutX="510.0" layoutY="11.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="130.0" text="Trocar senha">
+            <Button fx:id="btnTrocarSenha" contentDisplay="TOP" layoutX="510.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleBtnTrocarSenha" prefHeight="55.0" prefWidth="130.0" text="Trocar senha">
                <graphic>
                   <ImageView>
                      <image>
                         <Image url="@../resources/User_password.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnTrocarAssinatura" contentDisplay="TOP" layoutX="648.0" layoutY="11.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="130.0" text="Trocar Assinatura">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../resources/signature_24.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -113,12 +123,12 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="566.0" prefWidth="770.0">
                <children>
-                  <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="1.0" layoutY="197.0" prefHeight="530.0" prefWidth="769.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <HTMLEditor fx:id="htmlEditorCI" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="1.0" layoutY="197.0" prefHeight="530.0" prefWidth="769.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="18.0" prefWidth="770.0">
                <children>
-                  <Button layoutX="130.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true">
+                  <Button fx:id="btnAprovarCI" layoutX="130.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnAprovarCI" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true">
                      <graphic>
                         <ImageView>
                            <image>
@@ -127,7 +137,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="255.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI">
+                  <Button fx:id="btnEncaminharCI" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI">
                      <graphic>
                         <ImageView>
                            <image>
@@ -136,7 +146,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="5.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI">
+                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI">
                      <graphic>
                         <ImageView>
                            <image>
@@ -145,7 +155,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="380.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI">
+                  <Button fx:id="btnArquivarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI">
                      <graphic>
                         <ImageView>
                            <image>
@@ -154,20 +164,11 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="505.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI">
+                  <Button fx:id="btnDesarquivarCI" layoutX="505.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI">
                      <graphic>
                         <ImageView>
                            <image>
                               <Image url="@../resources/Desarquivar.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="5.0" layoutY="40.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Cancelar CI">
-                     <graphic>
-                        <ImageView>
-                           <image>
-                              <Image url="@../resources/Cancel.png" />
                            </image>
                         </ImageView>
                      </graphic>
