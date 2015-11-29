@@ -256,12 +256,12 @@ public class TbCIPorAprovar {
         this.boolp_CoinReadOnly = boolp_CoinReadOnly;
     }
 
-    public BooleanProperty getBoolp_CoinTemAnexos() {
-        return boolp_CoinTemAnexos;
+    public Boolean getBoolp_CoinTemAnexos() {
+        return boolp_CoinTemAnexos.getValue();
     }
 
-    public void setBoolp_CoinTemAnexos(BooleanProperty boolp_CoinTemAnexos) {
-        this.boolp_CoinTemAnexos = boolp_CoinTemAnexos;
+    public void setBoolp_CoinTemAnexos(Boolean boolp_CoinTemAnexos) {
+        this.boolp_CoinTemAnexos.setValue(boolp_CoinTemAnexos);
     }
 
     public IntegerProperty getIntp_idTabelaFonte() {

@@ -86,18 +86,18 @@
       </SplitPane>
    </left>
    <bottom>
-      <Pane prefHeight="96.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
+      <Pane prefHeight="96.0" prefWidth="1280.0" style="-fx-background-color: #cacaca;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="BASELINE_LEFT" layoutY="10.0" text="Usuario:" />
+            <Label alignment="BASELINE_LEFT" layoutX="5.0" layoutY="10.0" text="Usuario:" />
             <Label fx:id="lblIdUsuario" layoutX="300.0" layoutY="10.0" text="Label" />
-            <Label layoutY="30.0" text="UO:" />
+            <Label layoutX="5.0" layoutY="30.0" text="UO:" />
             <Label fx:id="lblIdUO" layoutX="300.0" layoutY="30.0" text="Label" />
-            <Label fx:id="lblNomeUsuario" layoutX="65.0" layoutY="10.0" text="Label" />
-            <Label fx:id="lblNomeUO" layoutX="65.0" layoutY="30.0" text="Label" />
-            <Label layoutY="50.0" text="Perfil:" />
+            <Label fx:id="lblNomeUsuario" layoutX="55.0" layoutY="10.0" text="Label" />
+            <Label fx:id="lblNomeUO" layoutX="55.0" layoutY="30.0" text="Label" />
+            <Label layoutX="5.0" layoutY="50.0" text="Perfil:" />
             <Label fx:id="lblIdPerfil" layoutX="300.0" layoutY="50.0" text="Label" />
-            <Label fx:id="lblNomePerfil" layoutX="65.0" layoutY="50.0" text="Label" />
-            <Button fx:id="btnTrocarSenha" contentDisplay="TOP" layoutX="510.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleBtnTrocarSenha" prefHeight="55.0" prefWidth="130.0" text="Trocar senha">
+            <Label fx:id="lblNomePerfil" layoutX="55.0" layoutY="50.0" text="Label" />
+            <Button fx:id="btnTrocarSenha" contentDisplay="TOP" layoutX="380.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleBtnTrocarSenha" prefHeight="55.0" prefWidth="130.0" text="Trocar senha">
                <graphic>
                   <ImageView>
                      <image>
@@ -106,7 +106,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="btnTrocarAssinatura" contentDisplay="TOP" layoutX="648.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleBtnTrocarAssinatura" prefHeight="55.0" prefWidth="130.0" text="Trocar Assinatura">
+            <Button fx:id="btnTrocarAssinatura" contentDisplay="TOP" layoutX="510.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleBtnTrocarAssinatura" prefHeight="55.0" prefWidth="130.0" text="Trocar Assinatura">
                <graphic>
                   <ImageView>
                      <image>
@@ -133,7 +133,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="18.0" prefWidth="770.0">
                <children>
-                  <Button fx:id="btnAprovarCI" layoutX="130.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnAprovarCI" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true">
+                  <Button fx:id="btnAprovarCI" layoutX="130.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnAprovarCI" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -142,7 +142,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnEncaminharCI" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI">
+                  <Button fx:id="btnEncaminharCI" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -151,7 +151,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI">
+                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -160,7 +160,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnArquivarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI">
+                  <Button fx:id="btnArquivarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -169,7 +169,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnDesarquivarCI" layoutX="505.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI">
+                  <Button fx:id="btnDesarquivarCI" layoutX="505.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -178,6 +178,16 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <ScrollPane layoutX="30.0" prefHeight="49.0" prefWidth="626.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <content>
+                        <TextFlow fx:id="txtFAnexos" prefHeight="40.0" prefWidth="560.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </TextFlow>
+                     </content>
+                  </ScrollPane>
+                  <Label layoutX="14.0" layoutY="25.0" text="Anexos:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="15.0" />
                </children>
             </AnchorPane>
         </items>

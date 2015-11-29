@@ -5,10 +5,16 @@
  */
 package ci_eletronico;
 
+import ci_eletronico.entities.TbAnexo;
 import ci_eletronico.entities.TbCIPorAprovar;
 import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico.entities.TbUsuario;
 import ci_eletronico_queries.MainWindowQueries;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +31,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,8 +47,15 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.Modality;
 import javafx.util.Pair;
 
 /**
@@ -114,8 +128,12 @@ public class FXMLMainController implements Initializable {
     private HTMLEditor htmlEditorCI;
     @FXML
     private Label lblNumeroSequencialCI;
+    @FXML
+    private TextFlow txtFAnexos;
                
-   
+    // Clases para tratar Anexar Arquivos
+    private Desktop desktop = Desktop.getDesktop();
+    
     private Integer nTipoPerfil = 0;
     
     private Scene scene;
@@ -160,6 +178,55 @@ public class FXMLMainController implements Initializable {
     @FXML
     private void handleBtnTrocarAssinatura(ActionEvent event){
         setBotoesMainWindow(nTipoPerfil);
+        String strAssinatura= "";
+        int nlIdUsuario = 0;        
+        
+        nlIdUsuario = Integer.parseInt(lblIdUsuario.getText());
+        consulta = new MainWindowQueries();
+        List<TbUsuario> listaUsuarios = new ArrayList<TbUsuario>();
+        
+        //Extrair o Id para realizar o download do arquivo
+        
+        listaUsuarios = consulta.listaUserAssinatura(nlIdUsuario);
+        for(TbUsuario l : listaUsuarios){
+            try {
+                if (l.getUsuAssinatura().isEmpty()){
+                    strAssinatura = "";
+                } else {
+                    strAssinatura = l.getUsuAssinatura();
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }       
+        
+        ShowTrocarAssinatura(this , nlIdUsuario, strAssinatura);
+    }
+    private void ShowTrocarAssinatura(FXMLMainController mainController, int nlIdUsuario, String strAssinatura){
+        try{
+                scene = new Scene(new SplitPane());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/Assinatura.fxml"));
+                scene.setRoot((Parent) loader.load());
+                
+                ci_eletronico.fxml_utilitarios.AssinaturaController Assinatura_controller = loader.<ci_eletronico.fxml_utilitarios.AssinaturaController>getController();     
+                Assinatura_controller.setVariaveisAmbienteTrocarAssinatura(mainController, nlIdUsuario, strAssinatura);
+                //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
+                
+                Stage stage = new Stage();
+                stage.setTitle("Trocar Assinatura");
+                //set icon
+                stage.getIcons().add(new Image("/resources/signature_32.png"));
+
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
+                stage.showAndWait();
+                
+                strHtmlAssinatura = Assinatura_controller.getNovaAssinatura();
+//                                
+            }catch (IOException ex) {
+                Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
     }
     
     @FXML
@@ -216,7 +283,7 @@ public class FXMLMainController implements Initializable {
             String strSenha2 = "";
             boolean bUpdate = false;
             if (dialogButton == loginButtonType) {
-                System.out.println("OK button pressed");
+                //System.out.println("OK button pressed");
                 strSenha1 = username.getText();
                 strSenha2 = password.getText();
                 if(username.getText().equals(password.getText())){
@@ -366,7 +433,7 @@ public class FXMLMainController implements Initializable {
         strNomeUO = lblNomeUO.getText();  
         strIdPerfil = lblIdPerfil.getText();
         strDescricaoPerfil = lblNomePerfil.getText();
-        nTipoCI = 1;
+        nTipoCI = 1;    //CI Normal
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor);
                         
     }
@@ -387,6 +454,7 @@ public class FXMLMainController implements Initializable {
                 stage.getIcons().add(new Image("/resources/Nova_CI.png"));
 
                 stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
                 stage.showAndWait();
 //                                
             }catch (IOException ex) {
@@ -499,21 +567,29 @@ public class FXMLMainController implements Initializable {
                     //TbCIPorAprovar tbtbCiPorAprovar = new TbCIPorAprovar();
                     TbCIPorAprovar tbCiPorAprovar = TbViewGeral.getSelectionModel().getSelectedItem();
                     int nCISequencial = 0;
+                    int nlIdCI = 0;
+                    boolean bTemAnexo = false;
                     String strDescricaoUO = "";
                     String strYear = "";
                     Date dataCriacao;
                     SimpleDateFormat df = new SimpleDateFormat("yyyy");
                     
+                    nlIdCI = tbCiPorAprovar.getIntp_idCoin();
                     strDescricaoUO = tbCiPorAprovar.getStrp_DescricaoUORemitente();
-                    nCISequencial = tbCiPorAprovar.getIntp_idCoinNumero();
-                    
+                    nCISequencial = tbCiPorAprovar.getIntp_idCoinNumero();                    
                     dataCriacao = tbCiPorAprovar.getDataCriacao();
+                    bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
                     
                     strYear = df.format(dataCriacao);
                     
-                    htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());
-                    
+                    htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
                     lblNumeroSequencialCI.setText(strDescricaoUO + " " + String.format("%05d",nCISequencial)+"/" + strYear);
+                    if (bTemAnexo){
+                        PreencherTxtFAnexos(nlIdCI);
+                    }
+                    else {
+                        txtFAnexos.getChildren().clear();
+                    }
                 }
             }catch (Exception e) {
                     e.printStackTrace();
@@ -525,8 +601,137 @@ public class FXMLMainController implements Initializable {
                     alert.showAndWait();
             }
         }
-    });
+    }); 
+    }
+    private void PreencherTxtFAnexos(int nlIdCI){
+        txtFAnexos.getChildren().clear();
+        Text txtArquivoSelecionado;
+        consulta  = new MainWindowQueries();
+        List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+        TbComunicacaoInterna nlIdCoin = new TbComunicacaoInterna(nlIdCI);
+        listaAnexos = consulta.getlistaAnexo(nlIdCoin);
+        for(TbAnexo l : listaAnexos){
+            txtArquivoSelecionado = new Text();                          
+            //txtArquivoSelecionado.setText("\""+ UOSelected.get(nContador)+ "\"; ");
+            txtArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ; ");
+            txtArquivoSelecionado.setFill(Color.BLACK);
+            txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+            txtFAnexos.getChildren().add(txtArquivoSelecionado);
+        }
         
+        txtFAnexos.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+            public void handle(MouseEvent ev) {
+                boolean bPrimary = false;
+                boolean bMiddle = false;
+                boolean bSecondary = false;
+                bPrimary = ev.isPrimaryButtonDown();
+                bMiddle = ev.isMiddleButtonDown();
+                bSecondary = ev.isSecondaryButtonDown();
+                
+                final ContextMenu contextMenu = new ContextMenu();
+                MenuItem menuItemAbrir = new MenuItem("Abrir arquivo");
+                MenuItem menuItemSalvar = new MenuItem("Salvar arquivo");        
+                contextMenu.getItems().addAll(menuItemAbrir, menuItemSalvar);
+                contextMenu.hide();
+                menuItemAbrir.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent e) {
+//                        int nlIdCoinAnexo = 0;
+//                        nlIdCoinAnexo = nlIdCoin.getIdCoin();
+                        Text clicked = (Text) ev.getTarget();
+//                        System.out.println("Abrir arquivo clicked");
+//                        System.out.println("IdCoin = " + nlIdCoinAnexo + " Nome arquivo clicked = " + clicked.getText());
+                        AbrirArquivo(clicked.getText(),1);
+                    }
+                });
+                menuItemSalvar.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent e) {
+//                        System.out.println("Salvar arquivo clicked");
+                        Text clicked = (Text) ev.getTarget();
+//                        System.out.println("Abrir arquivo clicked");
+//                        System.out.println("IdCoin = " + nlIdCoinAnexo + " Nome arquivo clicked = " + clicked.getText());
+                        AbrirArquivo(clicked.getText(),2);
+                    }
+                });
+                
+                if (ev.isSecondaryButtonDown()){
+                    if (1 == ev.getClickCount()){
+                        if(ev.getTarget() instanceof Text) {                            
+                            contextMenu.show(txtFAnexos, ev.getScreenX(), ev.getScreenY());
+                        }
+                    }
+                }    
+            }
+        });        
+    }  
+    private void AbrirArquivo(String strArquivo, int nlMenuItem){
+        int nlIdAnexo = 0;
+        File outfile = null;
+        String strFileName = "";
+        String strUserHome = System.getProperty("user.home") + "//Downloads//";
+        String strDelimiters = "=";
+        String[] strParts = strArquivo.split(strDelimiters);
+        for (int i = 0; i < strParts.length; i++){
+            if (0==i){
+                nlIdAnexo = Integer.parseInt(strParts[i].trim());
+            }
+        }
+        
+        consulta  = new MainWindowQueries();
+        List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+        
+        //Extrair o Id para realizar o download do arquivo
+        
+        listaAnexos = consulta.downloadAnexo(nlIdAnexo);
+        for(TbAnexo l : listaAnexos){
+            strFileName = l.getAnexoNome();
+            outfile = new File(strUserHome + l.getAnexoNome());
+            try {
+                writeArquivo(outfile, l.getAnexoBlob());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        switch(nlMenuItem){
+            case 1:
+                    openArquivo(outfile);
+                    break;
+            case 2:
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Salvar arquivo");
+                    alert.setHeaderText("O arquivo " + strFileName + " foi salvo com sucesso");
+                    alert.setContentText("O arquivo foi salvo na pasta Downloads");
+                    alert.showAndWait();
+                    break;
+            default:
+                    break;
+        }
+        
+    }
+    public void openArquivo(File file){
+        try {
+            desktop.open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(
+                FXMLMainController.class.getName()).log(
+                    Level.SEVERE, null, ex
+                );
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
+    }
+    public void writeArquivo(File file, byte[] data) throws IOException
+    {
+        OutputStream fo = new FileOutputStream(file);
+        // Write the data
+        fo.write(data);
+        // flush the file (down the toilet)
+        fo.flush();
+        // Close the door to keep the smell in.
+        fo.close();
     }
     @FXML
     private void handleBtnAprovarCI(ActionEvent event) throws IOException {

@@ -237,20 +237,9 @@ public class NovaCIController implements Initializable {
                             }
                         }
                     });
-
-                  
-                    
-//                    linkArquivoSelecionado.setOnAction(ev->{
-//                        System.out.println("Click on  link: ");            
-//                    });
-//                    Text text1 = new Text();
-//                    text1.setText("Texto 01");
-//                    text1.setFill(Color.BLUE);
-//                    text1.setFont(Font.font("Arial", FontPosture.ITALIC, 12));                    
-//                    txtFAnexado.getChildren().add(text1);
-                    //TextFlow textFlow = new TextFlow(text1);
+                 
     }
-    private void openFile(File file) {
+    public void openFile(File file) {
         try {
             desktop.open(file);
         } catch (IOException ex) {
@@ -364,35 +353,39 @@ public class NovaCIController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle("Selecionar UOs");
         //set icon
-        stage.getIcons().add(new Image("/resources/Nova_CI.png"));
-        stage.initModality(Modality.WINDOW_MODAL);
+        stage.getIcons().add(new Image("/resources/Nova_CI.png"));       
 
         stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
         stage.showAndWait();
         
         ObservableList<String> UOSelected = controller.getUOsPara();
         ObservableList<String> UOFiltrado;
         int nSize = 0;
-        nSize = UOSelected.size();
-        if (nSize > 0){
-            //Filtramos as UOs a serem mostradas no campo TextFlow
-            UOFiltrado = setTextFlowUOFiltrado(UOSelected,nSize);
-            
-            //Após filtragem mostramos as UOs no campo TextFlow
-            switch (nTipoDestinatario){
-                case 1: // 1 - Destinatário Para:
-                        //setTextFlowPara(UOSelected, nSize);
-                        setTextFlowPara(UOFiltrado, nSize);
-                        break;
-                    
-                case 2: // 2 - Destinatário Com cópia:
-                        //setTextFlowComCopia(UOSelected, nSize);
-                        setTextFlowComCopia(UOFiltrado, nSize);
-                        break;
-                    
-                default:
-                        
-            }            
+        try {
+            nSize = UOSelected.size();  //se for null então dispara o catch
+            if (nSize > 0){
+                //Filtramos as UOs a serem mostradas no campo TextFlow
+                UOFiltrado = setTextFlowUOFiltrado(UOSelected,nSize);
+
+                //Após filtragem mostramos as UOs no campo TextFlow
+                switch (nTipoDestinatario){
+                    case 1: // 1 - Destinatário Para:
+                            //setTextFlowPara(UOSelected, nSize);
+                            setTextFlowPara(UOFiltrado, nSize);
+                            break;
+
+                    case 2: // 2 - Destinatário Com cópia:
+                            //setTextFlowComCopia(UOSelected, nSize);
+                            setTextFlowComCopia(UOFiltrado, nSize);
+                            break;
+
+                    default:
+
+                }            
+            }
+        } catch(Exception e){
+            e.printStackTrace();            
         }
     }
     private ObservableList<String> setTextFlowUOFiltrado(ObservableList<String> UOSelected, int nSize){
