@@ -7,6 +7,7 @@ package ci_eletronico_queries;
 
 //import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbAnexo;
+import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
@@ -43,6 +44,15 @@ public class MainWindowQueries {
         
         return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestor",TbComunicacaoInterna.class) 
                 .setParameter("idUoGestor", nidUoGestor)
+                //.setParameter("idUoGestor", nidUoGestor)
+                .getResultList();   
+        
+        }
+     public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaEnviados(int nidUoRemitente) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbComunicacaoInterna.findByCIsEnviadas",TbComunicacaoInterna.class) 
+                .setParameter("idUnidadeOrganizacional", nidUoRemitente)
                 .getResultList();   
         
         }
@@ -108,6 +118,30 @@ public class MainWindowQueries {
         return em.createNamedQuery("TbUsuario.findByIdUsuario",TbUsuario.class)
                 .setParameter("idUsuario", nlIdUser )
                 .getResultList();
+        
+        }
+    public List<TbCiDestinatario> getlistaCaixaEntrada(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbCiDestinatario.findByIdUoDestinatario",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .getResultList();   
+        
+        }
+    public List<TbCiDestinatario> getlistaCaixaEntradaPendencias(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioPendente",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .getResultList();   
+        
+        }
+    public List<TbCiDestinatario> getlistaCaixaEntradaArquivados(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioUoArquivado",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .getResultList();   
         
         }
     

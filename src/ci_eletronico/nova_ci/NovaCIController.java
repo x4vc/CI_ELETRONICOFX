@@ -142,6 +142,24 @@ public class NovaCIController implements Initializable {
         this.nTipoCI = nTipoCI;
         this.nIdUOGestor = nIdUOGestor;
         
+        switch (nTipoCI){
+            case 1:
+                btnEnviarNovaCI.setText("Enviar CI");
+                break;
+            case 2:
+                btnEnviarNovaCI.setText("Enviar CI circular");
+                break;
+            case 3:
+                btnEnviarNovaCI.setText("Enviar CI confidencial");
+                break;
+            case 4:
+                btnEnviarNovaCI.setText("Encaminhar CI");
+                break;
+            default:
+                btnEnviarNovaCI.setText("Enviar CI");
+                break;
+        }
+        
         
     }
     @FXML
@@ -699,11 +717,23 @@ public class NovaCIController implements Initializable {
             TypedQuery<Integer> query = em.createQuery("SELECT max(c.coinNumero) FROM TbComunicacaoInterna c WHERE c.idUnidadeOrganizacional = :idUnidadeOrganizacional AND FUNCTION('YEAR',c.coinDataCriacao) = :Ano",Integer.class)            
                                             .setParameter("idUnidadeOrganizacional", nIdUO)
                                             .setParameter("Ano", nYear);
-            Integer Resultado = query.getSingleResult();
+            Integer Resultado = query.getSingleResult();            
             
             if (null != Resultado){
-                nSequencialUO = Resultado.intValue();
-                nSequencialUO++;
+                //Se for ntipoCI == 4 Encaminhar CI então Sequencial não muda
+                //e por default já está autorizado para ser visualizado pelos 
+                //destinatários
+                if (4 == nTipoCI){
+                    nSequencialUO = Resultado.intValue();
+                    
+                    bCoinAutorizado = true;
+                    data_autorizado = data_criacao;
+                    newTbCI.setCoinDataAutorizado(data_autorizado);
+                    bCoinRemitenteGestorAutorizado = true;
+                }else{
+                    nSequencialUO = Resultado.intValue();
+                    nSequencialUO++;
+                }
             } else {
                 nSequencialUO = 0;
                 nSequencialUO++;

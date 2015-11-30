@@ -5,7 +5,6 @@
  */
 package ci_eletronico.entities;
 
-import java.util.Calendar;
 import java.util.Date;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -16,45 +15,17 @@ import javafx.beans.property.StringProperty;
 
 /**
  *
- * @author victorcmaf
+ * @author Victor
  */
-public class TbCIPorAprovar {
-    //variables a serem utilizadas na
-    //persistencia da tabela TB_COMUNICACAO_INTERNA
-    private IntegerProperty intp_idCoin;
-    private StringProperty strp_Assunto;
-    private StringProperty strp_Conteudo;
-    private IntegerProperty intp_idUsuario;
-    private StringProperty strp_UsuarioNomeCompleto;
-    private IntegerProperty intp_idUORemitente;
-    private StringProperty strp_DescricaoUORemitente;
-    private IntegerProperty intp_idUOGestor;
-    private BooleanProperty boolp_Autorizado;
-    private IntegerProperty intp_idTipoCoin;    //1-CI NORMAL, 2-CI CIRCULAR, 3-CI CONFIDENCIAL, 4-CI ENCAMINHADO
-    private StringProperty strp_Apensamento;
-    private IntegerProperty intp_idCoinNumero; //Número sequencial das CIs para cada UO
-    private BooleanProperty boolp_ArquivadoUORemitente;
-    private BooleanProperty boolp_ArquivadoUOGestor;
-    private Date dataCriacao;
-    private StringProperty strp_dataCriacao;
-    private Date dataAutorizado;
-    
-    private BooleanProperty boolp_CoinReadOnly;
-    private BooleanProperty boolp_CoinTemAnexos;    
-    
-    //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
-    //por tanto, não existe fisicamente mapeado para tabela nenhuma
-    private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
-    //------------------------------------------
-    
+public class TbCaixaEntrada {
     //variables a serem utilizadas na
     //persistencia da tabela TB_CI_DESTINATARIO
     private IntegerProperty intp_idCoinDestinatario;
-    //private IntegerProperty intp_idCoin;
+    private IntegerProperty intp_idCoin;
     private IntegerProperty intp_idUsuarioRemitente;
-    //private StringProperty strp_UsuarioNomeCompleto;
-    //private IntegerProperty intp_idUORemitente;
-    //private StringProperty strp_DescricaoUORemitente;
+    private StringProperty strp_UsuarioNomeCompleto;
+    private IntegerProperty intp_idUORemitente;
+    private StringProperty strp_DescricaoUORemitente;
     private IntegerProperty intp_idUODestinatario;
     private StringProperty strp_DescricaoUODestinatario;
     private IntegerProperty intp_idUOGestorDestinatario;
@@ -62,80 +33,36 @@ public class TbCIPorAprovar {
     private BooleanProperty boolp_AutorizadoPeloGestor;
     private BooleanProperty boolp_ArquivadoPeloUODestinatario;
     private BooleanProperty boolp_ArquivadoPeloUOGestor;    
-    //private StringProperty strp_Assunto;
-    //private StringProperty strp_Conteudo;
+    private StringProperty strp_Assunto;
+    private StringProperty strp_Conteudo;
     private BooleanProperty boolp_PendentePeloUODestinatario;
     private Date dataAutorizadoPeloGestorDestinatario;
     private BooleanProperty boolp_LidoPeloUODestinatario;
-    //private Date dataCriacao;
+    private Date dataCriacao;
     private IntegerProperty intp_idTipoEnvio;  //1-Enviado "Para; 2-Enviado "Com cópia"; 3-Enviado "Com cópia oculta" 
-    //private IntegerProperty intp_idCoinNumero; //Número sequencial das CIs para cada UO
+    private IntegerProperty intp_idCoinNumero; //Número sequencial das CIs para cada UO
     private BooleanProperty boolp_ReadOnlyUODestinatario;
-    //private BooleanProperty boolp_CoinTemAnexos;
+    private BooleanProperty boolp_CoinTemAnexos;
     private BooleanProperty boolp_AutorizadoPeloGestorRemitente;
     
-    //private StringProperty strp_dataCriacao;
+    private StringProperty strp_dataCriacao;
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
     //por tanto, não existe fisicamente mapeado para tabela nenhuma
-    //private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
+    private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
     //------------------------------------------
     
-    
+    //----Atributos que estão na tabela TB_COMUNICACAO_INTERNA
+    // mas que não existem na tabela TB_CI_DESTINATARIO
+//    private IntegerProperty intp_idTipoCoin;    //1-CI NORMAL, 2-CI CIRCULAR, 3-CI CONFIDENCIAL, 4-CI ENCAMINHADO
+//    private StringProperty strp_Apensamento;    
+//    private BooleanProperty boolp_ArquivadoUORemitente;
+//    private BooleanProperty boolp_ArquivadoUOGestor;
 
-    public TbCIPorAprovar() {
-    }
-    
-    public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
-            Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 
-            String strUO, Integer nIdUOGestor, boolean bAutorizado, 
-            Integer nTipoCoin, String strApensamento, Integer nCoinNumero,
-            boolean bArquivadoUO, boolean bArquivadoUOGestor, Date dataCriacao,
-            String strDataCriacao, Date dataAutorizado, boolean bCoinReadOnly, 
-            boolean bCoinTemAnexos, Integer nIdTabelaFonte) {
-        
-        intp_idCoin = new SimpleIntegerProperty(nIdCoin);
-        strp_Assunto = new SimpleStringProperty(strAssunto);
-        strp_Conteudo = new SimpleStringProperty(strConteudo);
-        intp_idUsuario = new SimpleIntegerProperty(nIdUsuario);
-        strp_UsuarioNomeCompleto = new SimpleStringProperty(strUsuarioNomeCompleto);
-        intp_idUORemitente = new SimpleIntegerProperty(nIdUO);
-        strp_DescricaoUORemitente = new SimpleStringProperty(strUO);
-        intp_idUOGestor = new SimpleIntegerProperty(nIdUOGestor);
-        boolp_Autorizado = new SimpleBooleanProperty(bAutorizado);
-        intp_idTipoCoin = new SimpleIntegerProperty(nTipoCoin);
-        strp_Apensamento = new SimpleStringProperty(strApensamento);
-        intp_idCoinNumero = new SimpleIntegerProperty(nCoinNumero);
-        boolp_ArquivadoUORemitente = new SimpleBooleanProperty(bArquivadoUO);
-        boolp_ArquivadoUOGestor = new SimpleBooleanProperty(bArquivadoUOGestor);
-        this.dataCriacao = dataCriacao;
-        strp_dataCriacao = new SimpleStringProperty(strDataCriacao);
-        this.dataAutorizado = dataAutorizado;
-        boolp_CoinReadOnly = new SimpleBooleanProperty(bCoinReadOnly);
-        boolp_CoinTemAnexos = new SimpleBooleanProperty(bCoinTemAnexos);
-        intp_idTabelaFonte = new SimpleIntegerProperty(nIdTabelaFonte);
+    public TbCaixaEntrada() {
     }
 
-    public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
-            Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 
-            String strUO, Integer nCoinNumero, Date dataCriacao, String strDataCriacao, 
-            boolean bCoinTemAnexos, Integer nIdTabelaFonte) {
-        intp_idCoin = new SimpleIntegerProperty(nIdCoin);
-        strp_Assunto = new SimpleStringProperty(strAssunto);
-        strp_Conteudo = new SimpleStringProperty(strConteudo);
-        intp_idUsuario = new SimpleIntegerProperty(nIdUsuario);
-        strp_UsuarioNomeCompleto = new SimpleStringProperty(strUsuarioNomeCompleto);
-        intp_idUORemitente = new SimpleIntegerProperty(nIdUO);
-        strp_DescricaoUORemitente = new SimpleStringProperty(strUO);
-        intp_idCoinNumero = new SimpleIntegerProperty(nCoinNumero);
-        this.dataCriacao = dataCriacao; 
-        strp_dataCriacao = new SimpleStringProperty(strDataCriacao);
-        boolp_CoinTemAnexos = new SimpleBooleanProperty(bCoinTemAnexos);
-        intp_idTabelaFonte = new SimpleIntegerProperty(nIdTabelaFonte);
-    }
-    
-    //Construtor utilizado para TB_CI_DESTINATARIO
-    public TbCIPorAprovar(Integer intp_idCoinDestinatario, Integer intp_idCoin, Integer intp_idUsuarioRemitente, 
+    public TbCaixaEntrada(Integer intp_idCoinDestinatario, Integer intp_idCoin, Integer intp_idUsuarioRemitente, 
             String strp_UsuarioNomeCompleto, Integer intp_idUORemitente, String strp_DescricaoUORemitente, 
             Integer intp_idUODestinatario, String strp_DescricaoUODestinatario, Integer intp_idUOGestorDestinatario, 
             String strp_DescricaoUOGestorDestinatario, boolean boolp_AutorizadoPeloGestor, 
@@ -172,182 +99,7 @@ public class TbCIPorAprovar {
         this.intp_idTabelaFonte = new SimpleIntegerProperty(intp_idTabelaFonte);
     }
     
-//    //Metodos para TableView
-//    public StringProperty strp_UsuarioNomeCompleto(){
-//        return strp_UsuarioNomeCompleto;
-//    }
-    //----------FIM MEtodos para TableView ------
-    
-    
-    //Setters and getters
-    public String getStrp_dataCriacao() {
-        return strp_dataCriacao.getValue();
-    }
 
-    //getters and setters
-    public void setStrp_dataCriacao(String strp_dataCriacao) {
-        this.strp_dataCriacao.set(strp_dataCriacao);
-    }
-
-    public Integer getIntp_idCoin() {
-        return intp_idCoin.getValue();
-    }
-
-    public void setIntp_idCoin(Integer intp_idCoin) {
-        this.intp_idCoin.setValue(intp_idCoin);
-    }
-
-    public String getStrp_Assunto() {
-        return strp_Assunto.getValue();
-    }
-
-    public void setStrp_Assunto(String strp_Assunto) {
-        this.strp_Assunto.set(strp_Assunto);
-    }
-
-    public String getStrp_Conteudo() {
-        return strp_Conteudo.getValue();
-    }
-
-    public void setStrp_Conteudo(String strp_Conteudo) {
-        this.strp_Conteudo.set(strp_Conteudo);
-    }
-
-    public Integer getIntp_idUsuario() {
-        return intp_idUsuario.getValue();
-    }
-
-    public void setIntp_idUsuario(Integer intp_idUsuario) {
-        this.intp_idUsuario.setValue(intp_idUsuario);
-    }
-
-    public String getStrp_UsuarioNomeCompleto() {
-        return this.strp_UsuarioNomeCompleto.getValue();
-    }
-    public void setStrp_UsuarioNomeCompleto(String strp_UsuarioNomeCompleto) {
-        this.strp_UsuarioNomeCompleto.set(strp_UsuarioNomeCompleto);
-    }
-//    public StringProperty getStrp_UsuarioNomeCompleto() {
-//        return strp_UsuarioNomeCompleto;
-//    }
-//    public void setStrp_UsuarioNomeCompleto(StringProperty strp_UsuarioNomeCompleto) {
-//        this.strp_UsuarioNomeCompleto = strp_UsuarioNomeCompleto;
-//    }
-
-    public Integer getIntp_idUORemitente() {
-        return intp_idUORemitente.getValue();
-    }
-
-    public void setIntp_idUORemitente(Integer intp_idUORemitente) {
-        this.intp_idUORemitente.setValue(intp_idUORemitente);
-    }
-
-    public String getStrp_DescricaoUORemitente() {
-        return strp_DescricaoUORemitente.getValue();
-    }
-
-    public void setStrp_DescricaoUORemitente(String strp_DescricaoUORemitente) {
-        this.strp_DescricaoUORemitente.set(strp_DescricaoUORemitente);
-    }
-
-    public Integer getIntp_idUOGestor() {
-        return intp_idUOGestor.getValue();
-    }
-
-    public void setIntp_idUOGestor(Integer intp_idUOGestor) {
-        this.intp_idUOGestor.setValue(intp_idUOGestor);
-    }
-
-    public Boolean getBoolp_Autorizado() {
-        return boolp_Autorizado.getValue();
-    }
-
-    public void setBoolp_Autorizado(Boolean boolp_Autorizado) {
-        this.boolp_Autorizado.setValue(boolp_Autorizado);
-    }
-
-    public Integer getIntp_idTipoCoin() {
-        return intp_idTipoCoin.getValue();
-    }
-
-    public void setIntp_idTipoCoin(Integer intp_idTipoCoin) {
-        this.intp_idTipoCoin.setValue(intp_idTipoCoin);
-    }
-
-    public String getStrp_Apensamento() {
-        return strp_Apensamento.getValue();
-    }
-
-    public void setStrp_Apensamento(String strp_Apensamento) {
-        this.strp_Apensamento.setValue(strp_Apensamento);
-    }
-
-    public Integer getIntp_idCoinNumero() {
-        return intp_idCoinNumero.getValue();
-    }
-
-    public void setIntp_idCoinNumero(Integer intp_idCoinNumero) {
-        this.intp_idCoinNumero.setValue(intp_idCoinNumero);
-    }
-
-    public Boolean getBoolp_ArquivadoUORemitente() {
-        return boolp_ArquivadoUORemitente.getValue();
-    }
-
-    public void setBoolp_ArquivadoUORemitente(Boolean boolp_ArquivadoUORemitente) {
-        this.boolp_ArquivadoUORemitente.setValue(boolp_ArquivadoUORemitente);
-    }
-
-    public Boolean getBoolp_ArquivadoUOGestor() {
-        return boolp_ArquivadoUOGestor.getValue();
-    }
-
-    public void setBoolp_ArquivadoUOGestor(Boolean boolp_ArquivadoUOGestor) {
-        this.boolp_ArquivadoUOGestor.setValue(boolp_ArquivadoUOGestor);
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public Date getDataAutorizado() {
-        return dataAutorizado;
-    }
-
-    public void setDataAutorizado(Date dataAutorizado) {
-        this.dataAutorizado = dataAutorizado;
-    }
-
-    public Boolean getBoolp_CoinReadOnly() {
-        return boolp_CoinReadOnly.getValue();
-    }
-
-    public void setBoolp_CoinReadOnly(Boolean boolp_CoinReadOnly) {
-        this.boolp_CoinReadOnly.setValue(boolp_CoinReadOnly);
-    }
-
-    public Boolean getBoolp_CoinTemAnexos() {
-        return boolp_CoinTemAnexos.getValue();
-    }
-
-    public void setBoolp_CoinTemAnexos(Boolean boolp_CoinTemAnexos) {
-        this.boolp_CoinTemAnexos.setValue(boolp_CoinTemAnexos);
-    }
-
-    public Integer getIntp_idTabelaFonte() {
-        return intp_idTabelaFonte.getValue();
-    }
-
-    public void setIntp_idTabelaFonte(Integer intp_idTabelaFonte) {
-        this.intp_idTabelaFonte.setValue(intp_idTabelaFonte);
-    }
-    
-    
-    //----------Getters e Setters para TB_CI_DESTINATARIO
     public Integer getIntp_idCoinDestinatario() {
         return intp_idCoinDestinatario.getValue();
     }
@@ -555,6 +307,7 @@ public class TbCIPorAprovar {
 //    public void setIntp_idTabelaFonte(Integer intp_idTabelaFonte) {
 //        this.intp_idTabelaFonte.setValue(intp_idTabelaFonte);
 //    }
+    
     
     
 }
