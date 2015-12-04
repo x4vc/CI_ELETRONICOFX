@@ -42,8 +42,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUnidadeOrganizacional", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional"),
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor"),
     //@NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 ORDER BY t.coinDataCriacao DESC"),    
-    @NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 ORDER BY t.coinDataCriacao DESC"),    
-    @NamedQuery(name = "TbComunicacaoInterna.findByCIsEnviadas", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional ORDER BY t.coinDataCriacao DESC"),
+    @NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 ORDER BY t.coinDataCriacao DESC"),    
+    @NamedQuery(name = "TbComunicacaoInterna.findByCIsEnviadas", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 0 ORDER BY t.coinDataCriacao DESC"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinAutorizado = :coinAutorizado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinApensamento", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinApensamento = :coinApensamento"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinNumero", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinNumero = :coinNumero"),
@@ -52,8 +52,23 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinDataCriacao", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinDataCriacao = :coinDataCriacao"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinDataAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinDataAutorizado = :coinDataAutorizado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinReadOnly", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinReadOnly = :coinReadOnly"),
+    @NamedQuery(name = "TbComunicacaoInterna.findByUOArquivado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 1 ORDER BY t.coinDataCriacao DESC "),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinTemAnexos", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinTemAnexos = :coinTemAnexos")})
 public class TbComunicacaoInterna implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "UNOR_DESCRICAO_GENESIS")
+    private String unorDescricaoGenesis;
+    @Column(name = "COIN_HISTORICO_ANEXOS")
+    private String coinHistoricoAnexos;
+    @Basic(optional = false)
+    @Column(name = "COIN_NUMERO_GENESIS")
+    private int coinNumeroGenesis;
+    @Basic(optional = false)
+    @Column(name = "ID_COIN_GENESIS")
+    private int idCoinGenesis;
+    @Basic(optional = false)
+    @Column(name = "ID_UNOR_GENESIS")
+    private int idUnorGenesis;
     @Basic(optional = false)
     @Column(name = "USU_NOME_COMPLETO")
     private String usuNomeCompleto;
@@ -322,6 +337,46 @@ public class TbComunicacaoInterna implements Serializable {
 
     public void setUnorDescricao(String unorDescricao) {
         this.unorDescricao = unorDescricao;
+    }
+
+    public int getIdCoinGenesis() {
+        return idCoinGenesis;
+    }
+
+    public void setIdCoinGenesis(int idCoinGenesis) {
+        this.idCoinGenesis = idCoinGenesis;
+    }
+
+    public int getIdUnorGenesis() {
+        return idUnorGenesis;
+    }
+
+    public void setIdUnorGenesis(int idUnorGenesis) {
+        this.idUnorGenesis = idUnorGenesis;
+    }
+
+    public int getCoinNumeroGenesis() {
+        return coinNumeroGenesis;
+    }
+
+    public void setCoinNumeroGenesis(int coinNumeroGenesis) {
+        this.coinNumeroGenesis = coinNumeroGenesis;
+    }
+
+    public String getCoinHistoricoAnexos() {
+        return coinHistoricoAnexos;
+    }
+
+    public void setCoinHistoricoAnexos(String coinHistoricoAnexos) {
+        this.coinHistoricoAnexos = coinHistoricoAnexos;
+    }
+
+    public String getUnorDescricaoGenesis() {
+        return unorDescricaoGenesis;
+    }
+
+    public void setUnorDescricaoGenesis(String unorDescricaoGenesis) {
+        this.unorDescricaoGenesis = unorDescricaoGenesis;
     }
 
     

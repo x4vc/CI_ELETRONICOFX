@@ -74,11 +74,20 @@ public class NovaCIController implements Initializable {
     private String strDescricaoPerfil = "";
     private String strNomeUO = "";
     private String strHtmlAssinatura = "";
+    private String strHtmlEncaminharConteudo = "";
     private int nTipoCI = 0;
     private int nIdUOGestor = 0;
     
     EntityManager em;
     EntityManagerFactory emf;
+    
+    //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
+    //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
+    private    int nlIdCoinGenesis = 0;
+    private    int nlIdUnorGenesis = 0;
+    private    int nlCoinNumeroGenesis = 0;
+    private    String strCoinHistoricoAnexos = "";
+    private    String strUnorDescricaoGenesis = "";
     
     @FXML
     Button btnPara;
@@ -126,12 +135,24 @@ public class NovaCIController implements Initializable {
     }   
     
     public void setVariaveisAmbienteNovaCI(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, 
+                                        int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
+                                        int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
         this.strDescricaoPerfil = strDescricaoPerfil;
         this.strHtmlAssinatura = "<br><br><br>" + strHtmlAssinatura;
+        this.strHtmlEncaminharConteudo = strHtmlConteudo;
+        
+        //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
+        //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
+        this.nlIdCoinGenesis = nlIdCoinGenesis;
+        this.nlIdUnorGenesis = nlIdUnorGenesis;
+        this.nlCoinNumeroGenesis = nlCoinNumeroGenesis;
+        this.strCoinHistoricoAnexos = strCoinHistoricoAnexos;
+        this.strUnorDescricaoGenesis = strUnorDescricaoGenesis;
+        //-------------------------------------------------------------------
         
         nIdUsuario = Integer.parseInt(strIdUsuario);        
         nTipoPerfil = Integer.parseInt(strIdPerfil);
@@ -334,7 +355,7 @@ public class NovaCIController implements Initializable {
             alert.setContentText("O campo Para deve possuir ao menos uma UO selecionada");
             alert.showAndWait();
         } else{
-            System.out.println("ID UO Gestora = " + nIdUOGestor);
+            //System.out.println("ID UO Gestora = " + nIdUOGestor);
             //ntipoCI   1 - CI normal
             //          2 - CI circular
             //          3 - CI confidencial
@@ -513,6 +534,16 @@ public class NovaCIController implements Initializable {
         boolean bCoinTemAnexos = false;
         boolean bCoinDestinatarioGestorAutorizado = false;
         boolean bCoinRemitenteGestorAutorizado = false;
+        
+        //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
+        //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
+        int nlIdCoinGenesis = 0;
+        int nlIdUnorGenesis = 0;
+        int nlCoinNumeroGenesis = 0;
+        String strCoinHistoricoAnexos = "";
+        String strUnorDescricaoGenesis = "";
+        //----------------------------------------------------------------------
+        
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
         TbUnidadeOrganizacionalGestor UOGestorDestinatario = new TbUnidadeOrganizacionalGestor();
         MainWindowQueries consultaUOGestor = new MainWindowQueries();
@@ -588,9 +619,50 @@ public class NovaCIController implements Initializable {
         
         String [] strArrayUONomeDestinatario = new String[strParts.length/2];
         strPara = "";
-        strPara = "<br><hr><br>De: <b>" + strNomeUO + "</b><br>";
-        strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-        strPara = strPara.concat("Para: <b>");
+        switch (nTipoCI){
+            case 1:
+                //CI-eletrônico
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI</FONT></b><br>";
+                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
+                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Para: <b>");
+                break;
+            case 2:
+                //CI circular
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CIRCULAR</FONT></b><br>";
+                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
+                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Para: <b>");
+                break;
+            case 3:
+                //Despacho
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b><br>";
+                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
+                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Para: <b>");
+                break;
+            case 4:
+                //Despacho
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b><br>";
+                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
+                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Para: <b>");
+                break;
+            default:
+                break;
+        }
+        if (4 == nTipoCI){
+            //Despacho
+//            strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b><br>";
+//            strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
+//            strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+//            strPara = strPara.concat("Para: <b>");
+                    
+        } else {
+//            strPara = "<br><hr><br>De: <b>" + strNomeUO + "</b><br>";
+//            strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+//            strPara = strPara.concat("Para: <b>");
+        }
         String strUONome = "";
         String strIdUO = "";
         String strIdsUOPara = "";
@@ -626,11 +698,11 @@ public class NovaCIController implements Initializable {
         }
         strPara = strPara.concat("</b><br>");
         
-        System.out.println(strPara);
-        System.out.println(strIdsUOPara);
-        System.out.println(strArrayUONomeDestinatario);
-        System.out.println(nArrayIdUODestinatario);
-        System.out.println(nArrayIdUOGestor);
+//        System.out.println(strPara);
+//        System.out.println(strIdsUOPara);
+//        System.out.println(strArrayUONomeDestinatario);
+//        System.out.println(nArrayIdUODestinatario);
+//        System.out.println(nArrayIdUOGestor);
         
         // ---- FIM: Seteamos variavel e html Para -------        
         
@@ -695,12 +767,12 @@ public class NovaCIController implements Initializable {
         }
         strComCopia = strComCopia.concat("</b><br>");
         
-        System.out.println(strComCopia);
-        System.out.println(strIdsUOComCopia);
-        System.out.println(nArrayCCIdUODestinatario);
-        System.out.println(strArrayCCUONomeDestinatario);         
-        System.out.println(nArrayCCIdUOGestor); 
-        System.out.println();
+//        System.out.println(strComCopia);
+//        System.out.println(strIdsUOComCopia);
+//        System.out.println(nArrayCCIdUODestinatario);
+//        System.out.println(strArrayCCUONomeDestinatario);         
+//        System.out.println(nArrayCCIdUOGestor); 
+//        System.out.println();
             
         }
         
@@ -709,7 +781,16 @@ public class NovaCIController implements Initializable {
         
         strHtmlConteudo = htmlEditor.getHtmlText();
         
-        strPara = strPara.concat(strHtmlConteudo);
+        //strPara = strPara.concat(strHtmlConteudo);
+        
+        if (4 == nTipoCI ){
+            //Despacho
+            strPara = strPara.concat(strHtmlConteudo);
+            strPara = strPara.concat(strHtmlEncaminharConteudo);
+        }
+        else {
+            strPara = strPara.concat(strHtmlConteudo);
+        }
         
         System.out.println();
         //Seteamos número sequencial da CI de acordo ao UO Remitente
@@ -730,20 +811,57 @@ public class NovaCIController implements Initializable {
                     data_autorizado = data_criacao;
                     newTbCI.setCoinDataAutorizado(data_autorizado);
                     bCoinRemitenteGestorAutorizado = true;
+                    
+                    //Valores para variaveis Genesis
+                    nlIdCoinGenesis = this.nlIdCoinGenesis;
+                    nlIdUnorGenesis = this.nlIdUnorGenesis;
+                    nlCoinNumeroGenesis = this.nlCoinNumeroGenesis;
+                    strCoinHistoricoAnexos = this.strCoinHistoricoAnexos;
+                    strUnorDescricaoGenesis = this.strUnorDescricaoGenesis;
+                    
                 }else{
                     nSequencialUO = Resultado.intValue();
                     nSequencialUO++;
+                    //Valores para variaveis Genesis
+                    nlIdCoinGenesis = 0; 
+                    nlIdUnorGenesis = nIdUO;
+                    nlCoinNumeroGenesis = nSequencialUO;
+                    strCoinHistoricoAnexos = "";
+                    strUnorDescricaoGenesis = strNomeUO;
+                    
+                    
                 }
             } else {
                 nSequencialUO = 0;
                 nSequencialUO++;
+                
+                //Valores para variaveis Genesis
+                nlIdCoinGenesis = 0; 
+                nlIdUnorGenesis = nIdUO;
+                nlCoinNumeroGenesis = nSequencialUO;
+                strCoinHistoricoAnexos = "";
+                strUnorDescricaoGenesis = strNomeUO;
+                
+                
             }
         } catch(Exception ex){
             nSequencialUO = 0;
             nSequencialUO++;
         }            
         
-        
+        if (4 == nTipoCI){
+            bCoinAutorizado = true;            
+            data_autorizado = data_criacao;
+            newTbCI.setCoinDataAutorizado(data_autorizado);
+            
+            //Valores para variaveis Genesis
+            nlIdCoinGenesis = this.nlIdCoinGenesis;
+            nlIdUnorGenesis = this.nlIdUnorGenesis;
+            nlCoinNumeroGenesis = this.nlCoinNumeroGenesis;
+            strCoinHistoricoAnexos = this.strCoinHistoricoAnexos;
+            strUnorDescricaoGenesis = this.strUnorDescricaoGenesis;
+            
+        }
         //Seteamos entity TB_COMUNICACAO_INTERNA
 
         newTbCI.setCoinAssunto(txtAssunto.getText());
@@ -766,6 +884,12 @@ public class NovaCIController implements Initializable {
         newTbCI.setCoinTemAnexos(bCoinTemAnexos);
         //newTbCI.setCoinEnviadoPara("");
         //newTbCI.setCoinEnviadoComCopia("");
+        
+        newTbCI.setIdCoinGenesis(nlIdCoinGenesis);
+        newTbCI.setIdUnorGenesis(nlIdUnorGenesis);
+        newTbCI.setCoinNumeroGenesis(nlCoinNumeroGenesis);
+        newTbCI.setCoinHistoricoAnexos(strCoinHistoricoAnexos);
+        newTbCI.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
         
         em.persist(newTbCI);
         em.flush();
@@ -821,6 +945,7 @@ public class NovaCIController implements Initializable {
         
         //-------Salvamos de acordo campo Para
         //Seteamos o tipo de Envio
+        
         TbTipoEnvio nIdTipoEnvio = new TbTipoEnvio(1); //1 - Tipo = ENVIADO "PARA"
         try{        
             for(int n =0 ; n < nSavePara;n++ ){
@@ -828,14 +953,20 @@ public class NovaCIController implements Initializable {
                 //Seteamos boolean bCoinDestinatarioGestorAutorizado
                 if(nArrayIdUODestinatario[n] == nArrayIdUOGestor[n]){
                     bCoinDestinatarioGestorAutorizado = true;  
-                    //se o UO remitente for UO remitente GEstos então seteamos data
+                    //se o UO remitente for UO remitente Gestor então seteamos data
                     if (bCoinAutorizado){
                         data_autorizado = data_criacao;
                         newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);                    
                     }
                 }else{
                     bCoinDestinatarioGestorAutorizado = false;                    
-                }  
+                }                
+            if (4 == nTipoCI){
+            data_autorizado = data_criacao;
+            newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
+            bCoinDestinatarioGestorAutorizado = true;     
+            bCoinRemitenteGestorAutorizado = true;
+            }
             //Seteamos Para
 
             newTbCIDestinatario.setIdCoin(nCoinId);
@@ -859,6 +990,16 @@ public class NovaCIController implements Initializable {
             newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
             newTbCIDestinatario.setCoinDestinatarioTemAnexos(bCoinTemAnexos);
             newTbCIDestinatario.setCoinRemitenteGestorAutorizado(bCoinRemitenteGestorAutorizado);
+            
+            //Variaveis Genesis
+            newTbCIDestinatario.setIdCoinGenesis(nlIdCoinGenesis);
+            newTbCIDestinatario.setIdUnorGenesis(nlIdUnorGenesis);
+            newTbCIDestinatario.setCoinNumeroGenesis(nlCoinNumeroGenesis);
+            newTbCIDestinatario.setCoinHistoricoAnexos(strCoinHistoricoAnexos);
+            newTbCIDestinatario.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
+            //----------------------------------
+            newTbCIDestinatario.setIdTipoCoin(TipoCI);
+            
             em.persist(newTbCIDestinatario);            
         }
         }catch(javax.persistence.PersistenceException e){
@@ -880,7 +1021,7 @@ public class NovaCIController implements Initializable {
                     //if(nArrayIdUODestinatario[n] == nArrayIdUOGestor[n]){
                     if(nArrayCCIdUODestinatario[n] == nArrayCCIdUOGestor[n]){
                         bCoinDestinatarioGestorAutorizado = true;  
-                        //se o UO remitente for UO remitente GEstos então seteamos data
+                        //se o UO remitente for UO remitente Gestor então seteamos data
                         if (bCoinAutorizado){
                             data_autorizado = data_criacao;
                             newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);                    
@@ -888,8 +1029,14 @@ public class NovaCIController implements Initializable {
                     }else{
                         bCoinDestinatarioGestorAutorizado = false;                    
                     }  
+                if (4 == nTipoCI){
+                    data_autorizado = data_criacao;
+                    newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
+                    bCoinDestinatarioGestorAutorizado = true;     
+                    bCoinRemitenteGestorAutorizado = true;
+                }
+                
                 //Seteamos Com Copia
-
                 newTbCIDestinatario.setIdCoin(nCoinId);
                 newTbCIDestinatario.setIdUsuarioRemitente(nIdUsuario);
                 newTbCIDestinatario.setUsuNomeCompletoRemitente(strNomeUsuario);
@@ -911,6 +1058,15 @@ public class NovaCIController implements Initializable {
                 newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
                 newTbCIDestinatario.setCoinDestinatarioTemAnexos(bCoinTemAnexos);
                 newTbCIDestinatario.setCoinRemitenteGestorAutorizado(bCoinRemitenteGestorAutorizado);
+                
+                //Variaveis Genesis
+                newTbCIDestinatario.setIdCoinGenesis(nlIdCoinGenesis);
+                newTbCIDestinatario.setIdUnorGenesis(nlIdUnorGenesis);
+                newTbCIDestinatario.setCoinNumeroGenesis(nlCoinNumeroGenesis);
+                newTbCIDestinatario.setCoinHistoricoAnexos(strCoinHistoricoAnexos);
+                newTbCIDestinatario.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
+                //------------------------------------------
+                newTbCIDestinatario.setIdTipoCoin(TipoCI);
                 em.persist(newTbCIDestinatario);            
             }
             }catch(javax.persistence.PersistenceException e){

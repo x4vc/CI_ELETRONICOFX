@@ -33,19 +33,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "TbCiDestinatario.findAll", query = "SELECT t FROM TbCiDestinatario t"),
     @NamedQuery(name = "TbCiDestinatario.findByIdCoinDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idCoinDestinatario = :idCoinDestinatario"),
+    @NamedQuery(name = "TbCiDestinatario.findByIdCoin", query = "SELECT t FROM TbCiDestinatario t WHERE t.idCoin = :idCoin AND t.coinRemitenteGestorAutorizado = 0"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUsuarioRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUsuarioRemitente = :idUsuarioRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByUsuNomeCompletoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.usuNomeCompletoRemitente = :usuNomeCompletoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoRemitente = :idUoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByInorDescricaoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.inorDescricaoRemitente = :inorDescricaoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoDestinatario = :unorDescricaoDestinatario"),
-    @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario"),
+    @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoGestorDestinatario = :unorDescricaoGestorDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioGestorAutorizado = :coinDestinatarioGestorAutorizado"),
-    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 "),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    @NamedQuery(name = "TbCiDestinatario.findByGestorUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoGestorArquivado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoGestorArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioUoGestorArquivado = :coinDestinatarioUoGestorArquivado"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioConteudo", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioConteudo = :coinDestinatarioConteudo"),
-    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioPendente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioPendente = 1"),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioPendente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioGestorDataAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioGestorDataAutorizado = :coinDestinatarioGestorDataAutorizado"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioLido", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioLido = :coinDestinatarioLido"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioDataCriacao", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioDataCriacao = :coinDestinatarioDataCriacao"),
@@ -54,6 +56,22 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioTemAnexos", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioTemAnexos = :coinDestinatarioTemAnexos"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinRemitenteGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinRemitenteGestorAutorizado = :coinRemitenteGestorAutorizado")})
 public class TbCiDestinatario implements Serializable {
+    @JoinColumn(name = "ID_TIPO_COIN", referencedColumnName = "ID_TIPO_COIN")
+    @ManyToOne(optional = false)
+    private TbTipoComunicacoInterna idTipoCoin;
+    @Basic(optional = false)
+    @Column(name = "ID_COIN_GENESIS")
+    private int idCoinGenesis;
+    @Basic(optional = false)
+    @Column(name = "ID_UNOR_GENESIS")
+    private int idUnorGenesis;
+    @Basic(optional = false)
+    @Column(name = "COIN_NUMERO_GENESIS")
+    private int coinNumeroGenesis;
+    @Column(name = "COIN_HISTORICO_ANEXOS")
+    private String coinHistoricoAnexos;
+    @Column(name = "UNOR_DESCRICAO_GENESIS")
+    private String unorDescricaoGenesis;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -374,5 +392,50 @@ public class TbCiDestinatario implements Serializable {
     public String toString() {
         return "ci_eletronico.entities.TbCiDestinatario[ idCoinDestinatario=" + idCoinDestinatario + " ]";
     }
+
+    public Integer getIdCoinGenesis() {
+        return idCoinGenesis;
+    }
+    public void setIdCoinGenesis(Integer idCoinGenesis) {
+        this.idCoinGenesis = idCoinGenesis;
+    }
+
+    public Integer getIdUnorGenesis() {
+        return idUnorGenesis;
+    }
+    public void setIdUnorGenesis(Integer idUnorGenesis) {
+        this.idUnorGenesis = idUnorGenesis;
+    }
+
+    public Integer getCoinNumeroGenesis() {
+        return coinNumeroGenesis;
+    }
+    public void setCoinNumeroGenesis(Integer coinNumeroGenesis) {
+        this.coinNumeroGenesis = coinNumeroGenesis;
+    }
+
+    public String getCoinHistoricoAnexos() {
+        return coinHistoricoAnexos;
+    }
+    public void setCoinHistoricoAnexos(String coinHistoricoAnexos) {
+        this.coinHistoricoAnexos = coinHistoricoAnexos;
+    }
+
+    public String getUnorDescricaoGenesis() {
+        return unorDescricaoGenesis;
+    }
+
+    public void setUnorDescricaoGenesis(String unorDescricaoGenesis) {
+        this.unorDescricaoGenesis = unorDescricaoGenesis;
+    }
+
+    public TbTipoComunicacoInterna getIdTipoCoin() {
+        return idTipoCoin;
+    }
+
+    public void setIdTipoCoin(TbTipoComunicacoInterna idTipoCoin) {
+        this.idTipoCoin = idTipoCoin;
+    }
+
     
 }

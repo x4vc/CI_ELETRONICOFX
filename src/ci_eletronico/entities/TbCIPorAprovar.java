@@ -40,7 +40,16 @@ public class TbCIPorAprovar {
     private Date dataAutorizado;
     
     private BooleanProperty boolp_CoinReadOnly;
-    private BooleanProperty boolp_CoinTemAnexos;    
+    private BooleanProperty boolp_CoinTemAnexos;
+    
+    //Para tratar os registros do tipo "Encaminhar criamos 5 atributos "Genesis"
+    private IntegerProperty intp_idCoinGenesis;
+    private IntegerProperty intp_idUnorGenesis;
+    private IntegerProperty intp_CoinNumeroGenesis;
+    private StringProperty strp_CoinHistoricoAnexos;
+    private StringProperty strp_UnorDescricaoGenesis;
+    //-------------------------------------------------------------------------    
+    
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
     //por tanto, não existe fisicamente mapeado para tabela nenhuma
@@ -92,7 +101,8 @@ public class TbCIPorAprovar {
             Integer nTipoCoin, String strApensamento, Integer nCoinNumero,
             boolean bArquivadoUO, boolean bArquivadoUOGestor, Date dataCriacao,
             String strDataCriacao, Date dataAutorizado, boolean bCoinReadOnly, 
-            boolean bCoinTemAnexos, Integer nIdTabelaFonte) {
+            boolean bCoinTemAnexos, Integer nIdTabelaFonte,
+            Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -114,6 +124,12 @@ public class TbCIPorAprovar {
         boolp_CoinReadOnly = new SimpleBooleanProperty(bCoinReadOnly);
         boolp_CoinTemAnexos = new SimpleBooleanProperty(bCoinTemAnexos);
         intp_idTabelaFonte = new SimpleIntegerProperty(nIdTabelaFonte);
+        
+        this.intp_idCoinGenesis = new SimpleIntegerProperty(intp_idCoinGenesis);
+        this.intp_idUnorGenesis = new SimpleIntegerProperty(intp_idUnorGenesis);
+        this.intp_CoinNumeroGenesis = new SimpleIntegerProperty(intp_CoinNumeroGenesis);
+        this.strp_CoinHistoricoAnexos = new SimpleStringProperty(strp_CoinHistoricoAnexos) ;
+        this.strp_UnorDescricaoGenesis = new SimpleStringProperty(strp_UnorDescricaoGenesis);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -143,7 +159,9 @@ public class TbCIPorAprovar {
             String strp_Conteudo, boolean boolp_PendentePeloUODestinatario, Date dataAutorizadoPeloGestorDestinatario, 
             boolean boolp_LidoPeloUODestinatario, Date dataCriacao, Integer intp_idTipoEnvio, Integer intp_idCoinNumero, 
             boolean boolp_ReadOnlyUODestinatario, boolean boolp_CoinTemAnexos, boolean boolp_AutorizadoPeloGestorRemitente, 
-            String strp_dataCriacao, Integer intp_idTabelaFonte) {
+            String strp_dataCriacao, Integer intp_idTabelaFonte, 
+            Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
+            Integer nTipoCoin) {
         this.intp_idCoinDestinatario = new SimpleIntegerProperty(intp_idCoinDestinatario);
         this.intp_idCoin = new SimpleIntegerProperty(intp_idCoin);
         this.intp_idUsuarioRemitente = new SimpleIntegerProperty(intp_idUsuarioRemitente);
@@ -170,6 +188,14 @@ public class TbCIPorAprovar {
         this.boolp_AutorizadoPeloGestorRemitente = new SimpleBooleanProperty(boolp_AutorizadoPeloGestorRemitente);
         this.strp_dataCriacao = new SimpleStringProperty(strp_dataCriacao);
         this.intp_idTabelaFonte = new SimpleIntegerProperty(intp_idTabelaFonte);
+        
+        this.intp_idCoinGenesis = new SimpleIntegerProperty(intp_idCoinGenesis);
+        this.intp_idUnorGenesis = new SimpleIntegerProperty(intp_idUnorGenesis);
+        this.intp_CoinNumeroGenesis = new SimpleIntegerProperty(intp_CoinNumeroGenesis);
+        this.strp_CoinHistoricoAnexos = new SimpleStringProperty(strp_CoinHistoricoAnexos) ;
+        this.strp_UnorDescricaoGenesis = new SimpleStringProperty(strp_UnorDescricaoGenesis);
+        
+        intp_idTipoCoin = new SimpleIntegerProperty(nTipoCoin);
     }
     
 //    //Metodos para TableView
@@ -539,6 +565,32 @@ public class TbCIPorAprovar {
     public void setBoolp_AutorizadoPeloGestorRemitente(Boolean boolp_AutorizadoPeloGestorRemitente) {
         this.boolp_AutorizadoPeloGestorRemitente.setValue(boolp_AutorizadoPeloGestorRemitente);
     }
+    
+    public Integer getIntp_idCoinGenesis() {
+        return intp_idCoinGenesis.getValue();
+    }
+
+    public void setIntp_idCoinGenesis(Integer intp_idCoinGenesis) {
+        this.intp_idCoinGenesis.setValue(intp_idCoinGenesis);
+    }
+
+    public Integer getIntp_idUnorGenesis() {
+        return intp_idUnorGenesis.getValue();
+    }
+
+    public void setIntp_idUnorGenesis(Integer intp_idUnorGenesis) {
+        this.intp_idUnorGenesis.setValue(intp_idUnorGenesis);
+    }
+
+    public Integer getIntp_CoinNumeroGenesis() {
+        return intp_CoinNumeroGenesis.getValue();
+    }
+
+    public void setIntp_CoinNumeroGenesis(Integer intp_CoinNumeroGenesis) {
+        this.intp_CoinNumeroGenesis.setValue(intp_CoinNumeroGenesis);
+    }
+    
+    
 
 //    public String getStrp_dataCriacao() {
 //        return strp_dataCriacao.getValue();
@@ -555,6 +607,22 @@ public class TbCIPorAprovar {
 //    public void setIntp_idTabelaFonte(Integer intp_idTabelaFonte) {
 //        this.intp_idTabelaFonte.setValue(intp_idTabelaFonte);
 //    }
+
+    public String getStrp_CoinHistoricoAnexos() {
+        return strp_CoinHistoricoAnexos.getValue();
+    }
+
+    public void setStrp_CoinHistoricoAnexos(String strp_CoinHistoricoAnexos) {
+        this.strp_CoinHistoricoAnexos.setValue(strp_CoinHistoricoAnexos);
+    }
+
+    public String getStrp_UnorDescricaoGenesis() {
+        return strp_UnorDescricaoGenesis.getValue();
+    }
+
+    public void setStrp_UnorDescricaoGenesis(String strp_UnorDescricaoGenesis) {
+        this.strp_UnorDescricaoGenesis.setValue(strp_UnorDescricaoGenesis);
+    }
     
     
 }

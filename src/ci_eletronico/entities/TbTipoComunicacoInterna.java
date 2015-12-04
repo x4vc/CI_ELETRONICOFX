@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbTipoComunicacoInterna.findByTiciDescricao", query = "SELECT t FROM TbTipoComunicacoInterna t WHERE t.ticiDescricao = :ticiDescricao"),
     @NamedQuery(name = "TbTipoComunicacoInterna.findByTiciAtivo", query = "SELECT t FROM TbTipoComunicacoInterna t WHERE t.ticiAtivo = :ticiAtivo")})
 public class TbTipoComunicacoInterna implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTipoCoin")
+    private Collection<TbCiDestinatario> tbCiDestinatarioCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -115,6 +117,15 @@ public class TbTipoComunicacoInterna implements Serializable {
     @Override
     public String toString() {
         return "ci_eletronico.entities.TbTipoComunicacoInterna[ idTipoCoin=" + idTipoCoin + " ]";
+    }
+
+    @XmlTransient
+    public Collection<TbCiDestinatario> getTbCiDestinatarioCollection() {
+        return tbCiDestinatarioCollection;
+    }
+
+    public void setTbCiDestinatarioCollection(Collection<TbCiDestinatario> tbCiDestinatarioCollection) {
+        this.tbCiDestinatarioCollection = tbCiDestinatarioCollection;
     }
     
 }

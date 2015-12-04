@@ -13,7 +13,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.FXMLMainController">
    <top>
-      <Pane prefHeight="66.0" prefWidth="1280.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER_LEFT">
+      <Pane prefHeight="66.0" prefWidth="1280.0" style="-fx-background-color: #FFA500;" BorderPane.alignment="CENTER_LEFT">
          <children>
             <Button fx:id="btnNovaCI" contentDisplay="TOP" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnNovaCI" prefHeight="55.0" prefWidth="130.0" style="-fx-accent: #0093ff; -fx-focus-color: #0093ff;" text="Nova CI">
                <graphic>
@@ -59,12 +59,22 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="636.0" prefWidth="133.0">
                <children>
-                  <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" layoutY="138.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntrada" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="135.0" />
-                  <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="293.0" mnemonicParsing="false" onAction="#handleBtnCaixaSaida" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de saída" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0" />
-                  <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnCaixaPendencias" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada (pendências)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="180.0" />
-                  <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutY="249.0" mnemonicParsing="false" onAction="#handleBtnCaixaArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada (arquivadas)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="225.0" />
-                  <Button fx:id="btnPendentesAprovacao" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="191.0" mnemonicParsing="false" onAction="#handleBtnPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de saída (solicitando aprovação)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <Button fx:id="btnCaixaEntradaSolicitandoAprovacao" layoutX="34.0" layoutY="99.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntradaPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de entrada (solicitando aprovaçao)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
+                  <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" layoutY="138.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntrada" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="135.0" />
+                  <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="293.0" mnemonicParsing="false" onAction="#handleBtnCaixaSaida" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0" />
+                  <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnCaixaPendencias" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (pendências)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="180.0" />
+                  <Button fx:id="btnPendentesAprovacao" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="191.0" mnemonicParsing="false" onAction="#handleBtnPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados (solicitando aprovação)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button fx:id="btnCaixaEntradaSolicitandoAprovacao" layoutX="34.0" layoutY="99.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntradaPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (solicitando aprovaçao)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
+                  <Accordion layoutX="-39.0" layoutY="270.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                <TitledPane animated="false" layoutX="1.0" layoutY="225.0" prefHeight="145.0" prefWidth="141.0" text="CIs arquivadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="225.0">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutX="-1.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleBtnCaixaArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (arquivadas)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0" />
+                              <Button fx:id="btnCaixaEnviadosArquivados" layoutX="9.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleBtnCaixaEnviadasArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados (arquivados)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="704.0" prefWidth="441.0">
                <children>
@@ -87,7 +97,7 @@
       </SplitPane>
    </left>
    <bottom>
-      <Pane prefHeight="96.0" prefWidth="1280.0" style="-fx-background-color: #cacaca;" BorderPane.alignment="CENTER">
+      <Pane prefHeight="96.0" prefWidth="1280.0" style="-fx-background-color: #FFA500;" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="BASELINE_LEFT" layoutX="5.0" layoutY="10.0" text="Usuario:" />
             <Label fx:id="lblIdUsuario" layoutX="300.0" layoutY="10.0" text="Label" />
@@ -153,7 +163,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnImprimirCI" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI" AnchorPane.topAnchor="55.0">
                      <graphic>
                         <ImageView>
                            <image>
