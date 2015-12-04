@@ -108,6 +108,10 @@ public class FXMLMainController implements Initializable {
     @FXML
     private Button btnCaixaEnviadosArquivados;
     @FXML
+    private Button btnEditarCI;
+    @FXML
+    private Button btnMarcarcomoPendencia;
+    @FXML
     private Button btnNovaCI;
     @FXML
     private Button btnNovaCICircular;
@@ -399,6 +403,9 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
+                btnEditarCI.setVisible(false);
+                btnMarcarcomoPendencia.setDisable(true);
+                
                 //Labels
                 lblNumeroSequencialCI.setText("");
                 
@@ -418,6 +425,9 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
+                btnEditarCI.setVisible(false);
+                btnMarcarcomoPendencia.setDisable(true);
+                
                 //Labels
                 lblNumeroSequencialCI.setText("");
                 
@@ -436,6 +446,9 @@ public class FXMLMainController implements Initializable {
                 btnEncaminharCI.setDisable(true);
                 btnArquivarCI.setDisable(true);
                 btnDesarquivarCI.setDisable(true);
+                
+                btnEditarCI.setVisible(false);
+                btnMarcarcomoPendencia.setDisable(true);
                 
                 //Labels
                 lblNumeroSequencialCI.setText("");
@@ -625,6 +638,9 @@ public class FXMLMainController implements Initializable {
        
         btnEncaminharCI.setDisable(true);
         btnDesarquivarCI.setDisable(true);
+        
+        btnEditarCI.setVisible(true);
+        btnMarcarcomoPendencia.setDisable(true);
         
         if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
             btnAprovarCI.setDisable(false);
@@ -1092,6 +1108,68 @@ public class FXMLMainController implements Initializable {
             alert.showAndWait();
         }
     }
+    
+    @FXML
+    private void handleBtnEditarCI(ActionEvent event) throws IOException{
+        if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("CI não foi selecionado.");
+            alert.setContentText("Favor selecionar uma CI da tabela");
+            alert.showAndWait();
+        }else{            
+                // do something            
+            try{
+                scene = new Scene(new SplitPane());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/UpdateCI.fxml"));
+                scene.setRoot((Parent) loader.load());
+                
+                ci_eletronico.fxml_utilitarios.UpdateCIController Update_ci_controller = loader.<ci_eletronico.fxml_utilitarios.UpdateCIController>getController();     
+                //Update_ci_controller.setVariaveisAmbienteNovaCI(mainController, nlIdCoinstrIdUsuario, strHtmlConteudo);                
+                
+                Stage stage = new Stage();
+                stage.setTitle("Atualizar CI-eletrônico");
+                //set icon
+                stage.getIcons().add(new Image("/resources/repeat_green.png"));
+
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
+                stage.showAndWait();
+//                                
+            }catch (IOException ex) {
+                Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    
+    @FXML
+    private void handleBtnMarcarcomoPendencia(ActionEvent event) throws IOException{
+        if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("CI não foi selecionado.");
+            alert.setContentText("Favor selecionar uma CI da tabela");
+            alert.showAndWait();
+        }else{
+            int nIdCI = 0;            
+            int nBotao = 0;
+            int nTabela = 0;
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar");
+            alert.setHeaderText(null);
+            alert.setContentText("Deseja realmente marcar como pendência?"); 
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                // do something
+            }
+            else{
+                //...do nothing
+            } 
+        }
+    }
+        
     @FXML
     private void handleBtnArquivarCI(ActionEvent event) throws IOException {
         if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
@@ -1399,6 +1477,9 @@ public class FXMLMainController implements Initializable {
         btnEncaminharCI.setDisable(false);
         btnArquivarCI.setDisable(false);
         btnDesarquivarCI.setDisable(true); 
+        
+        btnEditarCI.setVisible(false);
+        btnMarcarcomoPendencia.setDisable(false);
         
         clearTelas();
          
@@ -1767,6 +1848,9 @@ public class FXMLMainController implements Initializable {
         setBotoesMainWindow(nTipoPerfil);
         
         btnDesarquivarCI.setDisable(true);
+        
+        btnEditarCI.setVisible(false);
+        btnMarcarcomoPendencia.setDisable(true);
         
         clearTelas();
         PreencherCaixaEntrada(3);

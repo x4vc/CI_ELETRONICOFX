@@ -97,7 +97,7 @@
       </SplitPane>
    </left>
    <bottom>
-      <Pane prefHeight="96.0" prefWidth="1280.0" style="-fx-background-color: #FFA500;" BorderPane.alignment="CENTER">
+      <Pane prefHeight="85.0" prefWidth="1280.0" style="-fx-background-color: #FFA500;" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="BASELINE_LEFT" layoutX="5.0" layoutY="10.0" text="Usuario:" />
             <Label fx:id="lblIdUsuario" layoutX="300.0" layoutY="10.0" text="Label" />
@@ -131,7 +131,7 @@
       </Pane>
    </bottom>
    <center>
-      <SplitPane dividerPositions="0.8372781065088757" orientation="VERTICAL" prefHeight="638.0" prefWidth="714.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8207109737248841" orientation="VERTICAL" prefHeight="638.0" prefWidth="714.0" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="566.0" prefWidth="770.0">
                <children>
@@ -145,7 +145,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="18.0" prefWidth="770.0">
                <children>
-                  <Button fx:id="btnAprovarCI" layoutX="130.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnAprovarCI" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnAprovarCI" layoutX="130.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnAprovarCI" prefHeight="35.0" prefWidth="125.0" text="Aprovar CI" wrapText="true" AnchorPane.topAnchor="40.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -154,7 +154,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnEncaminharCI" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnCIEncaminhar" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnEncaminharCI" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnCIEncaminhar" prefHeight="35.0" prefWidth="125.0" text="Encaminhar CI" AnchorPane.topAnchor="40.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -163,7 +163,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnImprimirCI" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnImprimirCI" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnImprimirCI" prefHeight="35.0" prefWidth="125.0" text="Imprimir CI" AnchorPane.topAnchor="40.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -172,7 +172,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnArquivarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnArquivarCI" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnArquivarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnArquivarCI" prefHeight="35.0" prefWidth="125.0" text="Arquivar CI" AnchorPane.topAnchor="40.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -181,7 +181,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnDesarquivarCI" layoutX="505.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnDesarquivarCI" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI" AnchorPane.topAnchor="55.0">
+                  <Button fx:id="btnDesarquivarCI" layoutX="505.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnDesarquivarCI" prefHeight="35.0" prefWidth="125.0" text="Desarquivar CI" AnchorPane.topAnchor="40.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -190,16 +190,34 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <ScrollPane layoutX="30.0" prefHeight="49.0" prefWidth="626.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane layoutX="30.0" prefHeight="32.0" prefWidth="566.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <TextFlow fx:id="txtFAnexos" prefHeight="40.0" prefWidth="560.0">
+                        <TextFlow fx:id="txtFAnexos" prefHeight="28.0" prefWidth="560.0">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
                         </TextFlow>
                      </content>
                   </ScrollPane>
-                  <Label layoutX="14.0" layoutY="25.0" text="Anexos:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="15.0" />
+                  <Label layoutX="14.0" layoutY="25.0" text="Anexos:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="10.0" />
+                  <Button fx:id="btnEditarCI" layoutX="180.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnEditarCI" prefHeight="35.0" prefWidth="125.0" text="Editar CI" AnchorPane.topAnchor="75.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/repeat_green.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnMarcarcomoPendencia" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoPendencia" prefHeight="35.0" prefWidth="175.0" text="Marcar como Pendência" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="75.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/warning.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
             </AnchorPane>
         </items>

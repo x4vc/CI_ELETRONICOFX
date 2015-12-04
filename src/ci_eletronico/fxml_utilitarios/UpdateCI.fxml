@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane dividerPositions="0.871859296482412" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.fxml_utilitarios.UpdateCIController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+         <children>
+            <HTMLEditor fx:id="htmlConteudoParaAtualizar" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="8.0" layoutY="14.0" prefHeight="200.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <Label fx:id="lblSequecial" layoutX="14.0" layoutY="6.0" text="Label" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #FFA500;">
+         <children>
+            <Button fx:id="btnAtualizarCI" layoutX="273.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleBtnAtualizarCI" prefHeight="35.0" prefWidth="110.0" text="Atualizar CI" wrapText="true" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="5.0">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../../resources/repeat_green.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnCancelar" layoutX="442.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleBtnCancelar" prefHeight="35.0" prefWidth="110.0" text="Cancelar" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../../resources/Cancel.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children></AnchorPane>
+  </items>
+</SplitPane>
