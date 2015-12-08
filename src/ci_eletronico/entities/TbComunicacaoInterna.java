@@ -43,7 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor"),
     //@NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 ORDER BY t.coinDataCriacao DESC"),    
     @NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestor", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 ORDER BY t.coinDataCriacao DESC"),    
+    @NamedQuery(name = "TbComunicacaoInterna.findPorAprovarByIdUoGestorPerfil2", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDataCriacao DESC"),    
     @NamedQuery(name = "TbComunicacaoInterna.findByCIsEnviadas", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 0 ORDER BY t.coinDataCriacao DESC"),
+    @NamedQuery(name = "TbComunicacaoInterna.findByCIsEnviadasPerfil2", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDataCriacao DESC"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinAutorizado = :coinAutorizado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinApensamento", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinApensamento = :coinApensamento"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinNumero", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinNumero = :coinNumero"),
@@ -53,6 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinDataAutorizado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinDataAutorizado = :coinDataAutorizado"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinReadOnly", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinReadOnly = :coinReadOnly"),
     @NamedQuery(name = "TbComunicacaoInterna.findByUOArquivado", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 1 ORDER BY t.coinDataCriacao DESC "),
+    @NamedQuery(name = "TbComunicacaoInterna.findByUOArquivadoPerfil2", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional AND t.coinUoArquivado = 1 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDataCriacao DESC "),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinTemAnexos", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinTemAnexos = :coinTemAnexos")})
 public class TbComunicacaoInterna implements Serializable {
     @Basic(optional = false)

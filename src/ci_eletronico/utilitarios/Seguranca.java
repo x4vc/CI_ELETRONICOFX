@@ -5,7 +5,10 @@
  */
 package ci_eletronico.utilitarios;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 /**
@@ -28,6 +31,23 @@ public class Seguranca {
         decodedString = new String(decodedByteArray);
         return decodedString;
         
+    }
+    
+    public static String stringToMD5(String strSenha){
+        String string= strSenha;     
+        try {
+            
+            MessageDigest m;
+            m = MessageDigest.getInstance("MD5");
+            m.update(string.getBytes(),0,string.length()); 
+            BigInteger i = new BigInteger(1, m.digest()); 
+
+            //Formatando o resuldado em uma cadeia de 32 caracteres, completando com 0 caso falte 
+            string = String.format("%1$032X", i); 
+        }catch(NoSuchAlgorithmException e){ 
+            e.printStackTrace(); 
+        }             
+        return string; 
     }
     
 }

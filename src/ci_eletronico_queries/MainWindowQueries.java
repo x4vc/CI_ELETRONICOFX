@@ -13,6 +13,7 @@ import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.Seguranca;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -49,6 +50,18 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+    public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovarPerfil2(int nidUoGestor) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestorPerfil2",TbComunicacaoInterna.class) 
+                .setParameter("idUoGestor", nidUoGestor)                
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
      public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaEnviados(int nidUoRemitente) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         
@@ -57,9 +70,23 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+     public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaEnviadosPerfil2(int nidUoRemitente) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbComunicacaoInterna.findByCIsEnviadasPerfil2",TbComunicacaoInterna.class) 
+                .setParameter("idUnidadeOrganizacional", nidUoRemitente)
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
     public boolean UpdateTrocarSenha(int nIdUsuario, String strNovaSenha)throws Exception{
         try {
-            String strEnc = Seguranca.encriptar(strNovaSenha);
+            String strEnc = "";
+            //strEnc = Seguranca.encriptar(strNovaSenha);
+            strEnc = Seguranca.stringToMD5(strNovaSenha);
             TbUsuario novaSenha = em.find(TbUsuario.class, nIdUsuario);
             
             //Codigo para Create new record
@@ -78,6 +105,25 @@ public class MainWindowQueries {
             return false;            
         }        
     }
+    public boolean UpdateCITbComunicacaoInterna(int nlIdCoin, String strUpdateCI)throws Exception{
+        try {
+            TbComunicacaoInterna CIAtualizada = em.find(TbComunicacaoInterna.class, nlIdCoin);
+            
+            //Codigo para atualizar registro
+            CIAtualizada.setCoinConteudo(strUpdateCI);
+            em.merge(CIAtualizada);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return true;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }
+    }
+   
     
     public boolean UpdateAssinatura(int nlIdUsuario, String strNovaAssinatura)throws Exception{
         try {
@@ -217,6 +263,44 @@ public class MainWindowQueries {
             return false;            
         }
     }
+    public boolean MarcarComoPendenciaCIRecebida(int nlIdCI, int nlButtonSelected) throws Exception{
+        boolean bMarcado = true;
+//        Date data = new Date();
+        try {
+            TbCiDestinatario MarcarComoPendente = em.find(TbCiDestinatario.class, nlIdCI);
+            
+            //Valores dos botões 
+            //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+            //2-caixa de recebidas - btnCaixaEntrada
+            //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+            //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+            //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+            //6-Caixa de enviados - btnCaixaSaida;
+            //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+            switch (nlButtonSelected){
+                case 1:
+                    //Codigo para atualizar registro
+                    MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    break;
+                case 2:
+                    MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    break;
+                case 3:
+                    MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    break;
+            }            
+            em.merge(MarcarComoPendente);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return true;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }
+    }
     public boolean AprovarCIEnviada(int nlIdCI) throws Exception{
         boolean bAprovado = true;
         Date data = new Date();
@@ -293,11 +377,35 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+    public List<TbCiDestinatario> getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbCiDestinatario.findByIdUoGestorDestinatarioPerfil2",TbCiDestinatario.class) 
+                .setParameter("idUoGestorDestinatario", nIdUoDestinatario)
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
     public List<TbCiDestinatario> getlistaCaixaEntrada(int nIdUoDestinatario) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         
         return em.createNamedQuery("TbCiDestinatario.findByIdUoDestinatario",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .getResultList();   
+        
+        }
+    public List<TbCiDestinatario> getlistaCaixaEntradaPerfil2(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbCiDestinatario.findByIdUoDestinatarioPerfil2",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .setParameter("idTipoCoin",nValues)
                 .getResultList();   
         
         }
@@ -309,6 +417,18 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+    public List<TbCiDestinatario> getlistaCaixaEntradaPendenciasPerfil2(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioPendentePerfil2",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
     public List<TbCiDestinatario> getlistaCaixaEntradaArquivados(int nIdUoDestinatario) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         
@@ -317,11 +437,35 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+    public List<TbCiDestinatario> getlistaCaixaEntradaArquivadosPerfil2(int nIdUoDestinatario) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2",TbCiDestinatario.class) 
+                .setParameter("idUoDestinatario", nIdUoDestinatario)
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
     public List<TbComunicacaoInterna> getlistaCaixaSaidaArquivados(int nIdUo) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         
         return em.createNamedQuery("TbComunicacaoInterna.findByUOArquivado",TbComunicacaoInterna.class) 
                 .setParameter("idUnidadeOrganizacional", nIdUo)
+                .getResultList();   
+        
+        }
+    public List<TbComunicacaoInterna> getlistaCaixaSaidaArquivadosPerfil2(int nIdUo) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        return em.createNamedQuery("TbComunicacaoInterna.findByUOArquivadoPerfil2",TbComunicacaoInterna.class) 
+                .setParameter("idUnidadeOrganizacional", nIdUo)
+                .setParameter("idTipoCoin",nValues)
                 .getResultList();   
         
         }

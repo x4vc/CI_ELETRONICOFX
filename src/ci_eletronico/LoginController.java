@@ -108,8 +108,10 @@ public class LoginController implements Initializable {
 
                     String strPassword = pwdSenha.getText();
                     String strEnc = Seguranca.encriptar(strPassword);
+                    String strMD5 = Seguranca.stringToMD5(strPassword);
                     
-                    if(strEnc.equals(l.getUsuSenha())){
+                    //if(strEnc.equals(l.getUsuSenha())){ // Utilizamos Encriptação
+                    if(strMD5.equals(l.getUsuSenha().toUpperCase())){ //Utilizamos MD5
                         ComponentesVisible(true);
                         ComponentesDisable(true);
                         btnAcessar.setDefaultButton(false);

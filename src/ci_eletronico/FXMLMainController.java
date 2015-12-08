@@ -9,15 +9,25 @@ import ci_eletronico.entities.TbAnexo;
 import ci_eletronico.entities.TbCIPorAprovar;
 import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
-import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico_queries.MainWindowQueries;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.ElementHandler;
+import com.itextpdf.tool.xml.Writable;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.tool.xml.pipeline.WritableElement;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,6 +73,7 @@ import javafx.util.Pair;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 
 /**
  *
@@ -270,6 +281,7 @@ public class FXMLMainController implements Initializable {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Trocar senha");
         dialog.setHeaderText(null);
+       
 
         // Set the icon (must be included in the project).
         dialog.setGraphic(new ImageView(this.getClass().getResource("/resources/User_password.png").toString()));
@@ -363,7 +375,7 @@ public class FXMLMainController implements Initializable {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         result.ifPresent(usernamePassword -> {
-            System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+//            System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
         });
     }
     
@@ -424,6 +436,7 @@ public class FXMLMainController implements Initializable {
                 btnEncaminharCI.setDisable(false);
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
+                btnEditarCI.setDisable(true);
                 
                 btnEditarCI.setVisible(false);
                 btnMarcarcomoPendencia.setDisable(true);
@@ -653,6 +666,10 @@ public class FXMLMainController implements Initializable {
         ngTabela = 1; // TB_COMUNICACAO_INTERNA
         ngBotao = 7;
         
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
         //List<TbComunicacaoInterna> listaCiSemAprovar = new ArrayList<>();
         int nIdCoin = 0;
         int nSequencial = 0;
@@ -691,7 +708,11 @@ public class FXMLMainController implements Initializable {
         
         //Deve-se mostrar as Cis para aprovação só para usuário que faz parte da UO Gestora
         if (this.nIdUOGestor == this.nIdUnidadeOrganizacional){
+            if (1 == nlTipoPerfil){ //Perfil Gestor
                 listaCiSemAprovar = consulta.getlistaTbComunicacaoInternaPorAprovar(this.nIdUOGestor);
+            } else {
+                listaCiSemAprovar = consulta.getlistaTbComunicacaoInternaPorAprovarPerfil2(this.nIdUOGestor);
+            }
 
                 for(TbComunicacaoInterna l : listaCiSemAprovar){
                     try {
@@ -1118,29 +1139,73 @@ public class FXMLMainController implements Initializable {
             alert.setContentText("Favor selecionar uma CI da tabela");
             alert.showAndWait();
         }else{            
-                // do something            
-            try{
-                scene = new Scene(new SplitPane());
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/UpdateCI.fxml"));
-                scene.setRoot((Parent) loader.load());
-                
-                ci_eletronico.fxml_utilitarios.UpdateCIController Update_ci_controller = loader.<ci_eletronico.fxml_utilitarios.UpdateCIController>getController();     
-                //Update_ci_controller.setVariaveisAmbienteNovaCI(mainController, nlIdCoinstrIdUsuario, strHtmlConteudo);                
-                
-                Stage stage = new Stage();
-                stage.setTitle("Atualizar CI-eletrônico");
-                //set icon
-                stage.getIcons().add(new Image("/resources/repeat_green.png"));
-
-                stage.setScene(scene);
-                stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
-                stage.showAndWait();
-//                                
-            }catch (IOException ex) {
-                Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                // do something
+            int nlIdCI = 0;
+            String strHtmlUpdateCI = "";
+            
+            nlIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+            strHtmlUpdateCI = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
+            UpdateCI(this,nlIdCI,strHtmlUpdateCI);
+            //Valores dos botões 
+            //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+            //2-caixa de recebidas - btnCaixaEntrada
+            //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+            //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+            //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+            //6-Caixa de enviados - btnCaixaSaida;
+            //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+            int nlButtonSelected = 0;
+            nlButtonSelected = ngBotao;
+            //Refresh da TableView
+            
+            switch(nlButtonSelected){
+                case 1:
+                    btnCaixaEntradaSolicitandoAprovacao.fire();
+                    break;
+                case 2:
+                    btnCaixaEntrada.fire();
+                    break;
+                case 3:
+                    btnCaixaPendencias.fire();
+                    break;
+                case 4:
+                    btnCaixaArquivadas.fire();
+                    break;
+                case 5:
+                    btnCaixaEnviadosArquivados.fire();
+                    break;
+                case 6:
+                    btnCaixaSaida.fire();
+                    break;
+                case 7:
+                    btnPendentesAprovacao.fire();
+                    break;
+                default:
+                    break;                
+            } 
         }
-        
+    }
+    public void UpdateCI(FXMLMainController mainController, int nlIdCI, String strHtmlUpdateCI){
+        try{
+            scene = new Scene(new SplitPane());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/UpdateCI.fxml"));
+            scene.setRoot((Parent) loader.load());
+
+            ci_eletronico.fxml_utilitarios.UpdateCIController Update_ci_controller = loader.<ci_eletronico.fxml_utilitarios.UpdateCIController>getController();     
+            Update_ci_controller.setVariaveisAmbienteUpdateCI(mainController, nlIdCI, strHtmlUpdateCI);                
+
+            Stage stage = new Stage();
+            stage.setTitle("Atualizar CI-eletrônico");
+            //set icon
+            stage.getIcons().add(new Image("/resources/repeat_green.png"));
+
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
+            stage.showAndWait();
+//                                
+        }catch (IOException ex) {
+            Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @FXML
@@ -1163,6 +1228,29 @@ public class FXMLMainController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
                 // do something
+                nBotao = this.ngBotao;
+                nTabela = this.ngTabela;
+                
+                // Aprovamos CI
+                //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
+                // 0 ==> Sem tabela definida
+                // 1 ==> TB_COMUNICACAO_INTERNA
+                // 2 ==> TB_CI_DESTINATARIO
+                switch (nTabela){
+                    case 1: // 1 ==> TB_COMUNICACAO_INTERNA
+                        nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                        MarcarComoPendente(nIdCI, 1);
+                        //TableViewRefresh(nBotao);
+                        break;
+                    case 2: // 2 ==> TB_CI_DESTINATARIO
+                        nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoinDestinatario();
+                        MarcarComoPendente(nIdCI, 2);                        
+                        //TableViewRefresh(nBotao);
+                        break;
+                        
+                    default:
+                        break;
+                }
             }
             else{
                 //...do nothing
@@ -1400,6 +1488,100 @@ public class FXMLMainController implements Initializable {
         }
         
     }
+    
+     private void MarcarComoPendente(int nlIdCI, int nlTabela){
+        boolean bUpdate = false;        
+        
+        //Valores dos botões 
+        //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+        //2-caixa de recebidas - btnCaixaEntrada
+        //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+        //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+        //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+        //6-Caixa de enviados - btnCaixaSaida;
+        //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+        int nlButtonSelected = 0;
+        nlButtonSelected = ngBotao;
+        
+        consulta  = new MainWindowQueries();          
+        //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
+        // 0 ==> Sem tabela definida
+        // 1 ==> TB_COMUNICACAO_INTERNA
+        // 2 ==> TB_CI_DESTINATARIO
+        switch (nlTabela){
+            case 1:
+                //Tabela TB_COMUNICACAO_INTERNA não possui campo para setear 
+                // registro como marcar como pendencia
+//                try{                    
+//                    bUpdate = consulta.ArquivarCIEnviada(nlIdCI, nlButtonSelected);
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                    Alert alert = new Alert(Alert.AlertType.ERROR);
+//                    alert.setTitle("CI - Marcar como pendência");
+//                    alert.setHeaderText("Tabela TB_COMUNICACAO_INTERNA");
+//                    alert.setContentText(e.getMessage());
+//                    alert.showAndWait();                                            
+//                }    
+                break;
+            case 2:
+                try{
+                    bUpdate = consulta.MarcarComoPendenciaCIRecebida(nlIdCI, nlButtonSelected);                    
+                }catch(Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("CI - Marcar como pendência");
+                    alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+                    alert.setContentText(e.getMessage());
+                    alert.showAndWait();                                            
+                }
+                break;
+            default:
+                break;
+        }
+        if (bUpdate){
+//                        System.out.println("IdUsuario = " + nIdUserUO);
+//                        System.out.println("Update deve acontecer");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText(null);
+            alert.setContentText("CI foi marcada como pendência com sucesso.");
+            alert.showAndWait();    
+            
+            //Refresh da TableView
+            switch(nlButtonSelected){
+                case 1:
+                    btnCaixaEntradaSolicitandoAprovacao.fire();
+                    break;
+                case 2:
+                    btnCaixaEntrada.fire();
+                    break;
+                case 3:
+                    btnCaixaPendencias.fire();
+                    break;
+                case 4:
+                    btnCaixaArquivadas.fire();
+                    break;
+                case 5:
+                    btnCaixaEnviadosArquivados.fire();
+                    break;
+                case 6:
+                    btnCaixaSaida.fire();
+                    break;
+                case 7:
+                    btnPendentesAprovacao.fire();
+                    break;
+                default:
+                    break;                
+            } 
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Não foi possível marcar como pendência");
+            alert.setContentText("Favor contatar o Administrador do sistema");
+            alert.showAndWait();
+        }
+        
+    }
     @FXML
     private void handleBtnDesarquivarCI(ActionEvent event) throws IOException {
         if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
@@ -1458,11 +1640,56 @@ public class FXMLMainController implements Initializable {
             alert.setContentText("Favor selecionar uma CI da tabela");
             alert.showAndWait();
         }else{
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informação");
-            alert.setHeaderText("Imprimir CI");
-            alert.setContentText("Funcionalidade será disponibilizada em breve");
-            alert.showAndWait();
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("Informação");
+//            alert.setHeaderText("Imprimir CI");
+//            alert.setContentText("Funcionalidade será disponibilizada em breve");
+//            alert.showAndWait();
+            
+            final Document document = new Document();
+            try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("c:/Temp/teste.pdf"));
+            } catch (IOException | DocumentException e) {
+                System.out.println(e.toString());
+                System.out.println(e.getMessage());
+            }
+            document.open();
+
+            //String htmlString = htmlEditorCI.getHtmlText();
+            String htmlString = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
+            LineSeparator ls = new LineSeparator();
+
+            htmlString = htmlString.replace("<br>", "\n");
+            htmlString = htmlString.replace("<br/>", "");
+            htmlString = htmlString.replace("<br />", "");
+
+//            htmlString = htmlString.replace("<hr>", "<p></p>");
+//            htmlString = htmlString.replace("<hr/>", "<p></p>");
+//            htmlString = htmlString.replace("<hr />", "<p></p>");
+
+            StringReader in = new StringReader(htmlString);
+
+            try {
+                final Paragraph test = new Paragraph();
+                XMLWorkerHelper.getInstance().parseXHtml(new ElementHandler() {
+                    @Override
+                    public void add(final Writable w) {
+                        if (w instanceof WritableElement) {
+                            List<Element> elements = ((WritableElement) w).elements();
+                            for (Element e : elements) {
+                                test.add(e);
+                            }
+                        }
+                    }
+                }, in);
+
+                document.add(test);
+            } catch (IOException | DocumentException e) {
+                System.out.println(e.toString());
+                System.out.println(e.getMessage());
+            }
+
+            document.close();
         }
     }
     
@@ -1695,6 +1922,10 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         //----------------------------------------------------------
         
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
         obslistaTbCIPorAprovar = FXCollections.observableArrayList();
         
         //Iniciamos a criação da TableView
@@ -1717,12 +1948,20 @@ public class FXMLMainController implements Initializable {
             case 6: //6-Caixa de enviados
                 ngBotao = 6;
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
-                listaComunicacaoInterna = consulta.getlistaTbComunicacaoInternaEnviados(this.nIdUnidadeOrganizacional);
+                if (1 == nlTipoPerfil){ //Perfil Gestor
+                    listaComunicacaoInterna = consulta.getlistaTbComunicacaoInternaEnviados(this.nIdUnidadeOrganizacional);                    
+                } else {
+                    listaComunicacaoInterna = consulta.getlistaTbComunicacaoInternaEnviadosPerfil2(this.nIdUnidadeOrganizacional);
+                }
                 break;
             case 5: //5-Caixa de enviados (arquivadas)
                 ngBotao = 5;
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
-                listaComunicacaoInterna = consulta.getlistaCaixaSaidaArquivados(this.nIdUnidadeOrganizacional);
+                if (1 == nlTipoPerfil){ //Perfil Gestor
+                    listaComunicacaoInterna = consulta.getlistaCaixaSaidaArquivados(this.nIdUnidadeOrganizacional);
+                } else {
+                    listaComunicacaoInterna = consulta.getlistaCaixaSaidaArquivadosPerfil2(this.nIdUnidadeOrganizacional);
+                }
                 break;                
         }        
         
@@ -1952,6 +2191,10 @@ public class FXMLMainController implements Initializable {
         int nIdCoin = 0;
         int nIdTipoEnvio = 0;
         
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
         //Iniciamos a criação da TableView
         List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
         ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();       
@@ -1965,18 +2208,31 @@ public class FXMLMainController implements Initializable {
                 ngBotao = 1;
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 btnAprovarCI.setDisable(false);
-                listaCiDestinatario = consulta.getlistaCaixaEntradaSolicitandoAprovacao(this.nIdUnidadeOrganizacional);
+                if (1 == nlTipoPerfil){ //Perfil Gestor
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaSolicitandoAprovacao(this.nIdUnidadeOrganizacional);
+                } else {
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(this.nIdUnidadeOrganizacional);                    
+                }
+                
                 break;
             case 2: //caixa de recebidas
                 ngBotao = 2;
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 btnAprovarCI.setDisable(true);
-                listaCiDestinatario = consulta.getlistaCaixaEntrada(this.nIdUnidadeOrganizacional);
+                if (1 == nlTipoPerfil){ //Perfil Gestor
+                    listaCiDestinatario = consulta.getlistaCaixaEntrada(this.nIdUnidadeOrganizacional);
+                } else {
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPerfil2(this.nIdUnidadeOrganizacional);
+                }
                 break;
             case 3: //caixa de recebidas (pendencias)
                 ngBotao = 3;
                 ngTabela = 2; // TB_CI_DESTINATARIO
-                listaCiDestinatario = consulta.getlistaCaixaEntradaPendencias(this.nIdUnidadeOrganizacional);
+                if (1 == nlTipoPerfil){ //Perfil Gestor
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendencias(this.nIdUnidadeOrganizacional);
+                } else {
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendenciasPerfil2(this.nIdUnidadeOrganizacional);
+                }
                 break;
             case 4: //caixa de recebidas (arquivadas)
                 ngBotao = 4;
@@ -1985,7 +2241,11 @@ public class FXMLMainController implements Initializable {
 //                if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
 //                    listaCiDestinatario = consulta.getlistaGestorCaixaEntradaArquivados(this.nIdUnidadeOrganizacional);
 //                } else {
+                if (1 == nlTipoPerfil){ //Perfil Gestor
                     listaCiDestinatario = consulta.getlistaCaixaEntradaArquivados(this.nIdUnidadeOrganizacional);
+                } else {
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaArquivadosPerfil2(this.nIdUnidadeOrganizacional);
+                }
 //                }
                 break;
             default:
