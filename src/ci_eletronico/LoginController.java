@@ -76,6 +76,7 @@ public class LoginController implements Initializable {
     private String strDescricaoPerfil = "";
     private String strHtmlAssinatura = "";
     private int nIdUOGestor = 0;
+    private String strgUserLogin = "";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -112,6 +113,7 @@ public class LoginController implements Initializable {
                     
                     //if(strEnc.equals(l.getUsuSenha())){ // Utilizamos Encriptação
                     if(strMD5.equals(l.getUsuSenha().toUpperCase())){ //Utilizamos MD5
+                        this.strgUserLogin = strUserLogin;
                         ComponentesVisible(true);
                         ComponentesDisable(true);
                         btnAcessar.setDefaultButton(false);
@@ -171,7 +173,7 @@ public class LoginController implements Initializable {
                             
 //                                                       
                             //Mostramos MainWindow com dados do usuário logado
-                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
+                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin);
 
                         } else {
                             // Show the error message.
@@ -257,7 +259,7 @@ public class LoginController implements Initializable {
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
         
-        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
+        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin );
       
         
     }
@@ -274,14 +276,14 @@ public class LoginController implements Initializable {
     }
     
     private void ShowMainWindowCIe(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor, String strlUserLogin){
         try{
             
                 scene = new Scene(new BorderPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
                 scene.setRoot((Parent) loader.load());
                 FXMLMainController controller = loader.<FXMLMainController>getController();
-                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor);
+                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strlUserLogin);
 
                 Stage stage = new Stage();
                 stage.setTitle("CI-eletrônico");

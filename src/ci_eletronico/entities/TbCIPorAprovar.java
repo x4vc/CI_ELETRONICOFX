@@ -50,6 +50,9 @@ public class TbCIPorAprovar {
     private StringProperty strp_UnorDescricaoGenesis;
     //-------------------------------------------------------------------------    
     
+    //Assinatura
+    private StringProperty strp_CoinAssinatura;
+    
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
     //por tanto, não existe fisicamente mapeado para tabela nenhuma
@@ -95,6 +98,7 @@ public class TbCIPorAprovar {
     public TbCIPorAprovar() {
     }
     
+    //Construtor utilizado para TB_COMUNICACAO_INTERNA
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
             Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 
             String strUO, Integer nIdUOGestor, boolean bAutorizado, 
@@ -102,7 +106,8 @@ public class TbCIPorAprovar {
             boolean bArquivadoUO, boolean bArquivadoUOGestor, Date dataCriacao,
             String strDataCriacao, Date dataAutorizado, boolean bCoinReadOnly, 
             boolean bCoinTemAnexos, Integer nIdTabelaFonte,
-            Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis) {
+            Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
+            String strp_DescricaoUODestinatario /*variavel String sempre vazio*/) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -130,6 +135,10 @@ public class TbCIPorAprovar {
         this.intp_CoinNumeroGenesis = new SimpleIntegerProperty(intp_CoinNumeroGenesis);
         this.strp_CoinHistoricoAnexos = new SimpleStringProperty(strp_CoinHistoricoAnexos) ;
         this.strp_UnorDescricaoGenesis = new SimpleStringProperty(strp_UnorDescricaoGenesis);
+        
+        //this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
+        
+        this.strp_DescricaoUODestinatario = new SimpleStringProperty(strp_DescricaoUODestinatario); // sempre string vazio para compatibilidade com o TableView
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -161,7 +170,7 @@ public class TbCIPorAprovar {
             boolean boolp_ReadOnlyUODestinatario, boolean boolp_CoinTemAnexos, boolean boolp_AutorizadoPeloGestorRemitente, 
             String strp_dataCriacao, Integer intp_idTabelaFonte, 
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
-            Integer nTipoCoin) {
+            Integer nTipoCoin, String strp_CoinAssinatura ) {
         this.intp_idCoinDestinatario = new SimpleIntegerProperty(intp_idCoinDestinatario);
         this.intp_idCoin = new SimpleIntegerProperty(intp_idCoin);
         this.intp_idUsuarioRemitente = new SimpleIntegerProperty(intp_idUsuarioRemitente);
@@ -196,6 +205,8 @@ public class TbCIPorAprovar {
         this.strp_UnorDescricaoGenesis = new SimpleStringProperty(strp_UnorDescricaoGenesis);
         
         intp_idTipoCoin = new SimpleIntegerProperty(nTipoCoin);
+        
+        this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
     }
     
 //    //Metodos para TableView
@@ -622,6 +633,14 @@ public class TbCIPorAprovar {
 
     public void setStrp_UnorDescricaoGenesis(String strp_UnorDescricaoGenesis) {
         this.strp_UnorDescricaoGenesis.setValue(strp_UnorDescricaoGenesis);
+    }
+
+    public String getStrp_CoinAssinatura() {
+        return strp_CoinAssinatura.getValue();
+    }
+
+    public void setStrp_CoinAssinatura(String strp_CoinAssinatura) {
+        this.strp_CoinAssinatura.setValue(strp_CoinAssinatura);
     }
     
     

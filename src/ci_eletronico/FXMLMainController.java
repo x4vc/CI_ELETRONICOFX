@@ -134,6 +134,8 @@ public class FXMLMainController implements Initializable {
     @FXML
     private TableColumn ClIdCoin;
     @FXML
+    private TableColumn ClUODestinatario;
+    @FXML
     private TableColumn ClDataEnvio; 
     @FXML
     private TableColumn ClUORemitente; 
@@ -191,6 +193,7 @@ public class FXMLMainController implements Initializable {
     private int nTipoCI = 0;
     private int nIdUOGestor = 0;
     private int nIdUnidadeOrganizacional = 0;
+    private String strgUserLogin = "";
     
     //private MainWindowQueries consulta = new MainWindowQueries();
     private MainWindowQueries consulta;
@@ -380,7 +383,7 @@ public class FXMLMainController implements Initializable {
     }
     
     public void setVariaveisAmbiente(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor, String strlUserLogin) {
         lblIdUsuario.setText(strIdUsuario);
         lblNomeUsuario.setText(strNomeUsuario);
         lblIdUO.setText(strIdUO);
@@ -395,6 +398,7 @@ public class FXMLMainController implements Initializable {
         //System.out.print("Tipo de Perfil metodo setVariaveisAmbiente = " + nTipoPerfil);
         nIdUnidadeOrganizacional = Integer.parseInt(strIdUO);
         nIdUsuarioLogado = Integer.parseInt(strIdUsuario);
+        this.strgUserLogin = strlUserLogin;
         
         setBotoesMainWindow(nTipoPerfil);
         
@@ -499,7 +503,8 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis);
+                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                strgUserLogin);
                         
     }
     @FXML
@@ -522,7 +527,8 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis);
+                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                strgUserLogin);
         
     }
     @FXML
@@ -545,7 +551,8 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis);
+                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                strgUserLogin);
         
     }
     @FXML
@@ -559,7 +566,9 @@ public class FXMLMainController implements Initializable {
             alert.showAndWait();
         }else{
             String strHtmlConteudo = "";
+            String strlAssinatura = "";
             strHtmlConteudo = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
+            strlAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
             strIdUsuario = lblIdUsuario.getText();
             strNomeUsuario = lblNomeUsuario.getText();
             strIdUO = lblIdUO.getText();
@@ -590,12 +599,14 @@ public class FXMLMainController implements Initializable {
                 strCoinHistoricoAnexos = strCoinHistoricoAnexos.concat(sb.toString());
             }
             ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-            nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis);
+            nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+            strlAssinatura);
         }
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, String strIdUO, String strNomeUO, String strIdPerfil, 
             String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
-            int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis){
+            int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
+            String strlUserLogin){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
@@ -604,7 +615,8 @@ public class FXMLMainController implements Initializable {
                 ci_eletronico.nova_ci.NovaCIController nova_ci_controller = loader.<ci_eletronico.nova_ci.NovaCIController>getController();     
                 nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, 
                         strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-                        nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis);
+                        nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                        strlUserLogin);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();
@@ -701,6 +713,9 @@ public class FXMLMainController implements Initializable {
         int nlCoinNumeroGenesis = 0;
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
+        //-------------------------------------------
+        
+        String strlDescricaoUODestinatario = "";
         
         obslistaTbCIPorAprovar = FXCollections.observableArrayList();
         
@@ -749,7 +764,8 @@ public class FXMLMainController implements Initializable {
                         obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                                 nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                                 dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
-                                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis));
+                                nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                                strlDescricaoUODestinatario));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -760,6 +776,7 @@ public class FXMLMainController implements Initializable {
                     }
                 //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
                 ClIdCoin.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+                ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
                 ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
                 ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
                 ClAutorRemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_UsuarioNomeCompleto"));        
@@ -800,7 +817,7 @@ public class FXMLMainController implements Initializable {
                             strYear = df.format(dataCriacao);
 
                             htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                            lblNumeroSequencialCI.setText(strDescricaoUO + " " + String.format("%05d",nCISequencial)+"/" + strYear);
+                            lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                             if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                                 PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                             }
@@ -1922,6 +1939,8 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         //----------------------------------------------------------
         
+        String strlDescricaoUODestinatario = "";
+        
         //Tipo de perfil
         int nlTipoPerfil = 0;
         nlTipoPerfil = this.nTipoPerfil;
@@ -2001,7 +2020,8 @@ public class FXMLMainController implements Initializable {
                 obslistaTbCaixaSaida.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                         nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                         dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
-                        nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis));
+                        nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                        strlDescricaoUODestinatario));
             } catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -2012,6 +2032,7 @@ public class FXMLMainController implements Initializable {
             }
         //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
         ClIdCoin.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+        ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
         ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
         ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
         ClAutorRemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_UsuarioNomeCompleto"));        
@@ -2059,7 +2080,7 @@ public class FXMLMainController implements Initializable {
                     strYear = df.format(dataCriacao);
                     
                     htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                    lblNumeroSequencialCI.setText(strDescricaoUO + " " + String.format("%05d",nCISequencial)+"/" + strYear);
+                    lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                     if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                         PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                     } 
@@ -2195,6 +2216,9 @@ public class FXMLMainController implements Initializable {
         int nlTipoPerfil = 0;
         nlTipoPerfil = this.nTipoPerfil;
         
+        //Assinatura MD5
+        String strlAssinatura = "";
+        
         //Iniciamos a criação da TableView
         List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
         ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();       
@@ -2288,6 +2312,8 @@ public class FXMLMainController implements Initializable {
             
             nlTipoCoin = l.getIdTipoCoin().getIdTipoCoin();
             
+            strlAssinatura = l.getCoinAssinatura();
+            
             strDataCriacao = df.format(dataCriacao);
             obslistaTbCaixaEntrada.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
                     strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
@@ -2297,11 +2323,12 @@ public class FXMLMainController implements Initializable {
                     bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
                     bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                    nlTipoCoin));
+                    nlTipoCoin, strlAssinatura));
             
             System.out.println();
         }
         ClIdCoin.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+        ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
         ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
         ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
         ClAutorRemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_UsuarioNomeCompleto"));        
@@ -2342,7 +2369,7 @@ public class FXMLMainController implements Initializable {
                     strYear = df.format(dataCriacao);
                     
                     htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                    lblNumeroSequencialCI.setText(strDescricaoUO + " " + String.format("%05d",nCISequencial)+"/" + strYear);
+                    lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                     if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                         PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                     }                    

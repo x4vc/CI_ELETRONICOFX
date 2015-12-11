@@ -14,6 +14,7 @@ import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController;
+import ci_eletronico.utilitarios.Seguranca;
 import ci_eletronico_queries.MainWindowQueries;
 import java.awt.Desktop;
 import java.io.File;
@@ -77,6 +78,7 @@ public class NovaCIController implements Initializable {
     private String strHtmlEncaminharConteudo = "";
     private int nTipoCI = 0;
     private int nIdUOGestor = 0;
+    private String strgUserLogin = "";
     
     EntityManager em;
     EntityManagerFactory emf;
@@ -137,7 +139,8 @@ public class NovaCIController implements Initializable {
     public void setVariaveisAmbienteNovaCI(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, 
                                         String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, 
                                         int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
-                                        int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis) {
+                                        int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
+                                        String strlUserLogin) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -157,6 +160,7 @@ public class NovaCIController implements Initializable {
         nIdUsuario = Integer.parseInt(strIdUsuario);        
         nTipoPerfil = Integer.parseInt(strIdPerfil);
         nIdUO = Integer.parseInt(strIdUO);
+        strgUserLogin = strlUserLogin;
         
         //Preencher o editor Html com assinatura do usuário
         htmlEditor.setHtmlText(this.strHtmlAssinatura);
@@ -542,6 +546,9 @@ public class NovaCIController implements Initializable {
         int nlCoinNumeroGenesis = 0;
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
+        
+        //Variavel para salvar Assinatura em formato MD5
+        String strMD5Assinatura = "";
         //----------------------------------------------------------------------
         
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
@@ -560,7 +567,9 @@ public class NovaCIController implements Initializable {
         
         //Seteamos Datas
         String strToday = "";
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strTodayCI = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // utilizado para banco de dados
+        DateFormat dfCI = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // utilizado para mostrar na aplicação
         java.util.Date data_criacao; 
         java.util.Date data_autorizado;
         Calendar data = Calendar.getInstance();
@@ -568,6 +577,11 @@ public class NovaCIController implements Initializable {
         int nSize = 0;
         data_criacao = new Date();
         strToday = df.format(data_criacao);        
+        strTodayCI = dfCI.format(data_criacao); 
+        
+        //Seteamos Assinatura MD5
+        strMD5Assinatura = Seguranca.stringToMD5(new java.util.Date().toString() + strgUserLogin);
+        //---------------------------------------
         
         //Seteamos entity TB_COMUNICACAO_INTERNA e TB_CI_DESTINATARIO
         TbTipoComunicacoInterna TipoCI = new TbTipoComunicacoInterna(nTipoCI);
@@ -599,7 +613,7 @@ public class NovaCIController implements Initializable {
         } else {
             bCoinAutorizado = false;
         }
-        
+                
         //Seteamos variavel e html Para:
         ObservableList<Node> nodesPara = txtFPara.getChildren();
         StringBuilder sbPara = new StringBuilder();
@@ -625,7 +639,7 @@ public class NovaCIController implements Initializable {
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI</FONT></b><br>";
                 strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
                 strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("Data criação: " + data_criacao + "<br><br>");
+                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
                 strPara = strPara.concat("Para: <b>");
                 break;
             case 2:
@@ -633,6 +647,7 @@ public class NovaCIController implements Initializable {
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CIRCULAR</FONT></b><br>";
                 strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
                 strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
                 strPara = strPara.concat("Para: <b>");
                 break;
             case 3:
@@ -640,6 +655,7 @@ public class NovaCIController implements Initializable {
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b><br>";
                 strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
                 strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
                 strPara = strPara.concat("Para: <b>");
                 break;
             case 4:
@@ -647,6 +663,7 @@ public class NovaCIController implements Initializable {
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b><br>";
                 strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
                 strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
                 strPara = strPara.concat("Para: <b>");
                 break;
             default:
@@ -820,6 +837,10 @@ public class NovaCIController implements Initializable {
                     strCoinHistoricoAnexos = this.strCoinHistoricoAnexos;
                     strUnorDescricaoGenesis = this.strUnorDescricaoGenesis;
                     
+                    // O valor MD5 da Assinatura é feito através da utilização
+                    // da variavel globlal strgUserLogin
+                    strMD5Assinatura = this.strgUserLogin; 
+                    
                 }else{
                     nSequencialUO = Resultado.intValue();
                     nSequencialUO++;
@@ -862,6 +883,10 @@ public class NovaCIController implements Initializable {
             strCoinHistoricoAnexos = this.strCoinHistoricoAnexos;
             strUnorDescricaoGenesis = this.strUnorDescricaoGenesis;
             
+            // O valor MD5 da Assinatura é feito através da utilização
+            // da variavel globlal strgUserLogin
+            strMD5Assinatura = this.strgUserLogin; 
+            
         }
         //Seteamos entity TB_COMUNICACAO_INTERNA
 
@@ -891,6 +916,8 @@ public class NovaCIController implements Initializable {
         newTbCI.setCoinNumeroGenesis(nlCoinNumeroGenesis);
         newTbCI.setCoinHistoricoAnexos(strCoinHistoricoAnexos);
         newTbCI.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
+        
+        newTbCI.setCoinAssinatura(strMD5Assinatura);
         
         em.persist(newTbCI);
         em.flush();
@@ -1001,6 +1028,8 @@ public class NovaCIController implements Initializable {
             //----------------------------------
             newTbCIDestinatario.setIdTipoCoin(TipoCI);
             
+            newTbCIDestinatario.setCoinAssinatura(strMD5Assinatura);
+            
             em.persist(newTbCIDestinatario);            
         }
         }catch(javax.persistence.PersistenceException e){
@@ -1068,6 +1097,7 @@ public class NovaCIController implements Initializable {
                 newTbCIDestinatario.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
                 //------------------------------------------
                 newTbCIDestinatario.setIdTipoCoin(TipoCI);
+                newTbCIDestinatario.setCoinAssinatura(strMD5Assinatura);
                 em.persist(newTbCIDestinatario);            
             }
             }catch(javax.persistence.PersistenceException e){
