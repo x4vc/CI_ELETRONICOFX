@@ -107,7 +107,8 @@ public class TbCIPorAprovar {
             String strDataCriacao, Date dataAutorizado, boolean bCoinReadOnly, 
             boolean bCoinTemAnexos, Integer nIdTabelaFonte,
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
-            String strp_DescricaoUODestinatario /*variavel String sempre vazio*/) {
+            String strp_DescricaoUODestinatario, /*variavel String sempre vazio*/
+            String strp_CoinAssinatura) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -136,9 +137,9 @@ public class TbCIPorAprovar {
         this.strp_CoinHistoricoAnexos = new SimpleStringProperty(strp_CoinHistoricoAnexos) ;
         this.strp_UnorDescricaoGenesis = new SimpleStringProperty(strp_UnorDescricaoGenesis);
         
-        //this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
-        
         this.strp_DescricaoUODestinatario = new SimpleStringProperty(strp_DescricaoUODestinatario); // sempre string vazio para compatibilidade com o TableView
+        
+        this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 

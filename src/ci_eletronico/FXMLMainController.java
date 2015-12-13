@@ -21,7 +21,11 @@ import com.itextpdf.tool.xml.Writable;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.itextpdf.tool.xml.pipeline.WritableElement;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.ExceptionConverter;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.tool.xml.ElementList;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,12 +79,73 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 
+
 /**
  *
  * @author victorcmaf
  */
 public class FXMLMainController implements Initializable {
 //public class FXMLMainController {
+    
+    public static final String HEADER =
+    //"<table width=\"100%\" border=\"0\"><tr><td>Header</td><td align=\"right\">Some title</td></tr></table>";
+    "<table width=\"100%\" border=\"0\"><tr><td><img src=\"resources\\logo_prefeitura_salvador.png\" alt=\"\"/></td><td align=\"right\">Some title</td></tr></table>";
+    public String FOOTER = "";
+    //"<table width=\"100%\" border=\"0\"><tr><td>Footer</td><td align=\"right\">Some title</td></tr></table>";
+    
+  
+    
+    public class MyFooter extends PdfPageEventHelper {
+    protected ElementList header;
+    protected ElementList footer;
+    public MyFooter() throws IOException {
+        header = XMLWorkerHelper.parseToElementList(HEADER, null);
+        footer = XMLWorkerHelper.parseToElementList(FOOTER, null);
+    }
+    public MyFooter(String strCIAssinatura) throws IOException{
+        FOOTER = "<table width=\"100%\" border=\"0\"><tr><td>"+ strCIAssinatura +"</td><td align=\"right\">Some title</td></tr></table>";
+        header = XMLWorkerHelper.parseToElementList(HEADER, null);
+        footer = XMLWorkerHelper.parseToElementList(FOOTER, null);
+        
+        
+    }
+    @Override
+    public void onEndPage(PdfWriter writer, Document document) {
+        try {
+            ColumnText ct = new ColumnText(writer.getDirectContent());
+            ct.setSimpleColumn(new Rectangle(36, 832, 559, 810));
+            for (Element e : header) {
+                ct.addElement(e);
+            }
+            ct.go();
+            ct.setSimpleColumn(new Rectangle(36, 10, 559, 32));
+            for (Element e : footer) {
+                ct.addElement(e);
+            }
+            ct.go();
+        } catch (DocumentException de) {
+            throw new ExceptionConverter(de);
+        }
+    }
+}
+    
+//    class MyFooter extends PdfPageEventHelper {
+//        com.itextpdf.text.Font ffont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.UNDEFINED, 5, com.itextpdf.text.Font.ITALIC);
+//
+//        public void onEndPage(PdfWriter writer, Document document) {
+//        PdfContentByte cb = writer.getDirectContent();
+//        Phrase header = new Phrase("this is a header", ffont);
+//        Phrase footer = new Phrase("this is a footer", ffont);
+//        ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+//            header,
+//            (document.right() - document.left()) / 2 + document.leftMargin(),
+//            document.top() + 10, 0);
+//        ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+//            footer,
+//            (document.right() - document.left()) / 2 + document.leftMargin(),
+//            document.bottom() - 10, 0);
+//        }
+//   }
     
     @FXML
     private Label lblIdUsuario;    
@@ -717,6 +782,9 @@ public class FXMLMainController implements Initializable {
         
         String strlDescricaoUODestinatario = "";
         
+        //Assinatura MD5
+        String strlAssinatura = "";
+        
         obslistaTbCIPorAprovar = FXCollections.observableArrayList();
         
         consulta  = new MainWindowQueries();
@@ -757,6 +825,8 @@ public class FXMLMainController implements Initializable {
                     nlCoinNumeroGenesis = l.getCoinNumeroGenesis();
                     strCoinHistoricoAnexos = l.getCoinHistoricoAnexos();
                     strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();
+                    
+                    strlAssinatura = l.getCoinAssinatura();
 
 
         //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
@@ -765,7 +835,8 @@ public class FXMLMainController implements Initializable {
                                 nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                                 dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                                strlDescricaoUODestinatario));
+                                strlDescricaoUODestinatario,
+                                strlAssinatura));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -1657,15 +1728,24 @@ public class FXMLMainController implements Initializable {
             alert.setContentText("Favor selecionar uma CI da tabela");
             alert.showAndWait();
         }else{
+            
+ 
 //            Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //            alert.setTitle("Informação");
 //            alert.setHeaderText("Imprimir CI");
 //            alert.setContentText("Funcionalidade será disponibilizada em breve");
 //            alert.showAndWait();
-            
+            String strFileName = this.lblNumeroSequencialCI.getText();
+            String strUserHome = System.getProperty("user.home") + "\\Downloads\\BLOB\\" + strFileName + ".pdf";
             final Document document = new Document();
             try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("c:/Temp/teste.pdf"));
+            String strCIAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+            //PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("c:/Temp/teste.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(strUserHome));
+            
+            MyFooter evento = new MyFooter(strCIAssinatura);
+            writer.setPageEvent(evento);
+            
             } catch (IOException | DocumentException e) {
                 System.out.println(e.toString());
                 System.out.println(e.getMessage());
@@ -1674,15 +1754,20 @@ public class FXMLMainController implements Initializable {
 
             //String htmlString = htmlEditorCI.getHtmlText();
             String htmlString = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
-            LineSeparator ls = new LineSeparator();
-
-            htmlString = htmlString.replace("<br>", "\n");
-            htmlString = htmlString.replace("<br/>", "");
-            htmlString = htmlString.replace("<br />", "");
+            //String strCIAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+           
+            
+//            htmlString = htmlString.replace("<br>", "\n");
+//            htmlString = htmlString.replace("<br/>", "\n");
+//            htmlString = htmlString.replace("<br />", "\n");
+            
+            htmlString = htmlString.replace("<br>", "<br />");
 
 //            htmlString = htmlString.replace("<hr>", "<p></p>");
 //            htmlString = htmlString.replace("<hr/>", "<p></p>");
 //            htmlString = htmlString.replace("<hr />", "<p></p>");
+            
+            htmlString = htmlString.replace("<hr>", "<hr />");
 
             StringReader in = new StringReader(htmlString);
 
@@ -1706,7 +1791,13 @@ public class FXMLMainController implements Initializable {
                 System.out.println(e.getMessage());
             }
 
-            document.close();
+            document.close(); 
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText("Imprimir CI: " + strFileName );
+            alert.setContentText("Arquivo pdf criado com sucesso na pasta Downloads");
+            alert.showAndWait();
         }
     }
     
@@ -1941,6 +2032,10 @@ public class FXMLMainController implements Initializable {
         
         String strlDescricaoUODestinatario = "";
         
+        //Assinatura MD5
+        String strlAssinatura = "";
+        
+        
         //Tipo de perfil
         int nlTipoPerfil = 0;
         nlTipoPerfil = this.nTipoPerfil;
@@ -2011,7 +2106,9 @@ public class FXMLMainController implements Initializable {
             nlIdUnorGenesis = l.getIdUnorGenesis();
             nlCoinNumeroGenesis = l.getCoinNumeroGenesis();
             strCoinHistoricoAnexos = l.getCoinHistoricoAnexos();
-            strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();           
+            strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();  
+            
+            strlAssinatura = l.getCoinAssinatura();
             
             
             
@@ -2021,7 +2118,8 @@ public class FXMLMainController implements Initializable {
                         nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                         dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                        strlDescricaoUODestinatario));
+                        strlDescricaoUODestinatario,
+                        strlAssinatura));
             } catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");

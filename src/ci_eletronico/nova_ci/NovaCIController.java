@@ -145,7 +145,7 @@ public class NovaCIController implements Initializable {
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
         this.strDescricaoPerfil = strDescricaoPerfil;
-        this.strHtmlAssinatura = "<br><br><br>" + strHtmlAssinatura;
+        this.strHtmlAssinatura = "<br /><br /><br />" + strHtmlAssinatura;
         this.strHtmlEncaminharConteudo = strHtmlConteudo;
         
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
@@ -636,35 +636,35 @@ public class NovaCIController implements Initializable {
         switch (nTipoCI){
             case 1:
                 //CI-eletrônico
-                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI</FONT></b><br>";
-                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
-                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
-                strPara = strPara.concat("Para: <b>");
+                strPara = "<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI</FONT></b><br />";
+                strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br />");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br /><br />");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
             case 2:
                 //CI circular
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CIRCULAR</FONT></b><br>";
-                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
-                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
-                strPara = strPara.concat("Para: <b>");
+                strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT>><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
             case 3:
                 //Despacho
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b><br>";
-                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
-                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
-                strPara = strPara.concat("Para: <b>");
+                strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
             case 4:
                 //Despacho
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b><br>";
-                strPara = strPara.concat("<br><hr><br>De: <b>" + strNomeUO + "</b><br>");
-                strPara = strPara.concat("Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("Data criação: " + strTodayCI + "<br><br>");
-                strPara = strPara.concat("Para: <b>");
+                strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "<br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "<br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: <b>");
                 break;
             default:
                 break;
@@ -714,7 +714,7 @@ public class NovaCIController implements Initializable {
             j++;
             
         }
-        strPara = strPara.concat("</b><br>");
+        strPara = strPara.concat("</b><br />");
         
 //        System.out.println(strPara);
 //        System.out.println(strIdsUOPara);
@@ -726,7 +726,7 @@ public class NovaCIController implements Initializable {
         
         //Seteamos variavel e html Com cópia:
         strComCopia = "";
-        strComCopia = strComCopia.concat("Com cópia: <br>");
+        strComCopia = strComCopia.concat("<FONT COLOR=\"000000\">Com cópia: </FONT><br />");
         if (txtFComCopia.getChildren().size() > 0) {
             
             ObservableList<Node> nodesComCopia = txtFComCopia.getChildren();
@@ -748,7 +748,7 @@ public class NovaCIController implements Initializable {
             //String [] strArrayCCUONomeDestinatario = new String[strParts.length/2];
             strArrayCCUONomeDestinatario = new String[strParts.length/2];
             strComCopia = "";            
-            strComCopia = strComCopia.concat("Com cópia: <b>");
+            strComCopia = strComCopia.concat("<FONT COLOR=\"000000\">Com cópia: </FONT><b>");
             //strComCopia = strComCopia.concat("<b>");
             strUONome = "";
             strIdUO = "";
@@ -783,7 +783,7 @@ public class NovaCIController implements Initializable {
             j++;
             
         }
-        strComCopia = strComCopia.concat("</b><br>");
+        strComCopia = strComCopia.concat("</b><br />");
         
 //        System.out.println(strComCopia);
 //        System.out.println(strIdsUOComCopia);
@@ -795,7 +795,7 @@ public class NovaCIController implements Initializable {
         }
         
         strPara = strPara.concat(strComCopia);
-        strPara = strPara.concat("<hr><br>");
+        strPara = strPara.concat("<hr><br />");
         
         strHtmlConteudo = htmlEditor.getHtmlText();
         
