@@ -267,6 +267,8 @@ public class FXMLMainController implements Initializable {
     private Label lblNumeroSequencialCI;
     @FXML
     private TextFlow txtFAnexos;
+    @FXML
+    private Label lblNomeUOGestor;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -315,7 +317,10 @@ public class FXMLMainController implements Initializable {
 //    public void initialize() {
         // TODO 
     //System.out.print("Tipo de Perfil metodo initialize = " + nTipoPerfil);
-    
+        
+        //Labels ocultados na versão de Produção
+        this.lblIdPerfil.setVisible(false);
+        this.lblIdUsuario.setVisible(false);
     
     
     }
@@ -491,7 +496,8 @@ public class FXMLMainController implements Initializable {
     }
     
     public void setVariaveisAmbiente(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor, String strlUserLogin) {
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, 
+                                        int nIdUOGestor, String strlUserLogin, String strlUOGestorDescricao) {
         lblIdUsuario.setText(strIdUsuario);
         lblNomeUsuario.setText(strNomeUsuario);
         lblIdUO.setText(strIdUO);
@@ -499,6 +505,7 @@ public class FXMLMainController implements Initializable {
         lblIdPerfil.setText(strIdPerfil);
         lblNomePerfil.setText(strDescricaoPerfil);
         lblUOGestora.setText(Integer.toString(nIdUOGestor));
+        lblNomeUOGestor.setText(strlUOGestorDescricao);
         
         this.strHtmlAssinatura = strHtmlAssinatura;
         nTipoPerfil = Integer.parseInt(strIdPerfil);

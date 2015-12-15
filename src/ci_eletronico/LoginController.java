@@ -101,6 +101,8 @@ public class LoginController implements Initializable {
         
         String strUserLogin ="";
         strUserLogin = txtUsername.getText();
+        String strlUOGestorDescricao = "";
+        
         listaUsuarios = consulta_TB_USUARIO.listaUserLogin(strUserLogin);
         
         if (listaUsuarios.size()>0){
@@ -136,20 +138,26 @@ public class LoginController implements Initializable {
                         listaUO = consulta_TB_USUARIO_PERFIL_UO.listaUO(nIdUsuario);   
                         //listaUO = consulta_TB_USUARIO_PERFIL_UO.listaJoinUO2(nIdUsuario);  
                          for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){
-                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional());
-                             System.out.println("TbUsuarioPerfilUo campo 2 - " + lUO.getIdUnidadeOrganizacional().getUnorNome());
-                             System.out.println("TbUsuarioPerfilUo campo 3 - " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
-                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUsuarioPerfil().getPeusDescricao());
+//                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional());
+//                             System.out.println("TbUsuarioPerfilUo campo 2 - " + lUO.getIdUnidadeOrganizacional().getUnorNome());
+//                             System.out.println("TbUsuarioPerfilUo campo 3 - " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
+//                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUsuarioPerfil().getPeusDescricao());
                              cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + " - " + lUO.getIdUnidadeOrganizacional().getUnorNome() + " ; " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+" - "+lUO.getIdUsuarioPerfil().getPeusDescricao());
                          }
                        
                         
                         cmbUO.getSelectionModel().selectFirst(); 
                         //TbUnidadeOrganizacional nIdUO;
+                        
+                        //Variaveis para sber o nome da UO Gestora
+                        List<ci_eletronico.entities.TbUnidadeOrganizacional> listaUODescricao = new ArrayList<>();
+                        LoginQuery consulta_Nome_UO  = new LoginQuery(); 
+                        //----------------------------------------------------------
+                        
                         if (listaUO.size()>0 && listaUO.size() < 2) {
                         //if (listaUO.size()>0 && listaUO.size() < 2){
                             strUO = cmbUO.getSelectionModel().getSelectedItem().toString();
-                            System.out.println("Valor do combobox selecionado: " + strUO);
+//                            System.out.println("Valor do combobox selecionado: " + strUO);
                             TbUnidadeOrganizacional nIdUO;
                             
                             for(ci_eletronico.entities.TbUsuarioPerfilUo lUO : listaUO){   
@@ -161,9 +169,13 @@ public class LoginController implements Initializable {
                                 listaUOGestor = consulta_TB_UO_GESTOR.getIdUOGestor(nIdUO);
                             } 
                             for (ci_eletronico.entities.TbUnidadeOrganizacionalGestor lUOGestor: listaUOGestor){
-                                nIdUOGestor = lUOGestor.getIdUoGestor();                                
+                                nIdUOGestor = lUOGestor.getIdUoGestor();                                  
                             }
                             
+                            listaUODescricao = consulta_Nome_UO.getDescricaoUOGestor(nIdUOGestor); 
+                            for (ci_eletronico.entities.TbUnidadeOrganizacional lista: listaUODescricao){
+                               strlUOGestorDescricao = lista.getUnorNome();
+                            }
                             
                             //loader.setLocation(FXMLMainController.class.getResource("/ci_eletronico/FXMLMain.fxml"));
                                                       
@@ -173,7 +185,8 @@ public class LoginController implements Initializable {
                             
 //                                                       
                             //Mostramos MainWindow com dados do usuário logado
-                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin);
+                            ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin,
+                                    strlUOGestorDescricao);
 
                         } else {
                             // Show the error message.
@@ -255,11 +268,21 @@ public class LoginController implements Initializable {
             nIdUOGestor = lUOGestor.getIdUoGestor();
         }
         
+        List<ci_eletronico.entities.TbUnidadeOrganizacional> listaUODescricao = new ArrayList<>();
+        LoginQuery consulta_Nome_UO  = new LoginQuery();         
+        listaUODescricao = consulta_Nome_UO.getDescricaoUOGestor(nIdUOGestor); 
+        String strlUOGestorDescricao = "";
+        
+        for (ci_eletronico.entities.TbUnidadeOrganizacional lista: listaUODescricao){
+           strlUOGestorDescricao = lista.getUnorNome();
+        }
+        
          //Ocultamos a janela de login
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
         
-        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin );
+        ShowMainWindowCIe(this, strIdUsuario, strUsername, strIdUO, strNomeUO, strIdUsuarioPerfil, strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strgUserLogin, 
+                strlUOGestorDescricao );
       
         
     }
@@ -276,14 +299,16 @@ public class LoginController implements Initializable {
     }
     
     private void ShowMainWindowCIe(final LoginController loginController , String strIdUsuario, String strNomeUsuario, 
-                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor, String strlUserLogin){
+                                        String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, int nIdUOGestor, 
+                                        String strlUserLogin, String strlUOGestorDescricao){
         try{
             
                 scene = new Scene(new BorderPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/FXMLMain.fxml"));
                 scene.setRoot((Parent) loader.load());
                 FXMLMainController controller = loader.<FXMLMainController>getController();
-                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura, nIdUOGestor, strlUserLogin);
+                controller.setVariaveisAmbiente(loginController,strIdUsuario,strNomeUsuario,strIdUO,strNomeUO,strIdPerfil,strDescricaoPerfil, strHtmlAssinatura, 
+                        nIdUOGestor, strlUserLogin, strlUOGestorDescricao);
 
                 Stage stage = new Stage();
                 stage.setTitle("CI-eletrônico");

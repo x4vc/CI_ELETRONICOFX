@@ -74,4 +74,12 @@ public class LoginQuery {
                 .getResultList();
         
         }
+    public List<TbUnidadeOrganizacional> getDescricaoUOGestor(int nIdUOGestor) {       
+        
+        //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
+        return em.createNamedQuery("TbUnidadeOrganizacional.findByIdUnidadeOrganizacional",TbUnidadeOrganizacional.class)
+                .setParameter("idUnidadeOrganizacional", nIdUOGestor )
+                .getResultList();
+        
+        }
 }
