@@ -113,6 +113,8 @@ public class NovaCIController implements Initializable {
     TextFlow txtFComCopia;
     @FXML
     ComboBox cmbApensamento;
+    @FXML
+    TextField txtApensamento;
     
     
     // Clases para tratar Anexar Arquivos
@@ -133,6 +135,7 @@ public class NovaCIController implements Initializable {
         // TODO
 //        //htmlEditor.setHtmlText(strAssinatura);
 //        //htmlEditor.setDisable(true);
+        this.cmbApensamento.setVisible(false);
         
     }   
     
@@ -551,6 +554,9 @@ public class NovaCIController implements Initializable {
         String strMD5Assinatura = "";
         //----------------------------------------------------------------------
         
+        String strlAssunto = "";
+        strlAssunto = "<FONT COLOR=\"000000\">Assunto: </FONT><FONT COLOR=\"00CC00\"><b>"+this.txtAssunto.getText()+"</b></FONT>";
+        
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
         TbUnidadeOrganizacionalGestor UOGestorDestinatario = new TbUnidadeOrganizacionalGestor();
         MainWindowQueries consultaUOGestor = new MainWindowQueries();
@@ -636,7 +642,7 @@ public class NovaCIController implements Initializable {
         switch (nTipoCI){
             case 1:
                 //CI-eletrônico
-                strPara = "<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI</FONT></b><br />";
+                strPara = "<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI</FONT></b>";
                 strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br />");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br /><br />");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
@@ -644,7 +650,7 @@ public class NovaCIController implements Initializable {
                 break;
             case 2:
                 //CI circular
-                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CIRCULAR</FONT></b><br>";
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CIRCULAR</FONT></b>";
                 strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT>><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
@@ -652,7 +658,7 @@ public class NovaCIController implements Initializable {
                 break;
             case 3:
                 //Despacho
-                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b><br>";
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b>";
                 strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
@@ -660,11 +666,11 @@ public class NovaCIController implements Initializable {
                 break;
             case 4:
                 //Despacho
-                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b><br>";
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">DESPACHO</FONT></b>";
                 strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
-                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "<br><br>");
-                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "<br><br>");
-                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: <b>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
             default:
                 break;
@@ -795,7 +801,11 @@ public class NovaCIController implements Initializable {
         }
         
         strPara = strPara.concat(strComCopia);
-        strPara = strPara.concat("<hr><br />");
+        
+        //Adicionamos Assunto        
+        strPara = strPara.concat(strlAssunto);
+        //--------------------------------------------
+        strPara = strPara.concat("<br /><hr><br />");
         
         strHtmlConteudo = htmlEditor.getHtmlText();
         
@@ -810,7 +820,7 @@ public class NovaCIController implements Initializable {
             strPara = strPara.concat(strHtmlConteudo);
         }
         
-        System.out.println();
+//        System.out.println();
         //Seteamos número sequencial da CI de acordo ao UO Remitente
         try{
             TypedQuery<Integer> query = em.createQuery("SELECT max(c.coinNumero) FROM TbComunicacaoInterna c WHERE c.idUnidadeOrganizacional = :idUnidadeOrganizacional AND FUNCTION('YEAR',c.coinDataCriacao) = :Ano",Integer.class)            
@@ -900,7 +910,7 @@ public class NovaCIController implements Initializable {
         newTbCI.setIdUoGestor(nIdUOGestor);
         newTbCI.setCoinAutorizado(bCoinAutorizado);
         newTbCI.setIdTipoCoin(TipoCI);
-        newTbCI.setCoinApensamento("");
+        newTbCI.setCoinApensamento(txtApensamento.getText());
         newTbCI.setCoinNumero(nSequencialUO);
         newTbCI.setCoinUoArquivado(bCoinUOArquivado);
         newTbCI.setCoinUoGestorArquivado(bCoinUOGestorArquivado);

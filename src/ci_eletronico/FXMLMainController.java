@@ -12,6 +12,8 @@ import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico_queries.MainWindowQueries;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
@@ -22,6 +24,8 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.itextpdf.tool.xml.pipeline.WritableElement;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.ExceptionConverter;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
@@ -92,18 +96,26 @@ public class FXMLMainController implements Initializable {
     "<table width=\"100%\" border=\"0\"><tr><td><img src=\"resources\\logo_prefeitura_salvador.png\" alt=\"\"/></td><td align=\"right\">Some title</td></tr></table>";
     public String FOOTER = "";
     //"<table width=\"100%\" border=\"0\"><tr><td>Footer</td><td align=\"right\">Some title</td></tr></table>";
+
+    
     
   
     
     public class MyFooter extends PdfPageEventHelper {
     protected ElementList header;
     protected ElementList footer;
+    
+    protected Chunk chunk;
+    protected Chunk chunk2;
+    
+//  
+    
     public MyFooter() throws IOException {
         header = XMLWorkerHelper.parseToElementList(HEADER, null);
         footer = XMLWorkerHelper.parseToElementList(FOOTER, null);
     }
     public MyFooter(String strCIAssinatura) throws IOException{
-        FOOTER = "<table width=\"100%\" border=\"0\"><tr><td>"+ strCIAssinatura +"</td><td align=\"right\">Some title</td></tr></table>";
+        FOOTER = "<table width=\"100%\" border=\"0\"><tr><td>Assinatura digital: <font size=\"3\">"+ strCIAssinatura +"</font></td><td align=\"right\"> </td></tr></table>";
         header = XMLWorkerHelper.parseToElementList(HEADER, null);
         footer = XMLWorkerHelper.parseToElementList(FOOTER, null);
         
@@ -112,11 +124,42 @@ public class FXMLMainController implements Initializable {
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         try {
+            com.itextpdf.text.Image logo = com.itextpdf.text.Image.getInstance("src\\resources\\logo_transalvador_preto_50.png");       
+            float width = logo.getScaledWidth();
+            float height = logo.getScaledHeight();
+            
+            logo.setAlignment(logo.ALIGN_LEFT);
+            logo.scaleAbsoluteHeight(20);
+            logo.scaleAbsoluteWidth(20);
+            logo.scalePercent(100);
+            
+            
+//            com.itextpdf.text.Image logo2 = com.itextpdf.text.Image.getInstance("src\\resources\\logo_pms_preto.png");
+//            
+//            float width2 = logo2.getScaledWidth();
+//            float height2 = logo2.getScaledHeight();
+//            
+//            logo2.setAlignment(logo2.ALIGN_RIGHT);
+//            logo2.scaleAbsoluteHeight(20);
+//            logo2.scaleAbsoluteWidth(20);
+//            logo2.scalePercent(50);
+            //Chunk chunk = new Chunk(logo, 0, -45);
+            chunk = new Chunk(logo, 0, -45);
+            //chunk2 = new Chunk(logo2, 100, -45);
+        }catch (IOException | DocumentException e){
+            System.out.println();            
+        }
+        
+        try{    
             ColumnText ct = new ColumnText(writer.getDirectContent());
-            ct.setSimpleColumn(new Rectangle(36, 832, 559, 810));
-            for (Element e : header) {
-                ct.addElement(e);
-            }
+            ct.setSimpleColumn(new Rectangle(6, 832, 559, 810));
+            
+            ct.addElement(chunk);
+//            for (Element e : header) {
+//                //ct.addElement(e);
+//                ct.addElement(chunk);
+//                //ct.addElement(chunk2);
+//            }
             ct.go();
             ct.setSimpleColumn(new Rectangle(36, 10, 559, 32));
             for (Element e : footer) {
@@ -1735,16 +1778,32 @@ public class FXMLMainController implements Initializable {
 //            alert.setHeaderText("Imprimir CI");
 //            alert.setContentText("Funcionalidade será disponibilizada em breve");
 //            alert.showAndWait();
+//            try{
+//            com.itextpdf.text.Image logo = com.itextpdf.text.Image.getInstance("resources\\logo_prefeitura_salvador.png");
+//            logo.setAlignment(logo.ALIGN_LEFT);
+//            logo.scaleAbsoluteHeight(20);
+//            logo.scaleAbsoluteWidth(20);
+//            logo.scalePercent(100);
+//            Chunk chunk = new Chunk(logo, 0, -45);
+//            com.itextpdf.text.Header header = new com.itextpdf.text.Header(new Phrase(chunk), false); 
+//            } catch (IOException | DocumentException e){
+//                
+//            }
+            File outfile = null; // variavel para abrir documento pdf após sua criação
+            
             String strFileName = this.lblNumeroSequencialCI.getText();
             String strUserHome = System.getProperty("user.home") + "\\Downloads\\BLOB\\" + strFileName + ".pdf";
             final Document document = new Document();
             try {
-            String strCIAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
-            //PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("c:/Temp/teste.pdf"));
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(strUserHome));
-            
-            MyFooter evento = new MyFooter(strCIAssinatura);
-            writer.setPageEvent(evento);
+                document.setPageSize(PageSize.A4);
+                document.setMargins(10f, 10f, 70f, 40f);
+                String strCIAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+                
+                //PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("c:/Temp/teste.pdf"));
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(strUserHome));
+
+                MyFooter evento = new MyFooter(strCIAssinatura);
+                writer.setPageEvent(evento);
             
             } catch (IOException | DocumentException e) {
                 System.out.println(e.toString());
@@ -1753,6 +1812,8 @@ public class FXMLMainController implements Initializable {
             document.open();
 
             //String htmlString = htmlEditorCI.getHtmlText();
+            String strlCITitulo = "";
+            strlCITitulo = "<br /><p align=\"center\"><b>" + strFileName + "</b></p>";
             String htmlString = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
             //String strCIAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
            
@@ -1768,7 +1829,9 @@ public class FXMLMainController implements Initializable {
 //            htmlString = htmlString.replace("<hr />", "<p></p>");
             
             htmlString = htmlString.replace("<hr>", "<hr />");
-
+            
+            htmlString = strlCITitulo.concat(htmlString);
+            
             StringReader in = new StringReader(htmlString);
 
             try {
@@ -1793,11 +1856,15 @@ public class FXMLMainController implements Initializable {
 
             document.close(); 
             
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informação");
-            alert.setHeaderText("Imprimir CI: " + strFileName );
-            alert.setContentText("Arquivo pdf criado com sucesso na pasta Downloads");
-            alert.showAndWait();
+            outfile = new File(strUserHome);
+            
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("Informação");
+//            alert.setHeaderText("Imprimir CI: " + strFileName );
+//            alert.setContentText("Arquivo pdf criado com sucesso na pasta Downloads");
+//            alert.showAndWait();
+            
+            openArquivo(outfile); // Abrimos o pdf criado para ser visualizado
         }
     }
     

@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -49,6 +50,8 @@ public class Win_Para_ComcopiaController implements Initializable {
     private Button btnOK;
     @FXML
     private Button btnCancelar;
+    @FXML
+    private Label lblPesquisar;
     
     ArrayList<String> ArraySelecionado= new ArrayList();
     private String strUOSelecionado;
@@ -71,6 +74,14 @@ public class Win_Para_ComcopiaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        
+        //Na primeira versão não estará visivel a caixa de Buscar UO
+        this.btnPesquisarUO.setVisible(false);
+        this.txtPesquisarUO.setVisible(false);
+        this.lblPesquisar.setVisible(false);        
+        //-------------------------------------------------------------
+        
+        
         consulta  = new ListView_UO_Query();   
         listListaUO = consulta.listaUO();
         
