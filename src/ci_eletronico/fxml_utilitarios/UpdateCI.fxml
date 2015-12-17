@@ -15,7 +15,7 @@
             <HTMLEditor fx:id="htmlConteudoParaAtualizar" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="8.0" layoutY="14.0" prefHeight="200.0" prefWidth="506.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
             <Label fx:id="lblSequecial" layoutX="14.0" layoutY="6.0" text="Label" />
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #FFA500;">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #fff3e5;">
          <children>
             <Button fx:id="btnAtualizarCI" layoutX="273.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleBtnAtualizarCI" prefHeight="35.0" prefWidth="110.0" text="Atualizar CI" wrapText="true" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="5.0">
                <graphic>

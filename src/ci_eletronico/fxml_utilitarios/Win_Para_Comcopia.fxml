@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: #FFA500;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: #fff3e5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.fxml_utilitarios.Win_Para_ComcopiaController">
    <children>
       <Label fx:id="lblPesquisar" layoutX="26.0" layoutY="14.0" text="Pesquisar" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
          <font>

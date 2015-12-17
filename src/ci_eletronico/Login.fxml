@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #FFA500;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #fff3e5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.LoginController">
    <children>
       <TextField fx:id="txtUsername" layoutX="121.0" layoutY="147.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="150.0" />
       <PasswordField fx:id="pwdSenha" layoutX="121.0" layoutY="187.0" prefHeight="25.0" prefWidth="282.0" AnchorPane.topAnchor="195.0" />

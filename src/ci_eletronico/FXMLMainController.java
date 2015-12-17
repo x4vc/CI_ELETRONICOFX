@@ -57,6 +57,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -124,7 +125,9 @@ public class FXMLMainController implements Initializable {
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         try {
-            com.itextpdf.text.Image logo = com.itextpdf.text.Image.getInstance("src\\resources\\logo_transalvador_preto_50.png");       
+            com.itextpdf.text.Image logo;       
+            //logo = com.itextpdf.text.Image.getInstance("http://172.22.8.18//arquivos//ci_instalador/logo_transalvador_preto_50.png");
+            logo = com.itextpdf.text.Image.getInstance("http://172.22.8.18//arquivos//ci_instalador/logo.jpg");
             float width = logo.getScaledWidth();
             float height = logo.getScaledHeight();
             
@@ -321,7 +324,11 @@ public class FXMLMainController implements Initializable {
         //Labels ocultados na versão de Produção
         this.lblIdPerfil.setVisible(false);
         this.lblIdUsuario.setVisible(false);
-    
+        this.lblIdUO.setVisible(false);
+        this.lblUOGestora.setVisible(false);     
+        
+        
+        
     
     }
     
@@ -1799,7 +1806,7 @@ public class FXMLMainController implements Initializable {
             File outfile = null; // variavel para abrir documento pdf após sua criação
             
             String strFileName = this.lblNumeroSequencialCI.getText();
-            String strUserHome = System.getProperty("user.home") + "\\Downloads\\BLOB\\" + strFileName + ".pdf";
+            String strUserHome = System.getProperty("user.home") + "\\Downloads\\" + strFileName + ".pdf";
             final Document document = new Document();
             try {
                 document.setPageSize(PageSize.A4);
