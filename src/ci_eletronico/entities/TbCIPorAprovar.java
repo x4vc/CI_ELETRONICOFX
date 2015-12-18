@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.css.SimpleStyleableBooleanProperty;
 
 /**
  *
@@ -52,6 +53,9 @@ public class TbCIPorAprovar {
     
     //Assinatura
     private StringProperty strp_CoinAssinatura;
+    
+    //CI Lido ou não - TB_CI_DESTINATARIO
+    private BooleanProperty boolp_CoinLido;
     
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
@@ -108,7 +112,7 @@ public class TbCIPorAprovar {
             boolean bCoinTemAnexos, Integer nIdTabelaFonte,
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
             String strp_DescricaoUODestinatario, /*variavel String sempre vazio*/
-            String strp_CoinAssinatura) {
+            String strp_CoinAssinatura, boolean boolp_CoinLido) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -140,6 +144,9 @@ public class TbCIPorAprovar {
         this.strp_DescricaoUODestinatario = new SimpleStringProperty(strp_DescricaoUODestinatario); // sempre string vazio para compatibilidade com o TableView
         
         this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
+        
+        //Por compatibilidade variavel boolp_CoinLido deve existir e sempre deve ser igual "false"
+        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -171,7 +178,7 @@ public class TbCIPorAprovar {
             boolean boolp_ReadOnlyUODestinatario, boolean boolp_CoinTemAnexos, boolean boolp_AutorizadoPeloGestorRemitente, 
             String strp_dataCriacao, Integer intp_idTabelaFonte, 
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
-            Integer nTipoCoin, String strp_CoinAssinatura ) {
+            Integer nTipoCoin, String strp_CoinAssinatura, boolean boolp_CoinLido ) {
         this.intp_idCoinDestinatario = new SimpleIntegerProperty(intp_idCoinDestinatario);
         this.intp_idCoin = new SimpleIntegerProperty(intp_idCoin);
         this.intp_idUsuarioRemitente = new SimpleIntegerProperty(intp_idUsuarioRemitente);
@@ -208,6 +215,7 @@ public class TbCIPorAprovar {
         intp_idTipoCoin = new SimpleIntegerProperty(nTipoCoin);
         
         this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
+        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);
     }
     
 //    //Metodos para TableView
@@ -642,6 +650,14 @@ public class TbCIPorAprovar {
 
     public void setStrp_CoinAssinatura(String strp_CoinAssinatura) {
         this.strp_CoinAssinatura.setValue(strp_CoinAssinatura);
+    }
+
+    public Boolean getBoolp_CoinLido() {
+        return boolp_CoinLido.getValue();
+    }
+
+    public void setBoolp_CoinLido(Boolean boolp_CoinLido) {
+        this.boolp_CoinLido.setValue(boolp_CoinLido);
     }
     
     

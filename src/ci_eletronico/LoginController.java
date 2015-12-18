@@ -314,6 +314,8 @@ public class LoginController implements Initializable {
                 stage.setTitle("CI-eletrônico");
                 //set icon
                 stage.getIcons().add(new Image("/resources/CI_FX02.png"));
+                
+                scene.getStylesheets().add(getClass().getResource("/resources/highlightingTable.css").toExternalForm());
 
                 stage.setScene(scene);
                 stage.show();
