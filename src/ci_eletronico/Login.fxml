@@ -41,5 +41,6 @@
             <Image url="@../resources/logo_transalvador.png" />
          </image>
       </ImageView>
+      <Hyperlink fx:id="hlink" layoutX="121.0" layoutY="96.0" text="Clique aqui para atualizar o sistema..." />
    </children>
 </AnchorPane>

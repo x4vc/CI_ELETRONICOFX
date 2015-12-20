@@ -41,12 +41,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatarioPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoDestinatario = :unorDescricaoDestinatario"),
-    @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 AND t.coinDestinatarioPendente = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 AND t.coinDestinatarioPendente = 0 AND t.coinRemitenteGestorAutorizado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatarioPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 AND t.coinDestinatarioPendente = 0 AND t.idTipoCoin IN :idTipoCoin  ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoGestorDestinatario = :unorDescricaoGestorDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioGestorAutorizado = :coinDestinatarioGestorAutorizado"),
-    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 AND t.coinDestinatarioPendente = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
-    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 AND t.coinDestinatarioPendente = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 AND t.coinDestinatarioPendente = 0 OR t.coinDestinatarioUoGestorArquivado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoArquivado = 1 AND t.coinDestinatarioPendente = 0 OR t.coinDestinatarioUoGestorArquivado = 1 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByGestorUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoGestorArquivado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoGestorArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioUoGestorArquivado = :coinDestinatarioUoGestorArquivado"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioConteudo", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioConteudo = :coinDestinatarioConteudo"),
@@ -161,7 +161,15 @@ public class TbCiDestinatario implements Serializable {
         this.idCoinDestinatario = idCoinDestinatario;
     }
 
-    public TbCiDestinatario(Integer idCoinDestinatario, int idUsuarioRemitente, String usuNomeCompletoRemitente, int idUoRemitente, String inorDescricaoRemitente, int idUoDestinatario, String unorDescricaoDestinatario, int idUoGestorDestinatario, String unorDescricaoGestorDestinatario, boolean coinDestinatarioGestorAutorizado, boolean coinDestinatarioUoArquivado, boolean coinDestinatarioUoGestorArquivado, String coinDestinatarioAssunto, String coinDestinatarioConteudo, boolean coinDestinatarioPendente, Date coinDestinatarioDataCriacao, boolean coinDestinatarioReadOnly, boolean coinDestinatarioTemAnexos, boolean coinRemitenteGestorAutorizado) {
+    public TbCiDestinatario(Integer idCoinDestinatario, int idUsuarioRemitente, 
+            String usuNomeCompletoRemitente, int idUoRemitente, String inorDescricaoRemitente, 
+            int idUoDestinatario, String unorDescricaoDestinatario, int idUoGestorDestinatario, 
+            String unorDescricaoGestorDestinatario, boolean coinDestinatarioGestorAutorizado, 
+            boolean coinDestinatarioUoArquivado, boolean coinDestinatarioUoGestorArquivado, 
+            String coinDestinatarioAssunto, String coinDestinatarioConteudo, 
+            boolean coinDestinatarioPendente, Date coinDestinatarioDataCriacao, 
+            boolean coinDestinatarioReadOnly, boolean coinDestinatarioTemAnexos, 
+            boolean coinRemitenteGestorAutorizado, boolean coinDestinatarioLido) {
         this.idCoinDestinatario = idCoinDestinatario;
         this.idUsuarioRemitente = idUsuarioRemitente;
         this.usuNomeCompletoRemitente = usuNomeCompletoRemitente;
@@ -181,6 +189,8 @@ public class TbCiDestinatario implements Serializable {
         this.coinDestinatarioReadOnly = coinDestinatarioReadOnly;
         this.coinDestinatarioTemAnexos = coinDestinatarioTemAnexos;
         this.coinRemitenteGestorAutorizado = coinRemitenteGestorAutorizado;
+        
+        this.coinDestinatarioLido = coinDestinatarioLido;
     }
 
     public Integer getIdCoinDestinatario() {

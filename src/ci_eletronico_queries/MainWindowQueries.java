@@ -278,14 +278,14 @@ public class MainWindowQueries {
             //6-Caixa de enviados - btnCaixaSaida;
             //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
             switch (nlButtonSelected){
-                case 1:
+                case 1: //caixa de recebidas (solicitando aprovação)
                     //Codigo para atualizar registro
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
                     break;
-                case 2:
+                case 2: //caixa de recebidas
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
                     break;
-                case 3:
+                case 3://caixa de recebidas (pendencias)
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
                     break;
             }            
@@ -301,6 +301,45 @@ public class MainWindowQueries {
             return false;            
         }
     }
+    public boolean MarcarComoLido(int nlIdCI, int nlButtonSelected, boolean blCILido) throws Exception{
+        //boolean bMarcado = true;
+//        Date data = new Date();
+        try {
+            TbCiDestinatario MarcarComoLido = em.find(TbCiDestinatario.class, nlIdCI);
+            
+            //Valores dos botões 
+            //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+            //2-caixa de recebidas - btnCaixaEntrada
+            //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+            //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+            //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+            //6-Caixa de enviados - btnCaixaSaida;
+            //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+            switch (nlButtonSelected){
+                case 1: //caixa de recebidas (solicitando aprovação)
+                    //Codigo para atualizar registro
+                    MarcarComoLido.setCoinDestinatarioLido(blCILido);
+                    break;
+                case 2: //caixa de recebidas
+                    MarcarComoLido.setCoinDestinatarioLido(blCILido);
+                    break;
+                case 3://caixa de recebidas (pendencias)
+                    MarcarComoLido.setCoinDestinatarioLido(blCILido);
+                    break;
+            }            
+            em.merge(MarcarComoLido);
+            em.getTransaction().commit(); 
+            em.close();
+            emf.close();
+            return true;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }
+    }
+    
     public boolean AprovarCIEnviada(int nlIdCI) throws Exception{
         boolean bAprovado = true;
         Date data = new Date();
@@ -311,6 +350,8 @@ public class MainWindowQueries {
             //Codigo para atualizar registro
             AprovarCI.setCoinAutorizado(bAprovado);
             AprovarCI.setCoinDataAutorizado(data);
+            //Se for aprovado então é automaticamente arquivado
+            AprovarCI.setCoinUoGestorArquivado(bAprovado);
             em.merge(AprovarCI);
             em.getTransaction().commit();            
             em.close();
@@ -333,6 +374,8 @@ public class MainWindowQueries {
             //Codigo para atualizar registro
             AprovarCI.setCoinDestinatarioGestorAutorizado(bAprovado);
             AprovarCI.setCoinDestinatarioGestorDataAutorizado(data);
+            AprovarCI.setCoinDestinatarioUoGestorArquivado(bAprovado);
+            //AprovarCI.setcoinde
             em.merge(AprovarCI);
             em.getTransaction().commit();            
             em.close();

@@ -146,7 +146,7 @@ public class TbCIPorAprovar {
         this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
         
         //Por compatibilidade variavel boolp_CoinLido deve existir e sempre deve ser igual "false"
-        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);
+        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);        
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 

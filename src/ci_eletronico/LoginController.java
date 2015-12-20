@@ -6,7 +6,6 @@
 package ci_eletronico;
 
 import ci_eletronico.entities.TbUnidadeOrganizacional;
-import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.Seguranca;
 import ci_eletronico_queries.LoginQuery;
@@ -20,6 +19,8 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,6 +33,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -55,6 +57,8 @@ public class LoginController implements Initializable {
     private ComboBox cmbUO;   
     @FXML
     private Label lblUO;
+    @FXML
+    private Hyperlink hlink;
     
     private List<ci_eletronico.entities.TbUsuario> listaUsuarios = new ArrayList<>();
     private List<ci_eletronico.entities.TbUsuarioPerfilUo> listaUO = new ArrayList<>();
@@ -86,6 +90,14 @@ public class LoginController implements Initializable {
     //public void initialize() {
         // TODO
         //listaUsuarios = consulta.listaTbUsuario();
+//        hlink.setOnAction(new EventHandler() {
+//
+//            @Override
+//            public void handle(Event event) {
+//                app.getHostServices().showDocument("http://www.jumpingbean.biz");
+//            }
+//        });
+        
         ComponentesVisible(false);         
         
         btnAcessar.setDefaultButton(true);
@@ -289,7 +301,8 @@ public class LoginController implements Initializable {
     private void ComponentesVisible(boolean bCondicao){
         lblUO.setVisible(bCondicao);
         cmbUO.setVisible(bCondicao);
-        btnOK.setVisible(bCondicao);  
+        btnOK.setVisible(bCondicao); 
+        hlink.setVisible(bCondicao);
         
     } 
     private void ComponentesDisable(boolean bCondicao){
