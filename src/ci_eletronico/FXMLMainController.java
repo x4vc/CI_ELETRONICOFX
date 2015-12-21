@@ -295,6 +295,8 @@ public class FXMLMainController implements Initializable {
     private Label lblNomeUOGestor;
     @FXML
     private Button btnMarcarComoLido;
+    @FXML
+    private Label lblAguardandoAprovacao;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -2166,6 +2168,7 @@ public class FXMLMainController implements Initializable {
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
                 TbViewGeral2.setVisible(true);
                 TbViewGeral.setPrefHeight(328);
+                lblAguardandoAprovacao.setVisible(true);
                 
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     listaComunicacaoInterna = consulta.getlistaTbComunicacaoInternaEnviados(nlIdUnidadeOrganizacional);                    
@@ -2179,6 +2182,7 @@ public class FXMLMainController implements Initializable {
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
                 TbViewGeral2.setVisible(false);
                 TbViewGeral.setPrefHeight(656);
+                lblAguardandoAprovacao.setVisible(false);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     listaComunicacaoInterna = consulta.getlistaCaixaSaidaArquivados(nlIdUnidadeOrganizacional);
                 } else {
@@ -2236,6 +2240,34 @@ public class FXMLMainController implements Initializable {
         ClAssunto.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_Assunto"));
         TbViewGeral.setItems(obslistaTbCaixaSaida);
         //TbViewGeral.refresh();
+        
+        
+        // Código para mudar cor do registro
+
+            ClLido.setCellFactory(new Callback<TableColumn<TbCIPorAprovar, Boolean>, TableCell<TbCIPorAprovar, Boolean>>() {
+                @Override public TableCell<TbCIPorAprovar, Boolean> call(TableColumn<TbCIPorAprovar, Boolean> soCalledFriendBooleanTableColumn) {
+                    return new TableCell<TbCIPorAprovar, Boolean>() {
+                        @Override public void updateItem(final Boolean item, final boolean empty) {
+                            super.updateItem(item, empty);
+
+                            // clear any custom styles
+                            //this.getStyleClass().remove("willPayCell");
+                            //this.getStyleClass().remove("wontPayCell");
+                            this.getTableRow().getStyleClass().remove("willPayRow");
+                            this.getTableRow().getStyleClass().remove("wontPayRow");
+                            this.getTableRow().getStyleClass().remove("porAprovarRow");
+                            this.getTableRow().getStyleClass().remove("caixaEnviadosRow");
+
+                            // update the item and set a custom style if necessary
+                            if (item != null) {
+                              setText(item.toString());
+                              //this.getStyleClass().add(item ? "willPayCell" : "wontPayCell");
+                              this.getTableRow().getStyleClass().add(item ? "willPayRow" : "caixaEnviadosRow");
+                            }
+                        }
+                    };
+                }
+            });
         
         Platform.runLater(new Runnable(){
             @Override
@@ -2896,6 +2928,7 @@ public class FXMLMainController implements Initializable {
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 btnAprovarCI.setDisable(true);
                 TbViewGeral2.setVisible(true);
+                lblAguardandoAprovacao.setVisible(true);
                 TbViewGeral.setPrefHeight(328);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     //TableView1
@@ -2914,6 +2947,7 @@ public class FXMLMainController implements Initializable {
                 ngTabela = 2; // TB_CI_DESTINATARIO                
                 btnMarcarcomoPendencia.setDisable(true);
                 TbViewGeral2.setVisible(false);
+                lblAguardandoAprovacao.setVisible(false);
                 TbViewGeral.setPrefHeight(656);
                 //TbViewGeral.setMaxHeight(656);
                 
@@ -2927,6 +2961,7 @@ public class FXMLMainController implements Initializable {
                 ngBotao = 4;
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 TbViewGeral2.setVisible(false);
+                lblAguardandoAprovacao.setVisible(false);
                 btnAprovarCI.setDisable(true);
                 TbViewGeral.setPrefHeight(656);
 //                if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
@@ -3025,12 +3060,17 @@ public class FXMLMainController implements Initializable {
                             this.getTableRow().getStyleClass().remove("willPayRow");
                             this.getTableRow().getStyleClass().remove("wontPayRow");
                             this.getTableRow().getStyleClass().remove("porAprovarRow");
+                            this.getTableRow().getStyleClass().remove("caixaEnviadosRow");
 
                             // update the item and set a custom style if necessary
                             if (item != null) {
                               setText(item.toString());
                               //this.getStyleClass().add(item ? "willPayCell" : "wontPayCell");
-                              this.getTableRow().getStyleClass().add(item ? "willPayRow" : "wontPayRow");
+                              if(4==nlTipoPreenchimento){
+                                this.getTableRow().getStyleClass().add(item ? "willPayRow" : "caixaEnviadosRow");
+                              }else{
+                                this.getTableRow().getStyleClass().add(item ? "willPayRow" : "wontPayRow");
+                              }
                             }
                         }
                     };
