@@ -126,7 +126,7 @@
                         <TableColumn fx:id="ClAssunto" prefWidth="250.0" text="Assunto" />
                     </columns>
                   </TableView>
-                  <Label fx:id="lblCaixa" layoutX="28.0" layoutY="6.0" text="." textFill="#334bff" AnchorPane.leftAnchor="10.0">
+                  <Label fx:id="lblCaixa" layoutX="28.0" layoutY="6.0" text="." textFill="#334bff" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -142,6 +142,7 @@
                         <TableColumn fx:id="ClAssunto2" prefWidth="75.0" text="Assunto" />
                     </columns>
                   </TableView>
+                  <Label fx:id="lblRecordCount" layoutX="330.0" layoutY="15.0" text="." AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children></AnchorPane>
         </items>
       </SplitPane>

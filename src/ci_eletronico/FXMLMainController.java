@@ -83,6 +83,7 @@ import javafx.util.Pair;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 
 
@@ -206,6 +207,8 @@ public class FXMLMainController implements Initializable {
     private Label lblUOGestora;
     @FXML
     private Label lblCaixa;
+    @FXML
+    private Label lblRecordCount;
     @FXML
     private Button btnTrocarSenha; 
     @FXML
@@ -1383,6 +1386,84 @@ public class FXMLMainController implements Initializable {
         }
     }
     
+    public Long RecordCountTbCiDestinatario(int nidUoDestinatario, int nlTipoPerfil){
+        
+        EntityManager em;
+        EntityManagerFactory emf;
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();   
+        
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        
+        Long lResultado = 0L;
+        
+        try{                     
+        em.getTransaction().begin();
+        if (1 == nlTipoPerfil){ //Perfil Gestor
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0",Long.class)            
+                                            .setParameter("idUoDestinatario", nidUoDestinatario);
+            lResultado = query.getSingleResult();
+        }else{
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
+                                            .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("idTipoCoin",nValues);
+            lResultado = query.getSingleResult();
+        }        
+                                            
+        //Long Resultado = query.getSingleResult();
+        em.close();
+        emf.close();
+        return lResultado;
+        
+        }catch(javax.persistence.PersistenceException e){
+            System.out.println("Erro:" + e);
+            em.close();
+            emf.close();            
+        }   
+        return 0L;
+    }
+    
+    public Long RecordCountEnviadosTbComunicacaoInterna(int nidUoDestinatario, int nlTipoPerfil){
+        EntityManager em;
+        EntityManagerFactory emf;
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();
+        
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(4);
+        
+        Long lResultado = 0L;
+        try{                     
+        em.getTransaction().begin();
+        if (1 == nlTipoPerfil){
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0",Long.class)            
+                                            .setParameter("idUoGestor", nidUoDestinatario);
+        lResultado = query.getSingleResult();
+        } else {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
+                                            .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("idTipoCoin",nValues);
+            lResultado = query.getSingleResult();
+        }
+                                            
+        //Long Resultado = query.getSingleResult();
+        em.close();
+        emf.close();
+        return lResultado;
+        
+        }catch(javax.persistence.PersistenceException e){
+            System.out.println("Erro:" + e);
+            em.close();
+            emf.close();            
+        }   
+        return 0L;
+    }
+    
     @FXML
     private void handleBtnMarcarcomoPendencia(ActionEvent event) throws IOException{
         if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
@@ -1921,6 +2002,25 @@ public class FXMLMainController implements Initializable {
     private void handleBtnCaixaEntrada(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("CAIXA DE RECEBIDAS");
+        
+        //Calculamos a quantidade de registros que ainda não foram lidos
+        //Unidade Organizacional utilizado nas queries
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
+        int nlIdUnidadeOrganizacional = 0;
+        nlIdUnidadeOrganizacional = this.nIdUnidadeOrganizacional;
+        
+        Long nlResultado = 0L;
+        
+        nlResultado = RecordCountTbCiDestinatario(nlIdUnidadeOrganizacional, nlTipoPerfil);
+        
+        String strLabel = "";        
+        strLabel = "CIs não lidos = ";
+        strLabel = strLabel.concat(Long.toString(nlResultado));
+        lblRecordCount.setText("");
+        lblRecordCount.setText(strLabel);
                 
         setBotoesMainWindow(nTipoPerfil);
         
@@ -1943,12 +2043,36 @@ public class FXMLMainController implements Initializable {
     private void handleBtnCaixaSaida(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("CAIXA DE ENVIADOS");
+        
+        lblRecordCount.setText("");
         setBotoesMainWindow(nTipoPerfil);       
         
         btnAprovarCI.setDisable(true);
         btnEncaminharCI.setDisable(true);
         btnArquivarCI.setDisable(false);
         btnDesarquivarCI.setDisable(true);  
+        
+        //Calculamos a quantidade de registros que ainda não foram lidos
+        //Unidade Organizacional utilizado nas queries
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
+        int nlIdUnidadeOrganizacional = 0;
+        nlIdUnidadeOrganizacional = this.nIdUnidadeOrganizacional;
+        Long nlResultado = 0L;
+        nlResultado = RecordCountEnviadosTbComunicacaoInterna(nlIdUnidadeOrganizacional, nlTipoPerfil);
+        String strLabel = "";
+        
+        strLabel = "Caixa de enviados";
+        
+        btnCaixaSaida.setText("");
+        if (0 == nlResultado){        
+            btnCaixaSaida.setText(strLabel);
+        }else {
+            strLabel = strLabel.concat(" Aprovação:" + Long.toString(nlResultado));
+            btnCaixaSaida.setText(strLabel);
+        }
         
         clearTelas();
         
@@ -2464,6 +2588,9 @@ public class FXMLMainController implements Initializable {
     private void handleBtnCaixaPendencias(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("Caixa de recebidas (pendências)");
+        
+        lblRecordCount.setText("");
+        
         setBotoesMainWindow(nTipoPerfil);
         
         btnDesarquivarCI.setDisable(true);
@@ -2480,6 +2607,9 @@ public class FXMLMainController implements Initializable {
     private void handleBtnCaixaArquivadas(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("Caixa de recebidas (arquivadas)");
+        
+        lblRecordCount.setText("");
+        
         setBotoesMainWindow(nTipoPerfil);
         clearTelas();
         btnArquivarCI.setDisable(true);
@@ -2632,6 +2762,9 @@ public class FXMLMainController implements Initializable {
     private void handleBtnCaixaEnviadasArquivadas(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("Caixa de enviados (arquivadas)");
+        
+        lblRecordCount.setText("");
+        
         setBotoesMainWindow(nTipoPerfil);
         clearTelas();
         btnArquivarCI.setDisable(true);
@@ -2714,6 +2847,10 @@ public class FXMLMainController implements Initializable {
         int nIdCoin = 0;
         int nIdTipoEnvio = 0;
         
+        //Unidade Organizacional utilizado nas queries
+        int nlIdUnidadeOrganizacional = 0;
+        nlIdUnidadeOrganizacional = this.nIdUnidadeOrganizacional;
+        
         //Tipo de perfil
         int nlTipoPerfil = 0;
         nlTipoPerfil = this.nTipoPerfil;
@@ -2731,6 +2868,7 @@ public class FXMLMainController implements Initializable {
         List<TbCiDestinatario> listaCiDestinatario2 = new ArrayList<TbCiDestinatario>();
         ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada2 = FXCollections.observableArrayList();
         
+             
         MainWindowQueries consulta;
         consulta  = new MainWindowQueries();        
         
@@ -2745,9 +2883,11 @@ public class FXMLMainController implements Initializable {
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 btnAprovarCI.setDisable(false);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
-                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacao(this.nIdUnidadeOrganizacional);
+                    //listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacao(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacao(nlIdUnidadeOrganizacional);
                 } else {
-                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(this.nIdUnidadeOrganizacional);                    
+                    //listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(this.nIdUnidadeOrganizacional);                    
+                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(nlIdUnidadeOrganizacional);
                 }
                 
                 break;
@@ -2759,14 +2899,14 @@ public class FXMLMainController implements Initializable {
                 TbViewGeral.setPrefHeight(328);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     //TableView1
-                    listaCiDestinatario = consulta.getlistaCaixaEntrada(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntrada(nlIdUnidadeOrganizacional);
                     //TableView2
-                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacao(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacao(nlIdUnidadeOrganizacional);
                 } else {
                     //TableView1
-                    listaCiDestinatario = consulta.getlistaCaixaEntradaPerfil2(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPerfil2(nlIdUnidadeOrganizacional);
                     //TableView2
-                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario2 = consulta2.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(nlIdUnidadeOrganizacional);
                 }
                 break;
             case 3: //caixa de recebidas (pendencias)
@@ -2778,9 +2918,9 @@ public class FXMLMainController implements Initializable {
                 //TbViewGeral.setMaxHeight(656);
                 
                 if (1 == nlTipoPerfil){ //Perfil Gestor
-                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendencias(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendencias(nlIdUnidadeOrganizacional);
                 } else {
-                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendenciasPerfil2(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaPendenciasPerfil2(nlIdUnidadeOrganizacional);
                 }
                 break;
             case 4: //caixa de recebidas (arquivadas)
@@ -2793,9 +2933,9 @@ public class FXMLMainController implements Initializable {
 //                    listaCiDestinatario = consulta.getlistaGestorCaixaEntradaArquivados(this.nIdUnidadeOrganizacional);
 //                } else {
                 if (1 == nlTipoPerfil){ //Perfil Gestor
-                    listaCiDestinatario = consulta.getlistaCaixaEntradaArquivados(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaArquivados(nlIdUnidadeOrganizacional);
                 } else {
-                    listaCiDestinatario = consulta.getlistaCaixaEntradaArquivadosPerfil2(this.nIdUnidadeOrganizacional);
+                    listaCiDestinatario = consulta.getlistaCaixaEntradaArquivadosPerfil2(nlIdUnidadeOrganizacional);
                 }
 //                }
                 break;
