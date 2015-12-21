@@ -7,12 +7,16 @@ and open the template in the editor.
     Created on : 17/dez/2015, 12:54:22
     Author     : victorcmaf
 */
-.root { -fx-font: 12px "Arial"; }
+.root { -fx-font: 12px "Arial";  }
 .column-header-background { -fx-background-color: azure; }
 /*.willPayRow { -fx-background-color: palegreen;  }*/
-.porAprovarRow { -fx-background-color: #99ddff;  }
-.willPayRow { -fx-background-color: #00cc94;  }
-.wontPayRow {}
+/*.porAprovarRow { -fx-background-color: #99ddff;  }*/
+/*.willPayRow {-fx-background-color: #b3d8ff;  }*/
+.porAprovarRow { -fx-background-color: #adebad;  }
+willPayRow{}
+.wontPayRow {-fx-font: 11px "Arial black"}
+/*.willPayRow {}
+.wontPayRow {-fx-background-color: #b3d8ff;}*/
 /*.wontPayRow { -fx-background-color: #f2f2f2; -fx-font: 12px "Arial"; }*/
 .willPayCell { -fx-background-color: forestgreen; }
 .wontPayCell { -fx-background-color: firebrick; }
