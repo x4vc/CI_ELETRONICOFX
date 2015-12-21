@@ -61,6 +61,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByCoinRemitenteGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinRemitenteGestorAutorizado = :coinRemitenteGestorAutorizado")})
 public class TbCiDestinatario implements Serializable {
     @Basic(optional = false)
+    @Column(name = "COIN_CANCELADO")
+    private boolean coinCancelado;
+    @Basic(optional = false)
     @Column(name = "COIN_ASSINATURA")
     private String coinAssinatura;
     @JoinColumn(name = "ID_TIPO_COIN", referencedColumnName = "ID_TIPO_COIN")
@@ -460,6 +463,14 @@ public class TbCiDestinatario implements Serializable {
 
     public void setCoinAssinatura(String coinAssinatura) {
         this.coinAssinatura = coinAssinatura;
+    }
+
+    public boolean getCoinCancelado() {
+        return coinCancelado;
+    }
+
+    public void setCoinCancelado(boolean coinCancelado) {
+        this.coinCancelado = coinCancelado;
     }
 
     

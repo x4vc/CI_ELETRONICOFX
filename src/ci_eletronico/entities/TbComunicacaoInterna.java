@@ -59,6 +59,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinTemAnexos", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinTemAnexos = :coinTemAnexos")})
 public class TbComunicacaoInterna implements Serializable {
     @Basic(optional = false)
+    @Column(name = "COIN_CANCELADO")
+    private boolean coinCancelado;
+    @Basic(optional = false)
     @Column(name = "COIN_ASSINATURA")
     private String coinAssinatura;
     @Basic(optional = false)
@@ -391,6 +394,14 @@ public class TbComunicacaoInterna implements Serializable {
 
     public void setCoinAssinatura(String coinAssinatura) {
         this.coinAssinatura = coinAssinatura;
+    }
+
+    public boolean getCoinCancelado() {
+        return coinCancelado;
+    }
+
+    public void setCoinCancelado(boolean coinCancelado) {
+        this.coinCancelado = coinCancelado;
     }
 
     

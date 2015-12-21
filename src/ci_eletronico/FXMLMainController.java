@@ -1394,12 +1394,6 @@ public class FXMLMainController implements Initializable {
         EntityManagerFactory emf;
         emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
         em = emf.createEntityManager();   
-        
-        List<Integer> nValues = new ArrayList<>();
-        nValues.add(1);
-        nValues.add(2);
-        nValues.add(4);
-        
         Long lResultado = 0L;
         
         try{                     
@@ -1409,6 +1403,10 @@ public class FXMLMainController implements Initializable {
                                             .setParameter("idUoDestinatario", nidUoDestinatario);
             lResultado = query.getSingleResult();
         }else{
+            List<Integer> nValues = new ArrayList<>();
+            nValues.add(1);
+            nValues.add(2);
+            nValues.add(4);
             TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
                                             .setParameter("idUoDestinatario", nidUoDestinatario)
                                             .setParameter("idTipoCoin",nValues);
@@ -1423,21 +1421,18 @@ public class FXMLMainController implements Initializable {
         }catch(javax.persistence.PersistenceException e){
             System.out.println("Erro:" + e);
             em.close();
-            emf.close();            
+            emf.close();
+            return 0L;
         }   
-        return 0L;
+        //return 0L;
     }
     
     public Long RecordCountEnviadosTbComunicacaoInterna(int nidUoDestinatario, int nlTipoPerfil){
         EntityManager em;
         EntityManagerFactory emf;
         emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
-        em = emf.createEntityManager();
+        em = emf.createEntityManager();       
         
-        List<Integer> nValues = new ArrayList<>();
-        nValues.add(1);
-        nValues.add(2);
-        nValues.add(4);
         
         Long lResultado = 0L;
         try{                     
@@ -1447,8 +1442,12 @@ public class FXMLMainController implements Initializable {
                                             .setParameter("idUoGestor", nidUoDestinatario);
         lResultado = query.getSingleResult();
         } else {
+            List<Integer> nValues = new ArrayList<>();
+            nValues.add(1);
+            nValues.add(2);
+            nValues.add(4);
             TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
-                                            .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("idUoGestor", nidUoDestinatario)
                                             .setParameter("idTipoCoin",nValues);
             lResultado = query.getSingleResult();
         }
@@ -1461,9 +1460,10 @@ public class FXMLMainController implements Initializable {
         }catch(javax.persistence.PersistenceException e){
             System.out.println("Erro:" + e);
             em.close();
-            emf.close();            
+            emf.close();     
+            return 0L;
         }   
-        return 0L;
+        //return 0L;
     }
     
     @FXML
