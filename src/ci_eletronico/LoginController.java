@@ -37,28 +37,43 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * FXML Controller class
  *
  * @author victorcmaf
  */
-public class LoginController implements Initializable {
-//public class LoginController {
+//public class LoginController implements Initializable {
+public class LoginController {
     @FXML
-    private Button btnAcessar;
+    Label lblMessage;
     @FXML
-    private Button btnOK;
+    private Button btnFechar;
+    @FXML
+    private Hyperlink hlink;
+    @FXML
+    private Label lblLogin;
     @FXML
     private TextField txtUsername;
     @FXML
+    private Label lblSenha;
+    @FXML
     private PasswordField pwdSenha;
     @FXML
-    private ComboBox cmbUO;   
+    private Button btnAcessar;
     @FXML
     private Label lblUO;
     @FXML
-    private Hyperlink hlink;
+    private ComboBox cmbUO; 
+    @FXML
+    private Button btnOK;
+   
+
+      
+    
+    
     
     private List<ci_eletronico.entities.TbUsuario> listaUsuarios = new ArrayList<>();
     private List<ci_eletronico.entities.TbUsuarioPerfilUo> listaUO = new ArrayList<>();
@@ -85,9 +100,9 @@ public class LoginController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-    //public void initialize() {
+//    @Override
+//    public void initialize(URL url, ResourceBundle rb) {
+  public void initialize() {
         // TODO
         //listaUsuarios = consulta.listaTbUsuario();
 //        hlink.setOnAction(new EventHandler() {
@@ -97,12 +112,70 @@ public class LoginController implements Initializable {
 //                app.getHostServices().showDocument("http://www.jumpingbean.biz");
 //            }
 //        });
+        boolean blPrecisaUpdate = false;
         
-        ComponentesVisible(false);         
+                 
         
-        btnAcessar.setDefaultButton(true);
-        hlink.setVisible(false);
+        btnAcessar.setDefaultButton(true);        
+        
+        blPrecisaUpdate = VerificarVersaoSistema();
+        if (blPrecisaUpdate){
+            //Disabled os labels e botões
+            btnAcessar.setVisible(false);
+            lblUO.setVisible(false);
+            cmbUO.setVisible(false);
+            btnOK.setVisible(false); 
+            hlink.setVisible(false);
+            btnFechar.setVisible(true);
+            txtUsername.setVisible(false);
+            pwdSenha.setVisible(false);
+            lblLogin.setVisible(false);
+            lblSenha.setVisible(false);
+            lblMessage.setText("");
+            lblMessage.setText("Sistema CI-eletrônico precisa ser atualizado.\nFavor entrar em contato com suporte ASSTI. ");
+            lblMessage.setVisible(true);
+            
+        } else {
+            ComponentesVisible(false);
+            btnFechar.setVisible(false);
+            lblMessage.setVisible(false);
+            lblMessage.setText(""); 
+            hlink.setVisible(false);
+            
+        }
+        
     } 
+    
+    private boolean VerificarVersaoSistema(){
+        boolean blPrecisaUpdate = false;
+        String strVersaoBancoDados = "";
+        String strVersaoCodigo = "";
+        
+        strVersaoCodigo = "1.1";
+        
+        LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
+        List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();
+        listaVersoes = consulta_TB_ATUALIZAR_SISTEMA.listaTbAtualizarSistema();
+        for(ci_eletronico.entities.TbAtualizarSistema l : listaVersoes){
+            blPrecisaUpdate = l.getAtsiPrecisaAtualizar();
+            strVersaoBancoDados = l.getAtsiVersao();
+        }
+        if (blPrecisaUpdate){
+            if (0==strVersaoCodigo.compareTo(strVersaoBancoDados)){
+                blPrecisaUpdate = false;
+            } else {
+                blPrecisaUpdate = true;
+            }
+        }
+        return blPrecisaUpdate;
+    }
+    
+    @FXML
+    private void handleBtnFecharAplicacao(ActionEvent event){
+        //Ocultamos a janela de login
+        (((Node)event.getSource()).getScene()).getWindow().hide();
+        //--------- FIM Ocultar janela de Login ------------
+    }
     
     @FXML
     private void handleBtnAcessarAction(ActionEvent event) throws IOException, Exception {
