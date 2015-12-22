@@ -281,7 +281,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnMarcarComoLido" contentDisplay="TOP" graphicTextGap="0.0" layoutX="305.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoLido" prefHeight="35.0" prefWidth="165.0" text="Marcar como lido" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="75.0" />
+                  <Button fx:id="btnMarcarComoLido" contentDisplay="TOP" graphicTextGap="0.0" layoutX="305.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoLido" prefHeight="48.0" prefWidth="165.0" text="Marcar como lido" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="75.0" />
                </children>
             </AnchorPane>
         </items>

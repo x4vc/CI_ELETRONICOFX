@@ -101,6 +101,7 @@ public class LoginController implements Initializable {
         ComponentesVisible(false);         
         
         btnAcessar.setDefaultButton(true);
+        hlink.setVisible(false);
     } 
     
     @FXML
@@ -302,7 +303,7 @@ public class LoginController implements Initializable {
         lblUO.setVisible(bCondicao);
         cmbUO.setVisible(bCondicao);
         btnOK.setVisible(bCondicao); 
-        hlink.setVisible(bCondicao);
+        
         
     } 
     private void ComponentesDisable(boolean bCondicao){

@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "TbUsuarioPerfilUo.findAll", query = "SELECT t FROM TbUsuarioPerfilUo t"),
     @NamedQuery(name = "TbUsuarioPerfilUo.findByIdUsuarioPerfilUo", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.idUsuarioPerfilUo = :idUsuarioPerfilUo"),
-    @NamedQuery(name = "TbUsuarioPerfilUo.findByIdUsuario", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.idUsuario = :idUsuario AND t.uspuAtivo = 1"),
+    @NamedQuery(name = "TbUsuarioPerfilUo.findByIdUsuario", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.idUsuario = :idUsuario AND t.uspuAtivo = 1 ORDER BY t.idUnidadeOrganizacional.unorNome" ),
     @NamedQuery(name = "TbUsuarioPerfilUo.findByUspuAtivo", query = "SELECT t FROM TbUsuarioPerfilUo t WHERE t.uspuAtivo = :uspuAtivo")})
 public class TbUsuarioPerfilUo implements Serializable {
     private static final long serialVersionUID = 1L;
