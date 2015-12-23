@@ -22,11 +22,11 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Label layoutX="14.0" layoutY="148.0" text="Login:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="150.0">
+      <Label fx:id="lblLogin" layoutX="14.0" layoutY="148.0" text="Login:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="150.0">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <Label layoutX="18.0" layoutY="192.0" text="Senha:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="195.0">
+      <Label fx:id="lblSenha" layoutX="18.0" layoutY="192.0" text="Senha:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="195.0">
          <font>
             <Font name="Arial Bold" size="12.0" />
          </font>
@@ -41,6 +41,12 @@
             <Image url="@../resources/logo_transalvador.png" />
          </image>
       </ImageView>
-      <Hyperlink fx:id="hlink" layoutX="121.0" layoutY="96.0" text="Clique aqui para atualizar o sistema..." />
+      <Hyperlink fx:id="hlink" layoutX="148.0" layoutY="320.0" text="Clique aqui para atualizar o sistema..." />
+      <Button fx:id="btnFechar" layoutX="209.0" layoutY="119.0" mnemonicParsing="false" onAction="#handleBtnFecharAplicacao" text="Fechar sistema" AnchorPane.topAnchor="119.0" />
+      <Label fx:id="lblMessage" alignment="CENTER" layoutX="31.0" layoutY="90.0" text="." textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="65.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

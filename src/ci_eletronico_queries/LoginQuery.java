@@ -5,6 +5,7 @@
  */
 package ci_eletronico_queries;
 
+import ci_eletronico.entities.TbAtualizarSistema;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
@@ -32,6 +33,11 @@ public class LoginQuery {
     public List<TbUsuario> listaTbUsuario() {
         
         return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();        
+        
+        }
+    public List<TbAtualizarSistema> listaTbAtualizarSistema() {
+        
+        return em.createNamedQuery("TbAtualizarSistema.findAll",TbAtualizarSistema.class).getResultList();        
         
         }
     public List<TbUsuario> listaUserLogin(String strLogin) {
