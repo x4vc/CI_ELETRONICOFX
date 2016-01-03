@@ -657,7 +657,7 @@ public class NovaCIController implements Initializable {
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
             case 3:
-                //Despacho
+                //CI confidencial
                 strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI CONFIDENCIAL</FONT></b>";
                 strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");

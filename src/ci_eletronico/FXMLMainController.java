@@ -9,6 +9,7 @@ import ci_eletronico.entities.TbAnexo;
 import ci_eletronico.entities.TbCIPorAprovar;
 import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.StyleChangingRowFactory;
@@ -297,6 +298,8 @@ public class FXMLMainController implements Initializable {
     private Button btnMarcarComoLido;
     @FXML
     private Label lblAguardandoAprovacao;
+    @FXML
+    private Button btnDesaprovarCI;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -563,12 +566,15 @@ public class FXMLMainController implements Initializable {
                 
                 //Botões secundarios
                 btnImprimirCI.setDisable(false);
-                btnAprovarCI.setDisable(false);
+                
                 btnEncaminharCI.setDisable(false);
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
-                btnEditarCI.setVisible(false);
+                //btnEditarCI.setVisible(false);
+                btnAprovarCI.setDisable(true);
+                btnEditarCI.setDisable(true);
+                btnDesaprovarCI.setDisable(true);
                 btnMarcarcomoPendencia.setDisable(true);
                 
                 //Labels
@@ -590,8 +596,9 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 btnEditarCI.setDisable(true);
+                btnDesaprovarCI.setDisable(true);
                 
-                btnEditarCI.setVisible(false);
+                //btnEditarCI.setVisible(false);
                 btnMarcarcomoPendencia.setDisable(true);
                 
                 //Labels
@@ -613,8 +620,11 @@ public class FXMLMainController implements Initializable {
                 btnArquivarCI.setDisable(true);
                 btnDesarquivarCI.setDisable(true);
                 
-                btnEditarCI.setVisible(false);
+                //btnEditarCI.setVisible(false);
+                btnEditarCI.setDisable(true);
+                btnDesarquivarCI.setDisable(true);
                 btnMarcarcomoPendencia.setDisable(true);
+                btnDesaprovarCI.setDisable(true);
                 
                 //Labels
                 lblNumeroSequencialCI.setText("");
@@ -1246,7 +1256,7 @@ public class FXMLMainController implements Initializable {
                 }catch(javax.persistence.PersistenceException e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Aprovar CI ");
-                    alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+                    alert.setHeaderText("Case 1: Tabela TB_CI_DESTINATARIO");
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();                                            
                 }
@@ -1257,7 +1267,7 @@ public class FXMLMainController implements Initializable {
                 }catch(Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Aprovar CI ");
-                    alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+                    alert.setHeaderText("Case 2: Tabela TB_CI_DESTINATARIO");
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();                                            
                 }
@@ -1308,6 +1318,323 @@ public class FXMLMainController implements Initializable {
             alert.setContentText("Favor contatar o Administrador do sistema");
             alert.showAndWait();
         }
+    }
+    @FXML
+    private void handleBtnDesaprovarCI(ActionEvent event) throws IOException{
+        if (null == TbViewGeral2.getSelectionModel().getSelectedItem()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("CI não foi selecionado.");
+            alert.setContentText("Favor selecionar uma CI da tabela");
+            alert.showAndWait();
+        }else{  
+            int nIdCI = 0;            
+            int nBotao = 0;
+            int nTabela = 0;
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar Desaprovação");
+            alert.setHeaderText(null);
+            alert.setContentText("Deseja realmente Desaprovar CI?"); 
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                //nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                nBotao = this.ngBotao;
+                nTabela = this.ngTabela;
+                
+                // Aprovamos CI
+                //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
+                // 0 ==> Sem tabela definida
+                // 1 ==> TB_COMUNICACAO_INTERNA
+                // 2 ==> TB_CI_DESTINATARIO
+                switch (nTabela){
+                    case 1:
+                        nIdCI = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                        DesaprovarCI(nIdCI, 1);
+                        //TableViewRefresh(nBotao);
+                        break;
+                    case 2:
+                        nIdCI = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idCoinDestinatario();
+                        DesaprovarCI(nIdCI, 2);                        
+                        //TableViewRefresh(nBotao);
+                        break;
+                        
+                    default:
+                        break;
+                }
+                
+            } else {
+                // ... user chose CANCEL or closed the dialog 
+            }
+            
+        }
+        
+    }
+    private void DesaprovarCI(int nlIdCI, int nlTabela){
+       
+        boolean bUpdate = false;
+        boolean bDesaprovado = true;
+        
+        //Valores dos botões 
+        //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+        //2-caixa de recebidas - btnCaixaEntrada
+        //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+        //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+        //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+        //6-Caixa de enviados - btnCaixaSaida;
+        //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+        int nlButtonSelected = 0;
+        nlButtonSelected = ngBotao;
+        
+        MainWindowQueries consulta  = new MainWindowQueries();  
+        EntityManager em;
+        EntityManagerFactory emf;
+        TbComunicacaoInterna nTbComunicacaoInternaIdCoin= new TbComunicacaoInterna(nlIdCI);
+        
+        //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
+        // 0 ==> Sem tabela definida
+        // 1 ==> TB_COMUNICACAO_INTERNA
+        // 2 ==> TB_CI_DESTINATARIO
+        switch (nlTabela){
+            case 1:
+                try{
+                    TbComunicacaoInterna EntidadeTbCI = new TbComunicacaoInterna();
+                    EntidadeTbCI = consulta.DesaprovarCIEnviada(nlIdCI);
+                    bUpdate = EnviarMsgCiDesaprovada(nlIdCI,1, EntidadeTbCI,null);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }    
+                
+                try{
+                    consulta  = new MainWindowQueries();
+                    emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+                    em = emf.createEntityManager();        
+                    em.getTransaction().begin();
+                    //Atualizamos registros na tabela TB_CI_DESTINATARIO
+                    //Iniciamos a criação da TableView
+                    List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
+                    listaCiDestinatario = consulta.getlistaCiParaAprovar(nTbComunicacaoInternaIdCoin);
+                    for(TbCiDestinatario l : listaCiDestinatario){
+                        l.setCoinCancelado(bDesaprovado);
+                        em.merge(l);
+                    }
+                    em.getTransaction().commit();            
+                    em.close();
+                    emf.close();
+                    
+                }catch(javax.persistence.PersistenceException e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Desaprovar CI ");
+                    alert.setHeaderText("Case 1: Tabela TB_CI_DESTINATARIO");
+                    alert.setContentText(e.getMessage());
+                    alert.showAndWait();                                            
+                }
+                break;
+            case 2:
+                try{
+                    TbCiDestinatario EntidadeTbCI = new TbCiDestinatario();
+                    EntidadeTbCI = consulta.DesaprovarCIRecebida(nlIdCI);
+                    bUpdate = EnviarMsgCiDesaprovada(nlIdCI,2, null, EntidadeTbCI);                   
+                                        
+                }catch(Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Desaprovar CI ");
+                    alert.setHeaderText("Case 2: Tabela TB_CI_DESTINATARIO");
+                    alert.setContentText(e.getMessage());
+                    alert.showAndWait();                                            
+                }
+                break;
+            default:
+                break;
+        }
+        if (bUpdate){
+//                        System.out.println("IdUsuario = " + nIdUserUO);
+//                        System.out.println("Update deve acontecer");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText("CI foi Desaprovada com sucesso.");
+            alert.setContentText("Foi enviada uma menssagem para o emisor da CI desaprovada");
+            alert.showAndWait();    
+            
+            //Refresh da TableView
+            switch(nlButtonSelected){
+                case 1:
+                    btnCaixaEntradaSolicitandoAprovacao.fire();
+                    break;
+                case 2:
+                    btnCaixaEntrada.fire();
+                    break;
+                case 3:
+                    btnCaixaPendencias.fire();
+                    break;
+                case 4:
+                    btnCaixaArquivadas.fire();
+                    break;
+                case 5:
+                    btnCaixaEnviadosArquivados.fire();
+                    break;
+                case 6:
+                    btnCaixaSaida.fire();
+                    break;
+                case 7:
+                    btnPendentesAprovacao.fire();
+                    break;
+                default:
+                    break;                
+            } 
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Não foi possível aprovar CI");
+            alert.setContentText("Favor contatar o Administrador do sistema");
+            alert.showAndWait();
+        }
+        
+    }
+    private boolean EnviarMsgCiDesaprovada(int nlIdCI, int nlTabela, TbComunicacaoInterna EntidadeTbCI, TbCiDestinatario EntidadeTbCIDest){
+        // Iniciamos a Persistencia de dados
+        EntityManager em;
+        EntityManagerFactory emf;
+        
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();        
+        em.getTransaction().begin();
+        //----------------------------------------------------------------
+        
+        boolean bCondicao = false;
+        String strSequencialCI = this.lblNumeroSequencialCI.getText();
+        String strlCITitulo = "";
+        String strlConteudo = "";
+        String strPara = "";
+        //Seteamos Datas
+        String strToday = "";
+        String strTodayCI = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // utilizado para banco de dados
+        DateFormat dfCI = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // utilizado para mostrar na aplicação
+        
+        java.util.Date data_criacao; 
+        data_criacao = new Date();
+        strToday = df.format(data_criacao);        
+        strTodayCI = dfCI.format(data_criacao); 
+        
+        strlCITitulo = "<br /><p align=\"center\"><b>" + strSequencialCI + "</b></p>";
+        strlConteudo = "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"><p><span style=\"font-family: 'Segoe UI';\">Prezado(a),&nbsp;</span></p><p><font face=\"Segoe UI\">Informamos que a CI foi cancelada pela UO Gestora e por esse motivo não será possível o seu envio para seu(s) destinatário(s).</font></p><p><font face=\"Segoe UI\">Atenciosamente,&nbsp;</font></p><p><font face=\"Segoe UI\">Sistema CI-eletrônica.</font></p></body></html>";
+        
+        strPara = strPara.concat(strlCITitulo);
+        strPara = strPara.concat("<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI Desaprovada</FONT></b>");
+        strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + this.lblNomeUO.getText() + "</b></FONT><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + this.lblNomeUsuario.getText() + "</FONT><br /><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
+        strPara = strPara.concat(strlConteudo);
+        
+        switch (nlTabela){
+            case 1: //CI Desaprovado - Caixa Enviados
+                //Passo 1 - Guardar na tabela TB_COMUICACAO_INTERNA
+                TbComunicacaoInterna newTbCI = new TbComunicacaoInterna();
+                TbTipoComunicacoInterna nlTipoCI = new TbTipoComunicacoInterna(6);  //6 ==> CI Desaprovada
+                //Enviar messagem informando que CI não foi autorizado
+                //Seteamos entity TB_COMUNICACAO_INTERNA
+                try {
+                    newTbCI.setCoinAssunto("CI Não foi autorizada pela Unidade Gestora");        
+                    newTbCI.setCoinConteudo(strPara);
+                    newTbCI.setIdUsuario(this.nIdUsuarioLogado);
+                    newTbCI.setUsuNomeCompleto(this.lblNomeUsuario.getText());
+                    newTbCI.setIdUnidadeOrganizacional(this.nIdUnidadeOrganizacional);
+                    newTbCI.setUnorDescricao(this.lblNomeUO.getText());
+                    newTbCI.setIdUoGestor(this.nIdUOGestor);
+                    newTbCI.setCoinAutorizado(true);
+                    newTbCI.setIdTipoCoin(nlTipoCI);
+                    newTbCI.setCoinApensamento("");
+                    newTbCI.setCoinNumero(EntidadeTbCI.getCoinNumero());    //Número Sequencial não é incrementado.
+                    newTbCI.setCoinUoArquivado(false);
+                    newTbCI.setCoinUoGestorArquivado(false);
+                    newTbCI.setCoinDataCriacao(data_criacao);
+                    newTbCI.setCoinReadOnly(false);
+                    newTbCI.setCoinTemAnexos(false);
+
+                    newTbCI.setIdCoinGenesis(EntidadeTbCI.getIdCoinGenesis());
+                    newTbCI.setIdUnorGenesis(EntidadeTbCI.getIdUnorGenesis());
+                    newTbCI.setCoinNumeroGenesis(EntidadeTbCI.getCoinNumeroGenesis());
+                    newTbCI.setCoinHistoricoAnexos(EntidadeTbCI.getCoinHistoricoAnexos());
+                    newTbCI.setUnorDescricaoGenesis(EntidadeTbCI.getUnorDescricaoGenesis());  
+
+                    newTbCI.setCoinAssinatura(EntidadeTbCI.getCoinAssinatura()); // Assinatura é igual à CI desaprovada
+
+                    em.persist(newTbCI);
+                    em.flush();
+
+                    //Passo 2 - Guardamos na Tabela TB_CI_DESTINATARIO
+                    long IdCoin = newTbCI.getIdCoin();
+
+                    TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();       
+
+                    TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
+
+                    TbTipoEnvio nIdTipoEnvio = new TbTipoEnvio(1); //1 - Tipo = ENVIADO "PARA"
+
+                    newTbCIDestinatario.setIdCoin(nCoinId);
+                    newTbCIDestinatario.setIdUsuarioRemitente(this.nIdUsuarioLogado);
+                    newTbCIDestinatario.setUsuNomeCompletoRemitente(this.lblNomeUsuario.getText());
+                    newTbCIDestinatario.setIdUoRemitente(this.nIdUnidadeOrganizacional);
+                    newTbCIDestinatario.setInorDescricaoRemitente(this.lblNomeUO.getText());
+                    newTbCIDestinatario.setIdUoDestinatario(EntidadeTbCI.getIdUnidadeOrganizacional());
+                    newTbCIDestinatario.setUnorDescricaoDestinatario(EntidadeTbCI.getUnorDescricao());
+                    newTbCIDestinatario.setIdUoGestorDestinatario(this.nIdUnidadeOrganizacional);
+                    newTbCIDestinatario.setCoinDestinatarioGestorAutorizado(true);
+                    newTbCIDestinatario.setCoinDestinatarioUoArquivado(false);
+                    newTbCIDestinatario.setCoinDestinatarioUoGestorArquivado(false);
+                    newTbCIDestinatario.setCoinDestinatarioAssunto("CI Não foi autorizada pela Unidade Gestora");
+                    newTbCIDestinatario.setCoinDestinatarioConteudo(strPara);
+                    newTbCIDestinatario.setCoinDestinatarioPendente(false);
+                    newTbCIDestinatario.setCoinDestinatarioLido(false);
+                    newTbCIDestinatario.setCoinDestinatarioDataCriacao(data_criacao);
+                    newTbCIDestinatario.setIdTipoEnvio(nIdTipoEnvio); // 1 ==> CI normal
+                    newTbCIDestinatario.setCoinDestinatarioNumero(EntidadeTbCI.getCoinNumero());    //Número Sequencial não é incrementado.
+                    newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
+                    newTbCIDestinatario.setCoinDestinatarioTemAnexos(false);
+                    newTbCIDestinatario.setCoinRemitenteGestorAutorizado(true);
+
+                    //Variaveis Genesis
+    //                newTbCIDestinatario.setIdCoinGenesis(nlIdCoinGenesis);
+    //                newTbCIDestinatario.setIdUnorGenesis(nlIdUnorGenesis);
+    //                newTbCIDestinatario.setCoinNumeroGenesis(nlCoinNumeroGenesis);
+    //                newTbCIDestinatario.setCoinHistoricoAnexos(strCoinHistoricoAnexos);
+    //                newTbCIDestinatario.setUnorDescricaoGenesis(strUnorDescricaoGenesis);
+
+                    newTbCIDestinatario.setIdCoinGenesis(EntidadeTbCI.getIdCoinGenesis());
+                    newTbCIDestinatario.setIdUnorGenesis(EntidadeTbCI.getIdUnorGenesis());
+                    newTbCIDestinatario.setCoinNumeroGenesis(EntidadeTbCI.getCoinNumeroGenesis());
+                    newTbCIDestinatario.setCoinHistoricoAnexos(EntidadeTbCI.getCoinHistoricoAnexos());
+                    newTbCIDestinatario.setUnorDescricaoGenesis(EntidadeTbCI.getUnorDescricaoGenesis()); 
+                    //----------------------------------
+                    newTbCIDestinatario.setIdTipoCoin(nlTipoCI);    ////6 ==> CI Desaprovada
+
+                    newTbCIDestinatario.setCoinAssinatura(EntidadeTbCI.getCoinAssinatura()); // Assinatura é igual à CI desaprovada
+
+                    em.persist(newTbCIDestinatario);
+                    
+                    em.getTransaction().commit();            
+                    em.close();
+                    emf.close();
+
+                    bCondicao = true;
+                
+                }catch(javax.persistence.PersistenceException e){
+                    //e.printStackTrace();
+                    em.close();
+                    emf.close();            
+                    bCondicao = false;
+                }
+                break;
+            case 2: //CI Desaprovado - Caixa Recebidos
+                bCondicao = false;
+                break;
+            default:
+                bCondicao = false;
+                break;
+        }
+    return bCondicao;    
     }
     
     @FXML
@@ -2031,7 +2358,9 @@ public class FXMLMainController implements Initializable {
         btnArquivarCI.setDisable(false);
         btnDesarquivarCI.setDisable(true); 
         
-        btnEditarCI.setVisible(false);
+        //btnEditarCI.setVisible(false);
+        btnEditarCI.setDisable(true);
+        btnDesaprovarCI.setDisable(true);
         btnMarcarcomoPendencia.setDisable(false);
         
         clearTelas();
@@ -2324,7 +2653,9 @@ public class FXMLMainController implements Initializable {
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
-                                    btnEditarCI.setVisible(false);
+                                    //btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);
+                                    btnDesaprovarCI.setDisable(true);
                                     break;
                                 case 5: //5-Caixa de enviados (arquivadas)
                                     btnAprovarCI.setDisable(true);
@@ -2333,7 +2664,9 @@ public class FXMLMainController implements Initializable {
                                     btnDesarquivarCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
-                                    btnEditarCI.setVisible(false);
+                                    //btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);
+                                    btnDesaprovarCI.setDisable(true);
                                     break;
                 
                     }
@@ -2380,13 +2713,17 @@ public class FXMLMainController implements Initializable {
        
         btnEncaminharCI.setDisable(true);
         btnDesarquivarCI.setDisable(true);
-        btnEditarCI.setVisible(true);
+        //btnEditarCI.setVisible(true);
         btnMarcarcomoPendencia.setDisable(true);
         
         if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
             btnAprovarCI.setDisable(false);
+            btnEditarCI.setDisable(false);
+            btnDesaprovarCI.setDisable(false);
         }else{
             btnAprovarCI.setDisable(true);
+            btnEditarCI.setDisable(true);
+            btnDesaprovarCI.setDisable(true);
         }
         
         //clearTelas();
@@ -2573,10 +2910,12 @@ public class FXMLMainController implements Initializable {
                             
                             if ((nlIdUnidadeOrganizacional == nlIdUOGestor) &&(nlTipoPerfil == 1)){
                                 btnAprovarCI.setDisable(false);
-                                btnEditarCI.setVisible(true);
+                                btnEditarCI.setDisable(false);
+                                btnDesaprovarCI.setDisable(false);
                             }else{
                                 btnAprovarCI.setDisable(true);
-                                btnEditarCI.setVisible(false);
+                                btnEditarCI.setDisable(true);
+                                btnDesaprovarCI.setDisable(true);
                             }
                             
                             //btnAprovarCI.setDisable(false); 
@@ -2627,7 +2966,8 @@ public class FXMLMainController implements Initializable {
         
         btnDesarquivarCI.setDisable(true);
         
-        btnEditarCI.setVisible(false);
+        btnEditarCI.setDisable(true);
+        btnDesaprovarCI.setDisable(true);
         btnMarcarcomoPendencia.setDisable(true);
         
         clearTelas();
@@ -3141,7 +3481,8 @@ public class FXMLMainController implements Initializable {
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(false);
                                     btnMarcarcomoPendencia.setDisable(false);
-                                    btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);  
+                                    btnDesaprovarCI.setDisable(true);
                                     
                                     //Icons para botão Marcar como Lido ou não
                                     // Adding images
@@ -3161,7 +3502,8 @@ public class FXMLMainController implements Initializable {
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(false);
                                     btnMarcarcomoPendencia.setDisable(true); 
-                                    btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);
+                                    btnDesaprovarCI.setDisable(true);
                                     break;
                                 case 4: //caixa de recebidas (arquivadas)
                                     btnAprovarCI.setDisable(true);
@@ -3170,7 +3512,8 @@ public class FXMLMainController implements Initializable {
                                     btnDesarquivarCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
-                                    btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);
+                                    btnDesaprovarCI.setDisable(true);
                                     break;
                                     
                             }
@@ -3345,10 +3688,12 @@ public class FXMLMainController implements Initializable {
 
                                 if ((nlIdUnidadeOrganizacional == nlIdUOGestor) &&(nlTipoPerfil == 1)){
                                     btnAprovarCI.setDisable(false);
-                                    btnEditarCI.setVisible(true);
+                                    btnEditarCI.setDisable(false);
+                                    btnDesaprovarCI.setDisable(false);
                                 }else{
                                     btnAprovarCI.setDisable(true);
-                                    btnEditarCI.setVisible(false);
+                                    btnEditarCI.setDisable(true);
+                                    btnDesaprovarCI.setDisable(true);
                                 }
                                 
                                 //-----TableView2  

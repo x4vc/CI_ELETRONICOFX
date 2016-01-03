@@ -340,6 +340,37 @@ public class MainWindowQueries {
         }
     }
     
+    public TbComunicacaoInterna DesaprovarCIEnviada(int nlIdCI) throws Exception{
+         
+        boolean bCancelado = true;
+        Date data = new Date();
+        try {
+            //Procuramos os dados da CI na tabela TB_COMUNICACAO_INTERNA
+            TbComunicacaoInterna DesaprovarCI = em.find(TbComunicacaoInterna.class, nlIdCI); 
+            
+            //Codigo para preencher dados da entidade
+            
+            //--------------------------------------------
+            
+            //Codigo para atualizar registro
+            DesaprovarCI.setCoinCancelado(bCancelado);
+            //AprovarCI.setCoinDataAutorizado(data);
+            
+            //Se for desaprovado então é automaticamente arquivado
+            DesaprovarCI.setCoinUoGestorArquivado(bCancelado);
+            em.merge(DesaprovarCI);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return DesaprovarCI;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return null;            
+        }        
+    }
+    
     public boolean AprovarCIEnviada(int nlIdCI) throws Exception{
         boolean bAprovado = true;
         Date data = new Date();
@@ -386,6 +417,32 @@ public class MainWindowQueries {
             em.close();
             emf.close();
             return false;            
+        }
+    }
+    public TbCiDestinatario DesaprovarCIRecebida(int nlIdCI) throws Exception{
+        boolean bDesaprovado = true;
+        Date data = new Date();
+        try {
+            TbCiDestinatario DesaprovarCI = em.find(TbCiDestinatario.class, nlIdCI);
+            
+            //Codigo para atualizar registro
+            DesaprovarCI.setCoinCancelado(bDesaprovado);
+            DesaprovarCI.setCoinDestinatarioUoGestorArquivado(bDesaprovado);
+            
+//            AprovarCI.setCoinDestinatarioGestorAutorizado(bAprovado);
+//            AprovarCI.setCoinDestinatarioGestorDataAutorizado(data);
+//            AprovarCI.setCoinDestinatarioUoGestorArquivado(bAprovado);
+            
+            em.merge(DesaprovarCI);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return DesaprovarCI;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return null;            
         }
     }
     public List<TbAnexo> getlistaAnexo(TbComunicacaoInterna nlIdCoin) {

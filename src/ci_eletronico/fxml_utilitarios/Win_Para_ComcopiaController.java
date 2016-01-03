@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -77,9 +79,18 @@ public class Win_Para_ComcopiaController implements Initializable {
         
         //Na primeira versão não estará visivel a caixa de Buscar UO
         this.btnPesquisarUO.setVisible(false);
-        this.txtPesquisarUO.setVisible(false);
-        this.lblPesquisar.setVisible(false);        
+        this.txtPesquisarUO.setVisible(true);
+        this.txtPesquisarUO.setPromptText("Procurar UO");
+        this.txtPesquisarUO.setTooltip(new Tooltip("Digite o texto a ser procurado")); 
+        this.lblPesquisar.setVisible(true);        
         //-------------------------------------------------------------
+        
+        this.txtPesquisarUO.textProperty().addListener(new ChangeListener() {
+                public void changed(ObservableValue observable, 
+                                    Object oldVal, Object newVal) {
+                    handleSearchByKey2((String)oldVal, (String)newVal);
+                }
+            });;
         
         
         consulta  = new ListView_UO_Query();   
@@ -108,6 +119,40 @@ public class Win_Para_ComcopiaController implements Initializable {
         btnRemoveAll.setTooltip(new Tooltip("Tirar todas as UOs da caixa \"Selecionado(s)\""));
        
     }
+    public void handleSearchByKey2(String oldVal, String newVal) {
+        // If the number of characters in the text box is less than last time
+        // it must be because the user pressed delete
+        if ( oldVal != null && (newVal.length() < oldVal.length()) ) {
+            // Restore the lists original set of entries 
+            // and start from the beginning
+            boxUOs.setItems( obsList_listaUO );
+        }
+         
+        // Break out all of the parts of the search text 
+        // by splitting on white space
+        String[] parts = newVal.toUpperCase().split(" ");
+ 
+        // Filter out the entries that don't contain the entered text
+        ObservableList<String> subentries = FXCollections.observableArrayList();
+        for ( Object entry: boxUOs.getItems() ) {
+            boolean match = true;
+            String entryText = (String)entry;
+            for ( String part: parts ) {
+                // The entry needs to contain all portions of the
+                // search string *but* in any order
+                if ( ! entryText.toUpperCase().contains(part) ) {
+                    match = false;
+                    break;
+                }
+            }
+ 
+            if ( match ) {
+                subentries.add(entryText);
+            }
+        }
+        boxUOs.setItems(subentries);
+    }
+    
     @FXML
     private void handleBtnAddAll(ActionEvent action){
         String strUOSelected = "";
