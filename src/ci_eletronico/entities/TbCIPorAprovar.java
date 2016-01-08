@@ -90,6 +90,8 @@ public class TbCIPorAprovar {
     //private BooleanProperty boolp_CoinTemAnexos;
     private BooleanProperty boolp_AutorizadoPeloGestorRemitente;
     
+    private BooleanProperty boolp_CoinCancelado;
+    
     //private StringProperty strp_dataCriacao;
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
@@ -112,7 +114,7 @@ public class TbCIPorAprovar {
             boolean bCoinTemAnexos, Integer nIdTabelaFonte,
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
             String strp_DescricaoUODestinatario, /*variavel String sempre vazio*/
-            String strp_CoinAssinatura, boolean boolp_CoinLido) {
+            String strp_CoinAssinatura, boolean boolp_CoinLido, boolean boolp_CoinCancelado) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -146,7 +148,9 @@ public class TbCIPorAprovar {
         this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
         
         //Por compatibilidade variavel boolp_CoinLido deve existir e sempre deve ser igual "false"
-        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);        
+        this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido); 
+        
+        this.boolp_CoinCancelado = new SimpleBooleanProperty(boolp_CoinCancelado);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -178,7 +182,7 @@ public class TbCIPorAprovar {
             boolean boolp_ReadOnlyUODestinatario, boolean boolp_CoinTemAnexos, boolean boolp_AutorizadoPeloGestorRemitente, 
             String strp_dataCriacao, Integer intp_idTabelaFonte, 
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
-            Integer nTipoCoin, String strp_CoinAssinatura, boolean boolp_CoinLido ) {
+            Integer nTipoCoin, String strp_CoinAssinatura, boolean boolp_CoinLido, boolean boolp_CoinCancelado ) {
         this.intp_idCoinDestinatario = new SimpleIntegerProperty(intp_idCoinDestinatario);
         this.intp_idCoin = new SimpleIntegerProperty(intp_idCoin);
         this.intp_idUsuarioRemitente = new SimpleIntegerProperty(intp_idUsuarioRemitente);
@@ -216,6 +220,8 @@ public class TbCIPorAprovar {
         
         this.strp_CoinAssinatura = new SimpleStringProperty(strp_CoinAssinatura);
         this.boolp_CoinLido = new SimpleBooleanProperty(boolp_CoinLido);
+        
+        this.boolp_CoinCancelado = new SimpleBooleanProperty(boolp_CoinCancelado);
     }
     
 //    //Metodos para TableView
@@ -658,6 +664,14 @@ public class TbCIPorAprovar {
 
     public void setBoolp_CoinLido(Boolean boolp_CoinLido) {
         this.boolp_CoinLido.setValue(boolp_CoinLido);
+    }
+
+    public Boolean getBoolp_CoinCancelado() {
+        return boolp_CoinCancelado.getValue();
+    }
+
+    public void setBoolp_CoinCancelado(Boolean boolp_CoinCancelado) {
+        this.boolp_CoinCancelado.setValue(boolp_CoinCancelado);
     }
     
     

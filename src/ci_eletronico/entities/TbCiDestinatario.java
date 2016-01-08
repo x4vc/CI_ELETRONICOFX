@@ -60,6 +60,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioTemAnexos", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioTemAnexos = :coinDestinatarioTemAnexos"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinRemitenteGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinRemitenteGestorAutorizado = :coinRemitenteGestorAutorizado")})
 public class TbCiDestinatario implements Serializable {
+    @Column(name = "COIN_DESTINATARIO_DATA_MARCADO_PENDENTE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date coinDestinatarioDataMarcadoPendente;
     @Basic(optional = false)
     @Column(name = "COIN_CANCELADO")
     private boolean coinCancelado;
@@ -471,6 +474,14 @@ public class TbCiDestinatario implements Serializable {
 
     public void setCoinCancelado(boolean coinCancelado) {
         this.coinCancelado = coinCancelado;
+    }
+
+    public Date getCoinDestinatarioDataMarcadoPendente() {
+        return coinDestinatarioDataMarcadoPendente;
+    }
+
+    public void setCoinDestinatarioDataMarcadoPendente(Date coinDestinatarioDataMarcadoPendente) {
+        this.coinDestinatarioDataMarcadoPendente = coinDestinatarioDataMarcadoPendente;
     }
 
     

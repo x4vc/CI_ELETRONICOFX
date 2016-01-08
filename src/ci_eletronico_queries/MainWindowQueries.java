@@ -9,6 +9,7 @@ package ci_eletronico_queries;
 import ci_eletronico.entities.TbAnexo;
 import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
+import ci_eletronico.entities.TbParametro;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
@@ -37,6 +38,13 @@ public class MainWindowQueries {
     public TbUnidadeOrganizacionalGestor getIdUOGestor(TbUnidadeOrganizacional nIdUO) {
         
         return em.createNamedQuery("TbUnidadeOrganizacionalGestor.findByIdUo",TbUnidadeOrganizacionalGestor.class)
+                .setParameter("idUnidadeOrganizacional", nIdUO )
+                .getSingleResult();
+        
+        }
+    public TbUnidadeOrganizacional getUODescricao(int nIdUO) {
+        
+        return em.createNamedQuery("TbUnidadeOrganizacional.findByIdUnidadeOrganizacional",TbUnidadeOrganizacional.class)
                 .setParameter("idUnidadeOrganizacional", nIdUO )
                 .getSingleResult();
         
@@ -265,7 +273,7 @@ public class MainWindowQueries {
     }
     public boolean MarcarComoPendenciaCIRecebida(int nlIdCI, int nlButtonSelected) throws Exception{
         boolean bMarcado = true;
-//        Date data = new Date();
+        Date data = new Date();
         try {
             TbCiDestinatario MarcarComoPendente = em.find(TbCiDestinatario.class, nlIdCI);
             
@@ -281,12 +289,15 @@ public class MainWindowQueries {
                 case 1: //caixa de recebidas (solicitando aprovação)
                     //Codigo para atualizar registro
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    MarcarComoPendente.setCoinDestinatarioDataMarcadoPendente(data);
                     break;
                 case 2: //caixa de recebidas
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    MarcarComoPendente.setCoinDestinatarioDataMarcadoPendente(data);
                     break;
                 case 3://caixa de recebidas (pendencias)
                     MarcarComoPendente.setCoinDestinatarioPendente(bMarcado);
+                    MarcarComoPendente.setCoinDestinatarioDataMarcadoPendente(data);
                     break;
             }            
             em.merge(MarcarComoPendente);
@@ -453,6 +464,19 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+    public String getMessagemCiDesaprovada(String strNomeParametro){
+        String strMessagem = "";
+        List<TbParametro> listaParametro = new ArrayList<TbParametro>();
+        listaParametro = em.createNamedQuery("TbParametro.findByNomeParametro",TbParametro.class) 
+                .setParameter("nomeParametro", strNomeParametro)
+                .getResultList();  
+        for(TbParametro l : listaParametro){
+            strMessagem = l.getRetornoParametro();
+        }
+        
+        return strMessagem;
+        
+    }
     public List<TbAnexo> downloadAnexo(int nlIdAnexo) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         

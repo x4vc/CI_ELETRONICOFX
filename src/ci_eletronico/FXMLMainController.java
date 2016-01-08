@@ -11,6 +11,7 @@ import ci_eletronico.entities.TbCiDestinatario;
 import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
+import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.StyleChangingRowFactory;
 import ci_eletronico_queries.MainWindowQueries;
@@ -1401,6 +1402,9 @@ public class FXMLMainController implements Initializable {
                     TbComunicacaoInterna EntidadeTbCI = new TbComunicacaoInterna();
                     EntidadeTbCI = consulta.DesaprovarCIEnviada(nlIdCI);
                     bUpdate = EnviarMsgCiDesaprovada(nlIdCI,1, EntidadeTbCI,null);
+//                    if (bUpdate){
+//                        EntidadeTbCI = consulta.DesaprovarCIEnviada(nlIdCI);
+//                    }
                 } catch (Exception e){
                     e.printStackTrace();
                 }    
@@ -1434,7 +1438,10 @@ public class FXMLMainController implements Initializable {
                 try{
                     TbCiDestinatario EntidadeTbCI = new TbCiDestinatario();
                     EntidadeTbCI = consulta.DesaprovarCIRecebida(nlIdCI);
-                    bUpdate = EnviarMsgCiDesaprovada(nlIdCI,2, null, EntidadeTbCI);                   
+                    bUpdate = EnviarMsgCiDesaprovada(nlIdCI,2, null, EntidadeTbCI);
+//                    if (bUpdate){
+//                        EntidadeTbCI = consulta.DesaprovarCIRecebida(nlIdCI);
+//                    }
                                         
                 }catch(Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -1486,7 +1493,7 @@ public class FXMLMainController implements Initializable {
         else{
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erro");
-            alert.setHeaderText("Não foi possível aprovar CI");
+            alert.setHeaderText("Não foi possível desaprovar CI");
             alert.setContentText("Favor contatar o Administrador do sistema");
             alert.showAndWait();
         }
@@ -1504,6 +1511,7 @@ public class FXMLMainController implements Initializable {
         
         boolean bCondicao = false;
         String strSequencialCI = this.lblNumeroSequencialCI.getText();
+        String strlUODescricao = "";
         String strlCITitulo = "";
         String strlConteudo = "";
         String strPara = "";
@@ -1518,8 +1526,12 @@ public class FXMLMainController implements Initializable {
         strToday = df.format(data_criacao);        
         strTodayCI = dfCI.format(data_criacao); 
         
+        //
+        MainWindowQueries consulta= new MainWindowQueries();
+        strlConteudo = consulta.getMessagemCiDesaprovada("NOTIFICACAO_CI_DESAPROVADA");
+        
         strlCITitulo = "<br /><p align=\"center\"><b>" + strSequencialCI + "</b></p>";
-        strlConteudo = "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"><p><span style=\"font-family: 'Segoe UI';\">Prezado(a),&nbsp;</span></p><p><font face=\"Segoe UI\">Informamos que a CI foi cancelada pela UO Gestora e por esse motivo não será possível o seu envio para seu(s) destinatário(s).</font></p><p><font face=\"Segoe UI\">Atenciosamente,&nbsp;</font></p><p><font face=\"Segoe UI\">Sistema CI-eletrônica.</font></p></body></html>";
+        //strlConteudo = "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"><p><span style=\"font-family: 'Segoe UI';\">Prezado(a),&nbsp;</span></p><p><font face=\"Segoe UI\">Informamos que a CI foi cancelada pela UO Gestora e por esse motivo não será possível o seu envio para seu(s) destinatário(s).</font></p><p><font face=\"Segoe UI\">Atenciosamente,&nbsp;</font></p><p><font face=\"Segoe UI\">Sistema CI-eletrônica.</font></p></body></html>";
         
         strPara = strPara.concat(strlCITitulo);
         strPara = strPara.concat("<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI Desaprovada</FONT></b>");
@@ -1628,7 +1640,157 @@ public class FXMLMainController implements Initializable {
                 }
                 break;
             case 2: //CI Desaprovado - Caixa Recebidos
-                bCondicao = false;
+                
+                //Passo 1 - Guardar na tabela TB_COMUICACAO_INTERNA
+                TbComunicacaoInterna newTbCI2 = new TbComunicacaoInterna();
+                TbTipoComunicacoInterna nlTipoCI2 = new TbTipoComunicacoInterna(6);  //6 ==> CI Desaprovada
+                //Enviar messagem informando que CI não foi autorizado
+                //Seteamos entity TB_COMUNICACAO_INTERNA
+                try {
+                    newTbCI2.setCoinAssunto("CI Não foi autorizada pela Unidade Gestora");        
+                    newTbCI2.setCoinConteudo(strPara);
+                    newTbCI2.setIdUsuario(this.nIdUsuarioLogado);
+                    newTbCI2.setUsuNomeCompleto(this.lblNomeUsuario.getText());
+                    newTbCI2.setIdUnidadeOrganizacional(this.nIdUnidadeOrganizacional);
+                    newTbCI2.setUnorDescricao(this.lblNomeUO.getText());
+                    newTbCI2.setIdUoGestor(this.nIdUOGestor);
+                    newTbCI2.setCoinAutorizado(true);
+                    newTbCI2.setIdTipoCoin(nlTipoCI2);
+                    newTbCI2.setCoinApensamento("");
+                    newTbCI2.setCoinNumero(EntidadeTbCIDest.getCoinDestinatarioNumero());    //Número Sequencial não é incrementado.
+                    newTbCI2.setCoinUoArquivado(false);
+                    newTbCI2.setCoinUoGestorArquivado(false);
+                    newTbCI2.setCoinDataCriacao(data_criacao);
+                    newTbCI2.setCoinReadOnly(false);
+                    newTbCI2.setCoinTemAnexos(false);
+
+                    newTbCI2.setIdCoinGenesis(EntidadeTbCIDest.getIdCoinGenesis());
+                    newTbCI2.setIdUnorGenesis(EntidadeTbCIDest.getIdUnorGenesis());
+                    newTbCI2.setCoinNumeroGenesis(EntidadeTbCIDest.getCoinNumeroGenesis());
+                    newTbCI2.setCoinHistoricoAnexos(EntidadeTbCIDest.getCoinHistoricoAnexos());
+                    newTbCI2.setUnorDescricaoGenesis(EntidadeTbCIDest.getUnorDescricaoGenesis());  
+
+                    newTbCI2.setCoinAssinatura(EntidadeTbCIDest.getCoinAssinatura()); // Assinatura é igual à CI desaprovada
+
+                    em.persist(newTbCI2);
+                    em.flush();
+
+                    //Passo 2 - Guardamos na Tabela TB_CI_DESTINATARIO
+                    long IdCoin2 = newTbCI2.getIdCoin();
+
+                    TbCiDestinatario newTbCIDestinatario2 = new TbCiDestinatario();       
+
+                    TbComunicacaoInterna nCoinId2 = new TbComunicacaoInterna((int)IdCoin2);
+
+                    TbTipoEnvio nIdTipoEnvio2 = new TbTipoEnvio(1); //1 - Tipo = ENVIADO "PARA"
+
+                    newTbCIDestinatario2.setIdCoin(nCoinId2);
+                    newTbCIDestinatario2.setIdUsuarioRemitente(this.nIdUsuarioLogado);
+                    newTbCIDestinatario2.setUsuNomeCompletoRemitente(this.lblNomeUsuario.getText());
+                    newTbCIDestinatario2.setIdUoRemitente(this.nIdUnidadeOrganizacional);
+                    newTbCIDestinatario2.setInorDescricaoRemitente(this.lblNomeUO.getText());
+                    newTbCIDestinatario2.setIdUoDestinatario(EntidadeTbCIDest.getIdUoRemitente());
+                    newTbCIDestinatario2.setUnorDescricaoDestinatario(EntidadeTbCIDest.getInorDescricaoRemitente());
+                    newTbCIDestinatario2.setIdUoGestorDestinatario(EntidadeTbCIDest.getIdCoin().getIdUoGestor());
+                    newTbCIDestinatario2.setCoinDestinatarioGestorAutorizado(true);
+                    newTbCIDestinatario2.setCoinDestinatarioUoArquivado(false);
+                    newTbCIDestinatario2.setCoinDestinatarioUoGestorArquivado(false);
+                    newTbCIDestinatario2.setCoinDestinatarioAssunto("CI Não foi autorizada pela Unidade Gestora");
+                    newTbCIDestinatario2.setCoinDestinatarioConteudo(strPara);
+                    newTbCIDestinatario2.setCoinDestinatarioPendente(false);
+                    newTbCIDestinatario2.setCoinDestinatarioLido(false);
+                    newTbCIDestinatario2.setCoinDestinatarioDataCriacao(data_criacao);
+                    newTbCIDestinatario2.setIdTipoEnvio(nIdTipoEnvio2); // 1 ==> Enviado Para
+                    newTbCIDestinatario2.setCoinDestinatarioNumero(EntidadeTbCIDest.getCoinDestinatarioNumero());    //Número Sequencial não é incrementado.
+                    newTbCIDestinatario2.setCoinDestinatarioReadOnly(false);
+                    newTbCIDestinatario2.setCoinDestinatarioTemAnexos(false);
+                    newTbCIDestinatario2.setCoinRemitenteGestorAutorizado(true);
+                   
+                    newTbCIDestinatario2.setIdCoinGenesis(EntidadeTbCIDest.getIdCoinGenesis());
+                    newTbCIDestinatario2.setIdUnorGenesis(EntidadeTbCIDest.getIdUnorGenesis());
+                    newTbCIDestinatario2.setCoinNumeroGenesis(EntidadeTbCIDest.getCoinNumeroGenesis());
+                    newTbCIDestinatario2.setCoinHistoricoAnexos(EntidadeTbCIDest.getCoinHistoricoAnexos());
+                    newTbCIDestinatario2.setUnorDescricaoGenesis(EntidadeTbCIDest.getUnorDescricaoGenesis()); 
+                    //----------------------------------
+                    newTbCIDestinatario2.setIdTipoCoin(nlTipoCI2);    ////6 ==> CI Desaprovada
+
+                    newTbCIDestinatario2.setCoinAssinatura(EntidadeTbCIDest.getCoinAssinatura()); // Assinatura é igual à CI desaprovada
+
+                    em.persist(newTbCIDestinatario2);
+                    
+                    //Passo 3 enviamos Com cópia para o gestor
+                    //Verificamos se o gestor da UO remitente é igual ao remitente
+                    //para evitar enviar 2 vezes
+                    if((EntidadeTbCIDest.getIdUoRemitente())!=(EntidadeTbCIDest.getIdCoin().getIdUoGestor())){
+                        //Procuramos descrição da UO gestora
+                        int nIdUOGestora = 0;
+                        TbComunicacaoInterna nIdCoin = new TbComunicacaoInterna(0);
+                        nIdCoin = EntidadeTbCIDest.getIdCoin();
+                        nIdUOGestora = EntidadeTbCIDest.getIdCoin().getIdUoGestor();
+                        TbUnidadeOrganizacional newTbUnidadeOrganizacional = new TbUnidadeOrganizacional();
+                        
+                        MainWindowQueries consulta2= new MainWindowQueries();
+                        newTbUnidadeOrganizacional = consulta2.getUODescricao(nIdUOGestora);
+                        strlUODescricao = newTbUnidadeOrganizacional.getUnorNome();
+                        
+                        TbCiDestinatario newTbCIDestinatario3 = new TbCiDestinatario();  
+                        TbTipoEnvio nIdTipoEnvio3 = new TbTipoEnvio(2); //2 - Tipo = ENVIADO "COM COPIA"
+                        try {
+                            newTbCIDestinatario3.setIdCoin(nCoinId2);
+
+                            newTbCIDestinatario3.setIdUsuarioRemitente(this.nIdUsuarioLogado);
+                            newTbCIDestinatario3.setUsuNomeCompletoRemitente(this.lblNomeUsuario.getText());
+                            newTbCIDestinatario3.setIdUoRemitente(this.nIdUnidadeOrganizacional);
+                            newTbCIDestinatario3.setInorDescricaoRemitente(this.lblNomeUO.getText());
+                            newTbCIDestinatario3.setIdUoDestinatario(EntidadeTbCIDest.getIdCoin().getIdUoGestor());
+                            newTbCIDestinatario3.setUnorDescricaoDestinatario(strlUODescricao);
+                            newTbCIDestinatario3.setIdUoGestorDestinatario(EntidadeTbCIDest.getIdCoin().getIdUoGestor());
+                            newTbCIDestinatario3.setCoinDestinatarioGestorAutorizado(true);
+                            newTbCIDestinatario3.setCoinDestinatarioUoArquivado(false);
+                            newTbCIDestinatario3.setCoinDestinatarioUoGestorArquivado(false);
+                            newTbCIDestinatario3.setCoinDestinatarioAssunto("CI Não foi autorizada pela Unidade Gestora");
+                            newTbCIDestinatario3.setCoinDestinatarioConteudo(strPara);
+                            newTbCIDestinatario3.setCoinDestinatarioPendente(false);
+                            newTbCIDestinatario3.setCoinDestinatarioLido(false);
+                            newTbCIDestinatario3.setCoinDestinatarioDataCriacao(data_criacao);
+                            newTbCIDestinatario3.setIdTipoEnvio(nIdTipoEnvio3); // 2 ==> Enviado "Com cópia"
+                            newTbCIDestinatario3.setCoinDestinatarioNumero(EntidadeTbCIDest.getCoinDestinatarioNumero());    //Número Sequencial não é incrementado.
+                            newTbCIDestinatario3.setCoinDestinatarioReadOnly(false);
+                            newTbCIDestinatario3.setCoinDestinatarioTemAnexos(false);
+                            newTbCIDestinatario3.setCoinRemitenteGestorAutorizado(true);
+
+                            newTbCIDestinatario3.setIdCoinGenesis(EntidadeTbCIDest.getIdCoinGenesis());
+                            newTbCIDestinatario3.setIdUnorGenesis(EntidadeTbCIDest.getIdUnorGenesis());
+                            newTbCIDestinatario3.setCoinNumeroGenesis(EntidadeTbCIDest.getCoinNumeroGenesis());
+                            newTbCIDestinatario3.setCoinHistoricoAnexos(EntidadeTbCIDest.getCoinHistoricoAnexos());
+                            newTbCIDestinatario3.setUnorDescricaoGenesis(EntidadeTbCIDest.getUnorDescricaoGenesis()); 
+                            //----------------------------------
+                            newTbCIDestinatario3.setIdTipoCoin(nlTipoCI2);    ////6 ==> CI Desaprovada
+
+                            newTbCIDestinatario3.setCoinAssinatura(EntidadeTbCIDest.getCoinAssinatura()); // Assinatura é igual à CI desaprovada
+
+                            em.persist(newTbCIDestinatario3);
+                        }catch(javax.persistence.PersistenceException e){
+                            //e.printStackTrace();
+                            em.close();
+                            emf.close();            
+                            bCondicao = false;
+                        } 
+                    }
+                    
+                    em.getTransaction().commit();            
+                    em.close();
+                    emf.close();
+
+                    bCondicao = true;
+                
+                }catch(javax.persistence.PersistenceException e){
+                    //e.printStackTrace();
+                    em.close();
+                    emf.close();            
+                    bCondicao = false;
+                }                
+                
                 break;
             default:
                 bCondicao = false;
@@ -2243,7 +2405,7 @@ public class FXMLMainController implements Initializable {
         if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erro");
-            alert.setHeaderText("CI não foi selecionado.");
+            alert.setHeaderText("CI não foi selecionada.");
             alert.setContentText("Favor selecionar uma CI da tabela");
             alert.showAndWait();
         }else{
@@ -2463,6 +2625,8 @@ public class FXMLMainController implements Initializable {
         //CI Lido ou não
         boolean bCoinLido = false;
         
+        boolean bCancelado = false;
+        
         //Id Unidade Organizacional logado
         int nlIdUnidadeOrganizacional = 0;
         nlIdUnidadeOrganizacional = this.nIdUnidadeOrganizacional;
@@ -2552,12 +2716,15 @@ public class FXMLMainController implements Initializable {
             strlAssinatura = l.getCoinAssinatura();
 
             bCoinLido = false;
+            
+            bCancelado = l.getCoinCancelado();
+            
             obslistaTbCaixaSaida.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                     nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                     dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlDescricaoUODestinatario,
-                    strlAssinatura, bCoinLido));
+                    strlAssinatura, bCoinLido, bCancelado));
         }
         //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
         ClLido.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_CoinLido"));
@@ -2622,7 +2789,11 @@ public class FXMLMainController implements Initializable {
                     int nlIdTipoCoin = 0;
                     boolean bTemAnexo = false;
                     
+                    boolean blCancelado = false;
+                    
                     String strCoinHistoricoAnexos = "";
+                    
+                    String strAssunto = "";
                     
                     String strDescricaoUO = "";
                     String strYear = "";
@@ -2631,6 +2802,8 @@ public class FXMLMainController implements Initializable {
                     
                     nlIdCI = tbCiPorAprovar.getIntp_idCoin();
                     nlIdTipoCoin = tbCiPorAprovar.getIntp_idTipoCoin();
+                    
+                   
                     //strDescricaoUO = tbCiPorAprovar.getStrp_DescricaoUORemitente();
                     strDescricaoUO = tbCiPorAprovar.getStrp_UnorDescricaoGenesis();
                     if (4 == nlIdTipoCoin){
@@ -2641,7 +2814,9 @@ public class FXMLMainController implements Initializable {
                     
                     dataCriacao = tbCiPorAprovar.getDataCriacao();
                     bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
+                    blCancelado = tbCiPorAprovar.getBoolp_CoinCancelado();
                     strCoinHistoricoAnexos = tbCiPorAprovar.getStrp_CoinHistoricoAnexos();
+                    strAssunto = tbCiPorAprovar.getStrp_Assunto();
                     
                     strYear = df.format(dataCriacao);
                     
@@ -2671,8 +2846,14 @@ public class FXMLMainController implements Initializable {
                 
                     }
                     
-                    htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                    lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                    htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());     
+                    if (strAssunto.equals("CI Não foi autorizada pela Unidade Gestora")){
+                                lblNumeroSequencialCI.setText("CI-DESAPROVADA");
+                                
+                    }else {
+                        lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                    }
+                    //lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                     if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                         PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                     } 
@@ -2775,6 +2956,8 @@ public class FXMLMainController implements Initializable {
         
         boolean bCoinLido = false;
         
+        boolean bCancelado = false;
+        
         ObservableList<TbCIPorAprovar> obslistaTbCIPorAprovar2;
         obslistaTbCIPorAprovar2 = FXCollections.observableArrayList();
         
@@ -2819,6 +3002,8 @@ public class FXMLMainController implements Initializable {
                     strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();
                     
                     strlAssinatura = l.getCoinAssinatura();
+                    
+                    bCancelado = l.getCoinCancelado();
 
 
         //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
@@ -2828,7 +3013,7 @@ public class FXMLMainController implements Initializable {
                                 dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                                 strlDescricaoUODestinatario,
-                                strlAssinatura, bCoinLido));
+                                strlAssinatura, bCoinLido, bCancelado));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -2886,7 +3071,11 @@ public class FXMLMainController implements Initializable {
                             int nlIdCI = 0;
                             boolean bTemAnexo = false;
                             
-                            String strCoinHistoricoAnexos = "";                            
+                            boolean blCancelado = false;
+                            
+                            String strCoinHistoricoAnexos = "";    
+                            
+                            String strAssunto = "";
                             
                             String strDescricaoUO = "";
                             String strYear = "";
@@ -2899,6 +3088,10 @@ public class FXMLMainController implements Initializable {
                             nCISequencial = tbCiPorAprovar.getIntp_idCoinNumero();                    
                             dataCriacao = tbCiPorAprovar.getDataCriacao();
                             bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
+                            blCancelado = tbCiPorAprovar.getBoolp_CoinCancelado();
+                            
+                            strAssunto = tbCiPorAprovar.getStrp_Assunto();
+                                    
                             strCoinHistoricoAnexos = tbCiPorAprovar.getStrp_CoinHistoricoAnexos();
 
                             strYear = df.format(dataCriacao);
@@ -2931,8 +3124,15 @@ public class FXMLMainController implements Initializable {
                             
                             
 
-                            htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                            lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                            htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo()); 
+                            if (strAssunto.equals("CI Não foi autorizada pela Unidade Gestora")){
+                                lblNumeroSequencialCI.setText("CI-DESAPROVADA");
+                                
+                            }else {
+                                lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                            }
+                            
+                            //lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                             if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                                 PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                             }
@@ -3233,6 +3433,8 @@ public class FXMLMainController implements Initializable {
         //CI Lido ou não
         boolean bCoinLido = false;
         
+        boolean bCancelado = false;
+        
         //Iniciamos a criação da TableView
         List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
         ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();  
@@ -3358,6 +3560,8 @@ public class FXMLMainController implements Initializable {
                 strlAssinatura = l.getCoinAssinatura();
 
                 bCoinLido = l.getCoinDestinatarioLido();
+                
+                bCancelado = l.getCoinCancelado();
 
                 strDataCriacao = df.format(dataCriacao);
                 obslistaTbCaixaEntrada.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
@@ -3368,7 +3572,7 @@ public class FXMLMainController implements Initializable {
                         bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
                         bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                        nlTipoCoin, strlAssinatura, bCoinLido));
+                        nlTipoCoin, strlAssinatura, bCoinLido, bCancelado));
 
                 System.out.println();
             }
@@ -3451,9 +3655,11 @@ public class FXMLMainController implements Initializable {
                             int nlIdCI = 0;
                             boolean bTemAnexo = false;
                             boolean bLido = false;
+                            boolean blCancelado = false;
                             String strlBtnMarcarComoLido = "";
 
                             String strCoinHistoricoAnexos = "";
+                            String strAssunto = "";
 
                             String strDescricaoUO = "";
                             String strYear = "";
@@ -3467,6 +3673,8 @@ public class FXMLMainController implements Initializable {
                             dataCriacao = tbCiPorAprovar.getDataCriacao();
                             bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
                             bLido = tbCiPorAprovar.getBoolp_CoinLido();
+                            blCancelado = tbCiPorAprovar.getBoolp_CoinCancelado();
+                            strAssunto = tbCiPorAprovar.getStrp_Assunto();
 
                             strCoinHistoricoAnexos = tbCiPorAprovar.getStrp_CoinHistoricoAnexos();
 
@@ -3522,8 +3730,13 @@ public class FXMLMainController implements Initializable {
                             
                             
                             //----------------------------------------------------------------------------------
-                            htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                            lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                            htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());  
+                           if (strAssunto.equals("CI Não foi autorizada pela Unidade Gestora")){
+                                lblNumeroSequencialCI.setText("CI-DESAPROVADA");
+                                
+                            }else {
+                                lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                            }
                             if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                                 PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                             }                    
@@ -3587,6 +3800,8 @@ public class FXMLMainController implements Initializable {
                     strlAssinatura = l.getCoinAssinatura();
 
                     bCoinLido = l.getCoinDestinatarioLido();
+                    
+                    bCancelado = l.getCoinCancelado();
 
                     strDataCriacao = df.format(dataCriacao);
                     obslistaTbCaixaEntrada2.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
@@ -3597,7 +3812,7 @@ public class FXMLMainController implements Initializable {
                             bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
                             bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                             nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                            nlTipoCoin, strlAssinatura, bCoinLido));
+                            nlTipoCoin, strlAssinatura, bCoinLido, bCancelado));
 
                     System.out.println();
                 }
@@ -3660,9 +3875,11 @@ public class FXMLMainController implements Initializable {
                                 int nlIdCI = 0;
                                 boolean bTemAnexo = false;
                                 boolean bLido = false;
+                                boolean blCancelado = false;
                                 String strlBtnMarcarComoLido = "";
 
                                 String strCoinHistoricoAnexos = "";
+                                String strAssunto = "";
 
                                 String strDescricaoUO = "";
                                 String strYear = "";
@@ -3676,6 +3893,8 @@ public class FXMLMainController implements Initializable {
                                 dataCriacao = tbCiPorAprovar.getDataCriacao();
                                 bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
                                 bLido = tbCiPorAprovar.getBoolp_CoinLido();
+                                blCancelado = tbCiPorAprovar.getBoolp_CoinCancelado();
+                                strAssunto = tbCiPorAprovar.getStrp_Assunto();
 
                                 strCoinHistoricoAnexos = tbCiPorAprovar.getStrp_CoinHistoricoAnexos();
 
@@ -3716,8 +3935,16 @@ public class FXMLMainController implements Initializable {
                                 
 //                                strlBtnMarcarComoLido = (bLido ? "Marcar como não Lido" : "Marcar como Lido");
 //                                btnMarcarComoLido.setText(strlBtnMarcarComoLido);
-                                htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());                    
-                                lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                                htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());  
+                                
+                                if (strAssunto.equals("CI Não foi autorizada pela Unidade Gestora")){
+                                    lblNumeroSequencialCI.setText("CI-DESAPROVADA");
+                                
+                                }else {
+                                    lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                                }
+                                
+                                //lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
                                 if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
                                     PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                                 }                    

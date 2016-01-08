@@ -96,6 +96,7 @@ public class LoginController {
     private String strHtmlAssinatura = "";
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
+    private String strVersaoCodigo = "";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -132,7 +133,7 @@ public class LoginController {
             lblLogin.setVisible(false);
             lblSenha.setVisible(false);
             lblMessage.setText("");
-            lblMessage.setText("Sistema CI-eletrônico precisa ser atualizado.\nFavor entrar em contato com suporte ASSTI. ");
+            lblMessage.setText("Sistema CI-eletrônica precisa ser atualizado.\nFavor entrar em contato com suporte ASSTI. ");
             lblMessage.setVisible(true);
             
         } else {
@@ -149,9 +150,9 @@ public class LoginController {
     private boolean VerificarVersaoSistema(){
         boolean blPrecisaUpdate = false;
         String strVersaoBancoDados = "";
-        String strVersaoCodigo = "";
+        //String strVersaoCodigo = "";
         
-        strVersaoCodigo = "1.1";
+        this.strVersaoCodigo = "1.1";
         
         LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
         List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();
@@ -161,7 +162,7 @@ public class LoginController {
             strVersaoBancoDados = l.getAtsiVersao();
         }
         if (blPrecisaUpdate){
-            if (0==strVersaoCodigo.compareTo(strVersaoBancoDados)){
+            if (0==this.strVersaoCodigo.compareTo(strVersaoBancoDados)){
                 blPrecisaUpdate = false;
             } else {
                 blPrecisaUpdate = true;
@@ -398,7 +399,7 @@ public class LoginController {
                         nIdUOGestor, strlUserLogin, strlUOGestorDescricao);
 
                 Stage stage = new Stage();
-                stage.setTitle("CI-eletrônico");
+                stage.setTitle("CI-eletrônica (versão " + this.strVersaoCodigo + ")");
                 //set icon
                 stage.getIcons().add(new Image("/resources/CI_FX02.png"));
                 
