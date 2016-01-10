@@ -13,7 +13,6 @@ import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
-import ci_eletronico.utilitarios.StyleChangingRowFactory;
 import ci_eletronico_queries.MainWindowQueries;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
@@ -41,7 +40,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +48,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -301,6 +299,14 @@ public class FXMLMainController implements Initializable {
     private Label lblAguardandoAprovacao;
     @FXML
     private Button btnDesaprovarCI;
+    @FXML
+    private TitledPane tPaneRecebidas;
+    @FXML
+    private TitledPane tPaneEnviadas;
+    @FXML
+    private TitledPane tPaneArquivadas;
+    @FXML
+    private Accordion accordionCaixa;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -359,8 +365,27 @@ public class FXMLMainController implements Initializable {
         this.btnPendentesAprovacao.setVisible(false);
         this.btnCaixaEntradaSolicitandoAprovacao.setVisible(false);
         
+        //VerificarMarcadosComoPendencia();
+     
         
     
+    }
+    public void VerificarMarcadosComoPendencia(){
+        Long lQuantidade = 0L;
+        int nlQuantidade = 0;
+        int nidUoDestinatario = 0;
+        int nlTipoPerfil= 0;
+        nidUoDestinatario = this.nIdUnidadeOrganizacional;
+        nlTipoPerfil = this.nTipoPerfil;
+        lQuantidade = RecordCountMarcadosComoPendentesTbCiDestinatario(nidUoDestinatario, nlTipoPerfil);
+        nlQuantidade = lQuantidade.intValue();
+        if(nlQuantidade > 0){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Alerta");
+            alert.setHeaderText("CIs marcadas como pendência");
+            alert.setContentText("Na sua caixa de CIs Recebidas e marcadas como Pendências\n" +"existem CIs que não foram tratadas hà dias");
+            alert.showAndWait();
+        }
     }
     
     @FXML
@@ -554,6 +579,8 @@ public class FXMLMainController implements Initializable {
         this.strgUserLogin = strlUserLogin;
         
         setBotoesMainWindow(nTipoPerfil);
+        
+        VerificarMarcadosComoPendencia();
         
     }
     public void setBotoesMainWindow(Integer IntTipoPerfil){
@@ -1888,7 +1915,7 @@ public class FXMLMainController implements Initializable {
         try{                     
         em.getTransaction().begin();
         if (1 == nlTipoPerfil){ //Perfil Gestor
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0",Long.class)            
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.coinCancelado = 0",Long.class)            
                                             .setParameter("idUoDestinatario", nidUoDestinatario);
             lResultado = query.getSingleResult();
         }else{
@@ -1896,8 +1923,65 @@ public class FXMLMainController implements Initializable {
             nValues.add(1);
             nValues.add(2);
             nValues.add(4);
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
+            nValues.add(6);
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.coinCancelado = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
                                             .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("idTipoCoin",nValues);
+            lResultado = query.getSingleResult();
+        }        
+                                            
+        //Long Resultado = query.getSingleResult();
+        em.close();
+        emf.close();
+        return lResultado;
+        
+        }catch(javax.persistence.PersistenceException e){
+            System.out.println("Erro:" + e);
+            em.close();
+            emf.close();
+            return 0L;
+        }   
+        //return 0L;
+    }
+    
+    public Long RecordCountMarcadosComoPendentesTbCiDestinatario(int nidUoDestinatario, int nlTipoPerfil){
+        // Iniciamos código para calular as datas a serem utilizadas
+        String strlDias = "";
+        int nlDias = 0;
+        MainWindowQueries consulta= new MainWindowQueries();
+        strlDias = consulta.getMessagemCiDesaprovada("NOTIFICACAO_PENDENCIA");
+        strlDias = strlDias.trim();
+        nlDias = Integer.parseInt(strlDias);
+        
+        Date dateInstance = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateInstance);
+        cal.add(Calendar.DATE, -nlDias);
+        Date dateSubtractDays = cal.getTime();
+        System.out.println("Date = " + dateSubtractDays);
+        //----------------------------------------------------------
+        EntityManager em;
+        EntityManagerFactory emf;
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();   
+        Long lResultado = 0L;
+        
+        try{                     
+        em.getTransaction().begin();
+        if (1 == nlTipoPerfil){ //Perfil Gestor
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.coinCancelado = 0 AND t.coinDestinatarioDataMarcadoPendente < :data",Long.class)            
+                                            .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("data", dateSubtractDays);
+            lResultado = query.getSingleResult();
+        }else{
+            List<Integer> nValues = new ArrayList<>();
+            nValues.add(1);
+            nValues.add(2);
+            nValues.add(4);
+            nValues.add(6);
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 AND t.coinDestinatarioLido = 0 AND t.coinCancelado = 0 AND t.coinDestinatarioDataMarcadoPendente < :data AND t.idTipoCoin IN :idTipoCoin",Long.class)            
+                                            .setParameter("idUoDestinatario", nidUoDestinatario)
+                                            .setParameter("data", dateSubtractDays)
                                             .setParameter("idTipoCoin",nValues);
             lResultado = query.getSingleResult();
         }        
@@ -1927,7 +2011,7 @@ public class FXMLMainController implements Initializable {
         try{                     
         em.getTransaction().begin();
         if (1 == nlTipoPerfil){
-        TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0",Long.class)            
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.coinCancelado = 0",Long.class)            
                                             .setParameter("idUoGestor", nidUoDestinatario);
         lResultado = query.getSingleResult();
         } else {
@@ -1935,7 +2019,8 @@ public class FXMLMainController implements Initializable {
             nValues.add(1);
             nValues.add(2);
             nValues.add(4);
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
+            nValues.add(6);
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(t) FROM TbComunicacaoInterna t WHERE t.idUoGestor = :idUoGestor AND t.coinAutorizado = 0 AND t.coinUoGestorArquivado = 0 AND t.coinCancelado = 0 AND t.idTipoCoin IN :idTipoCoin",Long.class)            
                                             .setParameter("idUoGestor", nidUoDestinatario)
                                             .setParameter("idTipoCoin",nValues);
             lResultado = query.getSingleResult();
