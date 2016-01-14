@@ -9,21 +9,17 @@ import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.utilitarios.Seguranca;
 import ci_eletronico_queries.LoginQuery;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -37,8 +33,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  * FXML Controller class
@@ -152,7 +146,7 @@ public class LoginController {
         String strVersaoBancoDados = "";
         //String strVersaoCodigo = "";
         
-        this.strVersaoCodigo = "1.1";
+        this.strVersaoCodigo = "1.2";
         
         LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
         List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();
@@ -174,8 +168,25 @@ public class LoginController {
     @FXML
     private void handleBtnFecharAplicacao(ActionEvent event){
         //Ocultamos a janela de login
+        
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
+        
+        String strUserHome = System.getProperty("user.home") + "\\Downloads\\";
+        //String strFileName = "GerarPDF_7102015182737BKP.pdf";
+        String strFileName = "TableWithDetails.jar";
+        String strFilePath = strUserHome + strFileName;
+        
+        //Runtime.exec(" java -jar " + strFilePath);
+        try{
+        ProcessBuilder pb = new ProcessBuilder("java", "-jar", strFilePath);
+        //pb.directory(new File(strUserHome));
+        Process p = pb.start();
+        }catch(IOException ex){
+            System.out.println("Erro ao tentar executar arquivo jar: " + ex);
+        }
+        
+        
     }
     
     @FXML
@@ -399,7 +410,7 @@ public class LoginController {
                         nIdUOGestor, strlUserLogin, strlUOGestorDescricao);
 
                 Stage stage = new Stage();
-                stage.setTitle("CI-eletrônica (versão " + this.strVersaoCodigo + ")");
+                stage.setTitle("CI-eletrônica (versão " + this.strVersaoCodigo + ") - 64 bits");
                 //set icon
                 stage.getIcons().add(new Image("/resources/CI_FX02.png"));
                 

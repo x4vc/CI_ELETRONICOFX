@@ -364,10 +364,6 @@ public class FXMLMainController implements Initializable {
         
         this.btnPendentesAprovacao.setVisible(false);
         this.btnCaixaEntradaSolicitandoAprovacao.setVisible(false);
-        
-        //VerificarMarcadosComoPendencia();
-     
-        
     
     }
     public void VerificarMarcadosComoPendencia(){
