@@ -166,14 +166,34 @@ public class LoginController {
     }
     
     @FXML
-    private void handleBtnFecharAplicacao(ActionEvent event){
+    private void handleBtnAtualizarAplicacao(ActionEvent event){
         //Ocultamos a janela de login
         
         (((Node)event.getSource()).getScene()).getWindow().hide();
         //--------- FIM Ocultar janela de Login ------------
         
+        //Primeiro verificamos arquitetura do Windows
+        //Verificar arquitetura do SO
+        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+        int nArquitetura = 0;
+
+        String realArch = arch.endsWith("64") || wow64Arch != null && wow64Arch.endsWith("64") ? "64" : "32";
+        System.out.println("PROCESSOR_ARCHITECTURE = " + realArch);
+        if ("32".equals(realArch)){
+            // SO Windows de 32 bits
+            System.out.println("SO Windows 32 bits");
+            nArquitetura = 32;
+
+       } else {
+            // SO Windows de 64 bits            
+            System.out.println("SO Windows 64 bits");
+            nArquitetura = 64;
+       }
+        
+        //Salvamos na pasta Downloads o arquivo jar que atualizará o sistema
         String strUserHome = System.getProperty("user.home") + "\\Downloads\\";
-        //String strFileName = "GerarPDF_7102015182737BKP.pdf";
+        
         String strFileName = "TableWithDetails.jar";
         String strFilePath = strUserHome + strFileName;
         
@@ -185,8 +205,6 @@ public class LoginController {
         }catch(IOException ex){
             System.out.println("Erro ao tentar executar arquivo jar: " + ex);
         }
-        
-        
     }
     
     @FXML
