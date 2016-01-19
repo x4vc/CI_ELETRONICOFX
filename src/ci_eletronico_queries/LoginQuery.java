@@ -10,6 +10,7 @@ import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import ci_eletronico.entities.TbUsuarioPerfilUo;
+import ci_eletronico.entities.TbVersoesSistema;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -86,6 +87,16 @@ public class LoginQuery {
         return em.createNamedQuery("TbUnidadeOrganizacional.findByIdUnidadeOrganizacional",TbUnidadeOrganizacional.class)
                 .setParameter("idUnidadeOrganizacional", nIdUOGestor )
                 .getResultList();
+        
+        }
+    public List<TbVersoesSistema> downloadAnexo(String strVersaoCodigo,int nArquitetura, String strFileName) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbVersoesSistema.findByVesi_VersaoCi_NomeJar_ArquiteturaWindows",TbVersoesSistema.class) 
+                .setParameter("vesiVersaoJar", strVersaoCodigo)
+                .setParameter("vesiNomeJar", strFileName)
+                .setParameter("vesiArquiteturaWindows", nArquitetura)
+                .getResultList();   
         
         }
 }

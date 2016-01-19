@@ -7,10 +7,14 @@ package ci_eletronico;
 
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
+import ci_eletronico.entities.TbVersoesSistema;
 import ci_eletronico.utilitarios.Seguranca;
 import ci_eletronico_queries.LoginQuery;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -91,6 +95,7 @@ public class LoginController {
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
     private String strVersaoCodigo = "";
+    private String strRelease = "19012016";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -127,7 +132,7 @@ public class LoginController {
             lblLogin.setVisible(false);
             lblSenha.setVisible(false);
             lblMessage.setText("");
-            lblMessage.setText("Sistema CI-eletrônica precisa ser atualizado.\nFavor entrar em contato com suporte ASSTI. ");
+            lblMessage.setText("Sistema CI-eletrônica precisa ser atualizado.\nFavor atualizar o sistema ou entrar em contato com suporte ASSTI. ");
             lblMessage.setVisible(true);
             
         } else {
@@ -169,7 +174,8 @@ public class LoginController {
     private void handleBtnAtualizarAplicacao(ActionEvent event){
         //Ocultamos a janela de login
         
-        (((Node)event.getSource()).getScene()).getWindow().hide();
+        //(((Node)event.getSource()).getScene()).getWindow().hide();
+        
         //--------- FIM Ocultar janela de Login ------------
         
         //Primeiro verificamos arquitetura do Windows
@@ -191,20 +197,117 @@ public class LoginController {
             nArquitetura = 64;
        }
         
-        //Salvamos na pasta Downloads o arquivo jar que atualizará o sistema
+        //Procuramos o arquivo jar que realizará o Update do sistema 
+        String strFileNameUpdate = "UpdateCiEletronica.jar";
+        String strFileJar = "CI_Eletronico.jar";
+        String strSqlJar = "sqljdbc42.jar";
+        strFileNameUpdate = strFileNameUpdate.trim();
         String strUserHome = System.getProperty("user.home") + "\\Downloads\\";
+        String strDirLibreriaBancoDados = strUserHome + "\\lib\\";
+        boolean bMakeLibDir = false;
+        boolean bDirLibExists = false;
         
-        String strFileName = "TableWithDetails.jar";
-        String strFilePath = strUserHome + strFileName;
+        File theLibDir = new File(strDirLibreriaBancoDados);
+        bDirLibExists = theLibDir.exists();
         
-        //Runtime.exec(" java -jar " + strFilePath);
-        try{
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", strFilePath);
-        //pb.directory(new File(strUserHome));
-        Process p = pb.start();
-        }catch(IOException ex){
-            System.out.println("Erro ao tentar executar arquivo jar: " + ex);
+        if (!bDirLibExists){
+            try{
+                bMakeLibDir = theLibDir.mkdir();
+            }catch(SecurityException se){
+                //handle it
+                bMakeLibDir = false;            
+            }
+        } else {
+            bMakeLibDir = true;
         }
+        if (bMakeLibDir){
+            File outfile = null;
+
+            LoginQuery consulta = new LoginQuery();
+            List<TbVersoesSistema> listaAnexosUpdate = new ArrayList<TbVersoesSistema>();
+            List<TbVersoesSistema> listaAnexosCi = new ArrayList<TbVersoesSistema>();
+            List<TbVersoesSistema> listaAnexosSql = new ArrayList<TbVersoesSistema>();
+            
+            //Realizar o download do arquivo sqljdbc42.jar
+             listaAnexosSql = consulta.downloadAnexo("4.2", 64, strSqlJar);
+             for(TbVersoesSistema l : listaAnexosSql){
+                 strSqlJar = l.getVesiNomeJar();
+                 outfile = new File(strDirLibreriaBancoDados + l.getVesiNomeJar());
+                 try {
+                     writeArquivo(outfile, l.getVesiBlob());
+                 }catch (IOException e){
+                     e.printStackTrace();
+                 }
+             }
+
+            //Realizar o download do arquivo CI_Eletronico.jar
+
+
+             listaAnexosCi = consulta.downloadAnexo(this.strVersaoCodigo, nArquitetura, strFileJar );
+             for(TbVersoesSistema l : listaAnexosCi){
+                 strFileJar = l.getVesiNomeJar();
+                 outfile = new File(strUserHome + l.getVesiNomeJar());
+                 try {
+                     writeArquivo(outfile, l.getVesiBlob());
+                 }catch (IOException e){
+                     e.printStackTrace();
+                 }
+             }
+
+            //Realizar o download do arquivo UpdateCiEletronica.jar        
+
+             listaAnexosUpdate = consulta.downloadAnexo(this.strVersaoCodigo, nArquitetura, strFileNameUpdate );
+             for(TbVersoesSistema l : listaAnexosUpdate){
+                 strFileNameUpdate = l.getVesiNomeJar();
+                 outfile = new File(strUserHome + l.getVesiNomeJar());
+                 try {
+                     writeArquivo(outfile, l.getVesiBlob());
+                 }catch (IOException e){
+                     e.printStackTrace();
+                 }
+             }
+
+             strFileNameUpdate = strFileNameUpdate.trim();        
+
+            String strFilePath = strUserHome + strFileNameUpdate;
+
+            //Runtime.exec(" java -jar " + strFilePath);
+
+            String strJavaHome = System.getProperty("java.home");
+            String strJavaBin = strJavaHome + File.separator + "bin" + File.separator + "java";
+
+
+
+            try{            
+                //ProcessBuilder pb = new ProcessBuilder("java", "-jar", strFilePath);
+                ProcessBuilder pb = new ProcessBuilder(strJavaBin, "-jar", strFilePath);
+                //pb.directory(new File(strUserHome));
+                Process p = pb.start();            
+            }catch(IOException ex){
+                System.out.println("Erro ao tentar executar arquivo jar: " + ex);
+            }
+        } else {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Não foi possível criar diretório: lib");
+            alert.setContentText("Por favor contatar suporte ASSTI");
+            alert.showAndWait();  
+            
+        }
+        
+        exit(0);
+    }
+    
+     public void writeArquivo(File file, byte[] data) throws IOException
+    {
+        OutputStream fo = new FileOutputStream(file);
+        // Write the data
+        fo.write(data);
+        // flush the file (down the toilet)
+        fo.flush();
+        // Close the door to keep the smell in.
+        fo.close();
     }
     
     @FXML
@@ -428,7 +531,7 @@ public class LoginController {
                         nIdUOGestor, strlUserLogin, strlUOGestorDescricao);
 
                 Stage stage = new Stage();
-                stage.setTitle("CI-eletrônica (versão " + this.strVersaoCodigo + ") - 64 bits");
+                stage.setTitle("CI-eletrônica (versão " + this.strVersaoCodigo + ") release-" +  this.strRelease);
                 //set icon
                 stage.getIcons().add(new Image("/resources/CI_FX02.png"));
                 

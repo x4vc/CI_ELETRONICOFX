@@ -80,45 +80,44 @@
                <children>
                   <Button fx:id="btnPendentesAprovacao" alignment="BASELINE_LEFT" layoutX="46.0" layoutY="191.0" mnemonicParsing="false" onAction="#handleBtnPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados (solicitando aprovação)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0" />
                   <Button fx:id="btnCaixaEntradaSolicitandoAprovacao" layoutX="34.0" layoutY="99.0" mnemonicParsing="false" onAction="#handleBtnCaixaEntradaPendentesAprovacao" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (solicitando aprovaçao)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="640.0" />
-                  <Accordion fx:id="accordionCaixa" layoutX="-39.0" layoutY="270.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <panes>
-                      <TitledPane fx:id="tPaneRecebidas" animated="false" prefHeight="145.0" prefWidth="141.0" text="CIs Recebidas">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleBtnCaixaEntrada" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" contentDisplay="TOP" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleBtnCaixaPendencias" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Pendências" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
-                                       <graphic>
-                                          <ImageView>
-                                             <image>
-                                                <Image url="@../resources/warning.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic></Button>
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </TitledPane>
-                        <TitledPane fx:id="tPaneEnviadas" prefHeight="100.0" prefWidth="141.0" text="CIs Enviadas">
-                           <content>
-                              <AnchorPane prefHeight="162.0" prefWidth="139.0">
-                                 <children>
-                                    <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleBtnCaixaSaida" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </TitledPane>
-                      <TitledPane fx:id="tPaneArquivadas" animated="false" prefHeight="145.0" prefWidth="141.0" text="CIs Arquivadas">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="145.0" prefWidth="200.0">
-                                 <children>
-                                    <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutX="-1.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleBtnCaixaArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (arquivadas)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0" />
-                                    <Button fx:id="btnCaixaEnviadosArquivados" layoutX="9.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleBtnCaixaEnviadasArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados (arquivados)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </TitledPane>
-                     </panes></Accordion>
+                  <Accordion fx:id="accordionCaixa" layoutX="-39.0" layoutY="270.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <TitledPane fx:id="tPaneRecebidas" animated="false" prefHeight="145.0" prefWidth="141.0" text="CIs Recebidas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnCaixaEntrada" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleBtnCaixaEntrada" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Button fx:id="btnCaixaPendencias" alignment="BASELINE_LEFT" contentDisplay="TOP" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleBtnCaixaPendencias" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Pendências" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../resources/warning.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane fx:id="tPaneArquivadas" animated="false" prefHeight="145.0" prefWidth="141.0" text="CIs Arquivadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="245.0">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="145.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnCaixaArquivadas" alignment="BASELINE_LEFT" layoutX="-1.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleBtnCaixaArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de recebidas (arquivadas)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="52.0" />
+                              <Button fx:id="btnCaixaEnviadosArquivados" layoutX="9.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleBtnCaixaEnviadasArquivadas" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados (arquivados)" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                  <TitledPane fx:id="tPaneEnviadas" prefHeight="100.0" prefWidth="141.0" text="CIs Enviadas" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="145.0">
+                     <content>
+                        <AnchorPane prefHeight="162.0" prefWidth="139.0">
+                           <children>
+                              <Button fx:id="btnCaixaSaida" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleBtnCaixaSaida" prefHeight="45.0" prefWidth="140.0" stylesheets="@../resources/PersonalStyleSheet.css" text="Caixa de enviados" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </TitledPane>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="704.0" prefWidth="441.0">
                <children>
