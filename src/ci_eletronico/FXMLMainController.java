@@ -307,6 +307,8 @@ public class FXMLMainController implements Initializable {
     private TitledPane tPaneArquivadas;
     @FXML
     private Accordion accordionCaixa;
+    @FXML
+    private ScrollPane scrollPaneTextFlow;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -364,7 +366,11 @@ public class FXMLMainController implements Initializable {
         
         this.btnPendentesAprovacao.setVisible(false);
         this.btnCaixaEntradaSolicitandoAprovacao.setVisible(false);
-    
+        this.scrollPaneTextFlow.setTooltip(new Tooltip("Para visualizar o arquivo, favor clicar no botão direito do Mouse"));
+        
+        tPaneRecebidas.setCollapsible(false);
+        tPaneEnviadas.setCollapsible(false);
+        tPaneArquivadas.setCollapsible(false);
     }
     public void VerificarMarcadosComoPendencia(){
         Long lQuantidade = 0L;
@@ -577,6 +583,10 @@ public class FXMLMainController implements Initializable {
         setBotoesMainWindow(nTipoPerfil);
         
         VerificarMarcadosComoPendencia();
+        
+        //Default mostrar Cis na caixa de recebeidas
+        btnCaixaEntrada.fire();
+        //PreencherCaixaEntrada(2, true);
         
     }
     public void setBotoesMainWindow(Integer IntTipoPerfil){

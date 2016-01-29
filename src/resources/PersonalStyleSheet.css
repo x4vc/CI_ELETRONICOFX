@@ -19,3 +19,8 @@ and open the template in the editor.
     -fx-background-color: #C6CFD7;
     -fx-font-weight: bold;
 }
+
+.titled-pane > .title {
+-fx-background-color: blue, yellow, linear-gradient(to bottom, derive(coral, +75%), coral);
+-fx-font-weight: bold;
+}
