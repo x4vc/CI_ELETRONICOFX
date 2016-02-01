@@ -95,7 +95,7 @@ public class LoginController {
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
     private String strVersaoCodigo = "";
-    private String strRelease = "19012016";
+    private String strRelease = "01022016";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -151,7 +151,7 @@ public class LoginController {
         String strVersaoBancoDados = "";
         //String strVersaoCodigo = "";
         
-        this.strVersaoCodigo = "1.2";
+        this.strVersaoCodigo = "1.3";
         
         LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
         List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();
@@ -243,7 +243,7 @@ public class LoginController {
             //Realizar o download do arquivo CI_Eletronico.jar
 
 
-             listaAnexosCi = consulta.downloadAnexo(this.strVersaoCodigo, nArquitetura, strFileJar );
+             listaAnexosCi = consulta.downloadAnexo(this.strVersaoCodigo/*"1.3"*/, nArquitetura, strFileJar );
              for(TbVersoesSistema l : listaAnexosCi){
                  strFileJar = l.getVesiNomeJar();
                  outfile = new File(strUserHome + l.getVesiNomeJar());
@@ -256,7 +256,7 @@ public class LoginController {
 
             //Realizar o download do arquivo UpdateCiEletronica.jar        
 
-             listaAnexosUpdate = consulta.downloadAnexo(this.strVersaoCodigo, nArquitetura, strFileNameUpdate );
+             listaAnexosUpdate = consulta.downloadAnexo(this.strVersaoCodigo/*"1.3"*/, nArquitetura, strFileNameUpdate );
              for(TbVersoesSistema l : listaAnexosUpdate){
                  strFileNameUpdate = l.getVesiNomeJar();
                  outfile = new File(strUserHome + l.getVesiNomeJar());
