@@ -13,6 +13,8 @@ import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
+import static ci_eletronico.nova_ci.NovaCIController.ltrim;
+import static ci_eletronico.nova_ci.NovaCIController.rtrim;
 import ci_eletronico_queries.MainWindowQueries;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
@@ -77,6 +79,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -376,7 +379,7 @@ public class FXMLMainController implements Initializable {
         tPaneEnviadas.setCollapsible(false);
         tPaneArquivadas.setCollapsible(false);
         
-        this.btnSalvarTodosArquivos.setVisible(false);
+        this.btnSalvarTodosArquivos.setVisible(true);
     }
     public void VerificarMarcadosComoPendencia(){
         Long lQuantidade = 0L;
@@ -397,11 +400,89 @@ public class FXMLMainController implements Initializable {
     }
     @FXML
     private void handleBtnSalvarTodosArquivos(ActionEvent event) throws IOException{
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Alerta");
-        alert.setHeaderText(null);
-        alert.setContentText("Funcionalidade não disponivel ainda");
-        alert.showAndWait();
+        int nSize = 0;
+        int j = 0;
+        int nIdAnexo = 0;
+        String strFilePath = "";
+        String strDelimiters = "=|\\;";
+        String strFileName = "";
+        File outfile = null;
+        
+        if (0==txtFAnexos.getChildren().size()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("A CI-Eletrônica não possui arquivos para serem salvos");
+            alert.showAndWait();            
+        } else {
+            
+            
+            //Quantidade de arquvios a serem salvos
+            nSize = txtFAnexos.getChildren().size();
+            
+            //Selecionamos a pasta de destino 
+            Stage stage = new Stage();
+
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("CI-Eletrônica");
+            //File defaultDirectory = new File("c:/dev/javafx");
+            dirChooser.setInitialDirectory(new File(System.getProperty("user.home") + "//Downloads"));
+            File selectedDirectory = dirChooser.showDialog(stage);            
+            //-----------------------------------------------
+            
+            ObservableList<Node> nodes = txtFAnexos.getChildren();
+            StringBuilder sb = new StringBuilder();
+            for (Node node : nodes) { 
+                sb.append((((Text)node).getText()));                 
+            }
+            strFilePath = sb.toString();
+            strFilePath = ltrim(strFilePath);
+            strFilePath = rtrim(strFilePath);
+            
+            String[] strParts = strFilePath.split(strDelimiters);
+            
+            for (int i = 0; i < strParts.length; i++){
+                //System.out.println(strParts[i]);
+                
+                if ((j%2) == 0){
+                    System.out.println("entro en j%2: " + strParts[i]);
+//                    strIdAnexo = strParts[i];
+//                    strIdAnexo = ltrim(strIdAnexo);
+//                    strIdAnexo = rtrim(strIdAnexo);
+                    nIdAnexo = Integer.parseInt(strParts[i].trim());
+                    System.out.println("Id Anexo = " + nIdAnexo); 
+                    
+                    //Salvamos o arquivo na pasta selecionada pelo usuário
+                    MainWindowQueries consulta  = new MainWindowQueries();
+                    List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+
+                    //Extrair o Id para realizar o download do arquivo
+
+                    listaAnexos = consulta.downloadAnexo(nIdAnexo);
+                    for(TbAnexo l : listaAnexos){
+                        strFileName = l.getAnexoNome();
+                        outfile = new File(selectedDirectory + "\\" + l.getAnexoNome());
+                        try {
+                            writeArquivo(outfile, l.getAnexoBlob());
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                    
+                } else {
+                    System.out.println("está fora de j%2: " + strParts[i]);
+                    
+                }
+                j++;
+                strFileName = "";
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText(null);
+            alert.setContentText("Os arquivos foram salvos na pasta selecionada pelo usuário.");
+            alert.showAndWait();
+        }
         
     }
     
