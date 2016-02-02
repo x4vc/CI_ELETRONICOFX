@@ -282,7 +282,8 @@ public class LoginController {
                 //ProcessBuilder pb = new ProcessBuilder("java", "-jar", strFilePath);
                 ProcessBuilder pb = new ProcessBuilder(strJavaBin, "-jar", strFilePath);
                 //pb.directory(new File(strUserHome));
-                Process p = pb.start();            
+                Process p = pb.start();   
+                exit(0);
             }catch(IOException ex){
                 System.out.println("Erro ao tentar executar arquivo jar: " + ex);
             }
@@ -296,7 +297,7 @@ public class LoginController {
             
         }
         
-        exit(0);
+        //exit(0);
     }
     
      public void writeArquivo(File file, byte[] data) throws IOException
