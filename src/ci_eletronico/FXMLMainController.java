@@ -13,6 +13,8 @@ import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
 import ci_eletronico.entities.TbUsuario;
+import static ci_eletronico.nova_ci.NovaCIController.ltrim;
+import static ci_eletronico.nova_ci.NovaCIController.rtrim;
 import ci_eletronico_queries.MainWindowQueries;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
@@ -77,6 +79,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -307,6 +310,10 @@ public class FXMLMainController implements Initializable {
     private TitledPane tPaneArquivadas;
     @FXML
     private Accordion accordionCaixa;
+    @FXML
+    private ScrollPane scrollPaneTextFlow;
+    @FXML
+    private Button btnSalvarTodosArquivos;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -349,6 +356,8 @@ public class FXMLMainController implements Initializable {
     //private ObservableList<TbComunicacaoInterna> obslistaTbComunicacaoInterna;
     private ObservableList<TbCIPorAprovar> obslistaTbCIPorAprovar;
     
+     private Hyperlink linkArquivoSelecionado = new Hyperlink() ;
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -364,7 +373,13 @@ public class FXMLMainController implements Initializable {
         
         this.btnPendentesAprovacao.setVisible(false);
         this.btnCaixaEntradaSolicitandoAprovacao.setVisible(false);
-    
+        this.scrollPaneTextFlow.setTooltip(new Tooltip("Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse"));
+        
+        tPaneRecebidas.setCollapsible(false);
+        tPaneEnviadas.setCollapsible(false);
+        tPaneArquivadas.setCollapsible(false);
+        
+        this.btnSalvarTodosArquivos.setVisible(true);
     }
     public void VerificarMarcadosComoPendencia(){
         Long lQuantidade = 0L;
@@ -382,6 +397,93 @@ public class FXMLMainController implements Initializable {
             alert.setContentText("Na sua caixa de CIs Recebidas e marcadas como Pendências\n" +"existem CIs que não foram tratadas hà dias");
             alert.showAndWait();
         }
+    }
+    @FXML
+    private void handleBtnSalvarTodosArquivos(ActionEvent event) throws IOException{
+        int nSize = 0;
+        int j = 0;
+        int nIdAnexo = 0;
+        String strFilePath = "";
+        String strDelimiters = "=|\\;";
+        String strFileName = "";
+        File outfile = null;
+        
+        if (0==txtFAnexos.getChildren().size()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("A CI-Eletrônica não possui arquivos para serem salvos");
+            alert.showAndWait();            
+        } else {
+            
+            
+            //Quantidade de arquvios a serem salvos
+            nSize = txtFAnexos.getChildren().size();
+            
+            //Selecionamos a pasta de destino 
+            Stage stage = new Stage();
+
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("CI-Eletrônica");
+            //File defaultDirectory = new File("c:/dev/javafx");
+            dirChooser.setInitialDirectory(new File(System.getProperty("user.home") + "//Downloads"));
+            File selectedDirectory = dirChooser.showDialog(stage);            
+            //-----------------------------------------------
+            
+            ObservableList<Node> nodes = txtFAnexos.getChildren();
+            StringBuilder sb = new StringBuilder();
+            for (Node node : nodes) { 
+                sb.append((((Text)node).getText()));                 
+            }
+            strFilePath = sb.toString();
+            strFilePath = ltrim(strFilePath);
+            strFilePath = rtrim(strFilePath);
+            
+            String[] strParts = strFilePath.split(strDelimiters);
+            
+            for (int i = 0; i < strParts.length; i++){
+                //System.out.println(strParts[i]);
+                
+                if ((j%2) == 0){
+                    System.out.println("entro en j%2: " + strParts[i]);
+//                    strIdAnexo = strParts[i];
+//                    strIdAnexo = ltrim(strIdAnexo);
+//                    strIdAnexo = rtrim(strIdAnexo);
+                    nIdAnexo = Integer.parseInt(strParts[i].trim());
+                    System.out.println("Id Anexo = " + nIdAnexo); 
+                    
+                    //Salvamos o arquivo na pasta selecionada pelo usuário
+                    MainWindowQueries consulta  = new MainWindowQueries();
+                    List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+
+                    //Extrair o Id para realizar o download do arquivo
+
+                    listaAnexos = consulta.downloadAnexo(nIdAnexo);
+                    for(TbAnexo l : listaAnexos){
+                        strFileName = l.getAnexoNome();
+                        outfile = new File(selectedDirectory + "\\" + l.getAnexoNome());
+                        try {
+                            writeArquivo(outfile, l.getAnexoBlob());
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                    
+                } else {
+                    System.out.println("está fora de j%2: " + strParts[i]);
+                    
+                }
+                j++;
+                strFileName = "";
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText(null);
+            alert.setContentText("Os arquivos foram salvos na pasta selecionada pelo usuário.");
+            alert.showAndWait();
+        }
+        
     }
     
     @FXML
@@ -577,6 +679,10 @@ public class FXMLMainController implements Initializable {
         setBotoesMainWindow(nTipoPerfil);
         
         VerificarMarcadosComoPendencia();
+        
+        //Default mostrar Cis na caixa de recebeidas
+        btnCaixaEntrada.fire();
+        //PreencherCaixaEntrada(2, true);
         
     }
     public void setBotoesMainWindow(Integer IntTipoPerfil){
@@ -1037,6 +1143,7 @@ public class FXMLMainController implements Initializable {
     }
     private void PreencherTxtFAnexos(int nlIdCI, String strCoinHistoricoAnexos){
         txtFAnexos.getChildren().clear();
+        //Hyperlink linkArquivoSelecionado = new Hyperlink() ;
         Text txtArquivoSelecionado;
         String strDelimiters = ";";
         
@@ -1046,25 +1153,91 @@ public class FXMLMainController implements Initializable {
             TbComunicacaoInterna nlIdCoin = new TbComunicacaoInterna(nlIdCI);
             listaAnexos = consulta.getlistaAnexo(nlIdCoin);
             for(TbAnexo l : listaAnexos){
+                
+                linkArquivoSelecionado = new Hyperlink();
+                linkArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
+                            
+                            //txtArquivoSelecionado.getStyleClass().add("link");
+                
                 txtArquivoSelecionado = new Text();                          
                 //txtArquivoSelecionado.setText("\""+ UOSelected.get(nContador)+ "\"; ");
-                txtArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ; ");
-                txtArquivoSelecionado.setFill(Color.BLACK);
+                txtArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
+                txtArquivoSelecionado.setFill(Color.BLUE);
                 txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
                 txtFAnexos.getChildren().add(txtArquivoSelecionado);                
+                //txtFAnexos.getChildren().add(linkArquivoSelecionado);  
+                
+//                linkArquivoSelecionado.setOnAction(ev->{
+//                    System.out.println("Click on  link: " + linkArquivoSelecionado.getText());
+////                    AbrirArquivo(linkArquivoSelecionado.getText(),1);
+//                });    
+                
             }
         }
         if (strCoinHistoricoAnexos.length()>0){
             String[] strParts = strCoinHistoricoAnexos.split(strDelimiters);
             for (int i = 0; i < strParts.length; i++){
+                
+                linkArquivoSelecionado = new Hyperlink();
+                linkArquivoSelecionado.setText(strParts[i] + " ;\n");
+                
                 txtArquivoSelecionado = new Text();                                          
-                txtArquivoSelecionado.setText(strParts[i]);
-                txtArquivoSelecionado.setFill(Color.BLACK);
+                txtArquivoSelecionado.setText(strParts[i] + "\n");
+                txtArquivoSelecionado.setFill(Color.BLUE);
                 txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
-                txtFAnexos.getChildren().add(txtArquivoSelecionado);                                
+                txtFAnexos.getChildren().add(txtArquivoSelecionado); 
+                //txtFAnexos.getChildren().add(linkArquivoSelecionado); 
+//                linkArquivoSelecionado.setOnAction(ev->{
+//                    //System.out.println("Click on  link: " + linkArquivoSelecionado.getText());
+//                    AbrirArquivo(linkArquivoSelecionado.getText(),1);
+//                });   
             }            
-        }
+        }        
+        
+//        linkArquivoSelecionado.setOnAction(ev->{
+//                    System.out.println("Click on  link: " + linkArquivoSelecionado.getText());
+////                    AbrirArquivo(linkArquivoSelecionado.getText(),1);
+//                }); 
+        
+        txtFAnexos.setOnMouseClicked(ev -> {
+                        if (1 == ev.getClickCount()){
+                            if(ev.getTarget() instanceof Text) {
+                                Text clicked = (Text) ev.getTarget();
+                                clicked.setFill(Color.RED);
+                                clicked.setFont(Font.font("Arial", FontPosture.ITALIC, 12));
+                                clicked.setUnderline(true);
+                                System.out.println(clicked.getText());
+                                //AbrirArquivo(clicked.getText(),1);
+                                //txtFAnexado.getChildren().remove(ev.getTarget());
+                            }                            
+                        }
+                        if (2 == ev.getClickCount()){
+                            if(ev.getTarget() instanceof Text) {
+                                Text clicked = (Text) ev.getTarget();
+                                System.out.println(clicked.getText());
+                                AbrirArquivo(clicked.getText(),1);
+                                //txtFAnexado.getChildren().remove(ev.getTarget());
+                            }
+                        }
+                    });
+//        
+//        linkArquivoSelecionado.setOnMousePressed(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(ActionEvent actionEvent) {
+//                    
+//            }        
+//        });
+//        linkArquivoSelecionado.setOnMouseClicked(e->{
+//            String strNomeArquivo = "";
+//            strNomeArquivo = linkArquivoSelecionado.getText();
+//            AbrirArquivo(strNomeArquivo,1);
+//                });
             
+        //linkArquivoSelecionado.setOnMousePressed(new EventHandler<MouseEvent>(){
+        //linkArquivoSelecionado.setOnMouseClicked(e->AbrirArquivo(clicked.getText(),1));
+            
+	
+        
         
         txtFAnexos.setOnMousePressed(new EventHandler<MouseEvent>() {
 
@@ -1147,7 +1320,7 @@ public class FXMLMainController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Salvar arquivo");
                     alert.setHeaderText("O arquivo " + strFileName + " foi salvo com sucesso");
-                    alert.setContentText("O arquivo foi salvo na pasta Downloads");
+                    alert.setContentText("IMPORTANTE: O arquivo foi salvo na pasta Downloads");
                     alert.showAndWait();
                     break;
             default:
