@@ -429,60 +429,64 @@ public class FXMLMainController implements Initializable {
             dirChooser.setInitialDirectory(new File(System.getProperty("user.home") + "//Downloads"));
             File selectedDirectory = dirChooser.showDialog(stage);            
             //-----------------------------------------------
-            
-            ObservableList<Node> nodes = txtFAnexos.getChildren();
-            StringBuilder sb = new StringBuilder();
-            for (Node node : nodes) { 
-                sb.append((((Text)node).getText()));                 
-            }
-            strFilePath = sb.toString();
-            strFilePath = ltrim(strFilePath);
-            strFilePath = rtrim(strFilePath);
-            
-            String[] strParts = strFilePath.split(strDelimiters);
-            
-            for (int i = 0; i < strParts.length; i++){
-                //System.out.println(strParts[i]);
-                
-                if ((j%2) == 0){
-                    System.out.println("entro en j%2: " + strParts[i]);
-//                    strIdAnexo = strParts[i];
-//                    strIdAnexo = ltrim(strIdAnexo);
-//                    strIdAnexo = rtrim(strIdAnexo);
-                    nIdAnexo = Integer.parseInt(strParts[i].trim());
-                    System.out.println("Id Anexo = " + nIdAnexo); 
-                    
-                    //Salvamos o arquivo na pasta selecionada pelo usuário
-                    MainWindowQueries consulta  = new MainWindowQueries();
-                    List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
-
-                    //Extrair o Id para realizar o download do arquivo
-
-                    listaAnexos = consulta.downloadAnexo(nIdAnexo);
-                    for(TbAnexo l : listaAnexos){
-                        strFileName = l.getAnexoNome();
-                        outfile = new File(selectedDirectory + "\\" + l.getAnexoNome());
-                        try {
-                            writeArquivo(outfile, l.getAnexoBlob());
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
-                    
-                } else {
-                    System.out.println("está fora de j%2: " + strParts[i]);
-                    
+            if (selectedDirectory!= null){
+                ObservableList<Node> nodes = txtFAnexos.getChildren();
+                StringBuilder sb = new StringBuilder();
+                for (Node node : nodes) { 
+                    sb.append((((Text)node).getText()));                 
                 }
-                j++;
-                strFileName = "";
-            }
+                strFilePath = sb.toString();
+                strFilePath = ltrim(strFilePath);
+                strFilePath = rtrim(strFilePath);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informação");
-            alert.setHeaderText(null);
-            alert.setContentText("Os arquivos foram salvos na pasta selecionada pelo usuário.");
-            alert.showAndWait();
+                String[] strParts = strFilePath.split(strDelimiters);
+
+                for (int i = 0; i < strParts.length; i++){
+                    //System.out.println(strParts[i]);
+
+                    if ((j%2) == 0){
+                        System.out.println("entro en j%2: " + strParts[i]);
+    //                    strIdAnexo = strParts[i];
+    //                    strIdAnexo = ltrim(strIdAnexo);
+    //                    strIdAnexo = rtrim(strIdAnexo);
+                        nIdAnexo = Integer.parseInt(strParts[i].trim());
+                        System.out.println("Id Anexo = " + nIdAnexo); 
+
+                        //Salvamos o arquivo na pasta selecionada pelo usuário
+                        MainWindowQueries consulta  = new MainWindowQueries();
+                        List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+
+                        //Extrair o Id para realizar o download do arquivo
+
+                        listaAnexos = consulta.downloadAnexo(nIdAnexo);
+                        for(TbAnexo l : listaAnexos){
+                            strFileName = l.getAnexoNome();
+                            outfile = new File(selectedDirectory + "\\" + l.getAnexoNome());
+                            try {
+                                writeArquivo(outfile, l.getAnexoBlob());
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                    } else {
+                        System.out.println("está fora de j%2: " + strParts[i]);
+
+                    }
+                    j++;
+                    strFileName = "";
+                }
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informação");
+                alert.setHeaderText(null);
+                alert.setContentText("Os arquivos foram salvos na pasta selecionada pelo usuário.");
+                alert.showAndWait();
+            } else {
+                System.out.println("Button cancelar pressed");
+            }
         }
+        
         
     }
     
