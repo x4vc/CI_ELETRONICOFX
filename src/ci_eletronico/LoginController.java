@@ -67,6 +67,8 @@ public class LoginController {
     private ComboBox cmbUO; 
     @FXML
     private Button btnOK;
+    @FXML
+    private Button btnAtualizar;
    
 
       
@@ -95,7 +97,7 @@ public class LoginController {
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
     private String strVersaoCodigo = "";
-    private String strRelease = "01022016";
+    private String strRelease = "15022016";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -127,12 +129,13 @@ public class LoginController {
             btnOK.setVisible(false); 
             hlink.setVisible(false);
             btnFechar.setVisible(true);
+            btnAtualizar.setVisible(false);
             txtUsername.setVisible(false);
             pwdSenha.setVisible(false);
             lblLogin.setVisible(false);
             lblSenha.setVisible(false);
             lblMessage.setText("");
-            lblMessage.setText("Sistema CI-eletrônica precisa ser atualizado.\nFavor atualizar o sistema ou entrar em contato com suporte ASSTI. ");
+            lblMessage.setText("Sistema CI-eletrônica precisa ser atualizado.\nFavor entrar em contato com suporte ASSTI. ");
             lblMessage.setVisible(true);
             
         } else {
@@ -141,6 +144,7 @@ public class LoginController {
             lblMessage.setVisible(false);
             lblMessage.setText(""); 
             hlink.setVisible(false);
+            btnAtualizar.setVisible(false);
             
         }
         
@@ -168,6 +172,11 @@ public class LoginController {
             }
         }
         return blPrecisaUpdate;
+    }
+    
+    @FXML
+    private void handleBtnFecharTelaLogin(ActionEvent event){
+        exit(0);        
     }
     
     @FXML

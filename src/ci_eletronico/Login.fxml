@@ -42,11 +42,12 @@
          </image>
       </ImageView>
       <Hyperlink fx:id="hlink" layoutX="148.0" layoutY="320.0" text="Clique aqui para atualizar o sistema..." />
-      <Button fx:id="btnFechar" layoutX="209.0" layoutY="119.0" mnemonicParsing="false" onAction="#handleBtnAtualizarAplicacao" text="Atualizar sistema" AnchorPane.topAnchor="119.0" />
+      <Button fx:id="btnAtualizar" layoutX="209.0" layoutY="109.0" mnemonicParsing="false" onAction="#handleBtnAtualizarAplicacao" text="Atualizar sistema" AnchorPane.topAnchor="109.0" />
       <Label fx:id="lblMessage" alignment="CENTER" layoutX="31.0" layoutY="90.0" text="." textAlignment="CENTER" textFill="RED" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="65.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
+      <Button fx:id="btnFechar" layoutX="237.0" layoutY="266.0" mnemonicParsing="false" onAction="#handleBtnFecharTelaLogin" text="Fechar" />
    </children>
 </AnchorPane>
