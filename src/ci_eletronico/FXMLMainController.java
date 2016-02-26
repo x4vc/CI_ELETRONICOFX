@@ -242,6 +242,8 @@ public class FXMLMainController implements Initializable {
     private Button btnNovaCICircular;
     @FXML
     private Button btnNovaCIConfidencial;
+    @FXML
+    private Button btnResponderCI;
     
     @FXML    
     private TableView<TbCIPorAprovar> TbViewGeral2;
@@ -794,10 +796,12 @@ public class FXMLMainController implements Initializable {
         int nlCoinNumeroGenesis = 0;
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
+        String strlAssunto = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                strgUserLogin);
+                strgUserLogin,
+                strlAssunto);
                         
     }
     @FXML
@@ -818,10 +822,12 @@ public class FXMLMainController implements Initializable {
         int nlCoinNumeroGenesis = 0;
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
+        String strlAssunto = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                strgUserLogin);
+                strgUserLogin,
+                strlAssunto);
         
     }
     @FXML
@@ -842,10 +848,68 @@ public class FXMLMainController implements Initializable {
         int nlCoinNumeroGenesis = 0;
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
+        String strlAssunto = "";
         
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                strgUserLogin);
+                strgUserLogin,
+                strlAssunto);
+        
+    }
+     @FXML
+    private void handleBtnCIResponder(ActionEvent event) throws IOException{
+        
+        if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("CI não foi selecionado.");
+            alert.setContentText("Favor selecionar uma CI da tabela");
+            alert.showAndWait();
+        }else{
+            String strHtmlConteudo = "";
+            String strlAssinatura = "";
+            String strlAssunto = "";
+            int nIdRemitente = 0;
+            strHtmlConteudo = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
+            strlAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+            strlAssunto = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Assunto();
+            nIdRemitente = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUORemitente();
+            
+            strIdUsuario = lblIdUsuario.getText();
+            strNomeUsuario = lblNomeUsuario.getText();
+            strIdUO = lblIdUO.getText();
+            strNomeUO = lblNomeUO.getText();  
+            strIdPerfil = lblIdPerfil.getText();
+            strDescricaoPerfil = lblNomePerfil.getText();
+            nTipoCI = 7;    //CI Respondida
+            
+            //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
+            //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
+            int nlIdCoinGenesis = 0;
+            int nlIdUnorGenesis = 0;
+            int nlCoinNumeroGenesis = 0;
+            String strCoinHistoricoAnexos = "";
+            String strUnorDescricaoGenesis = "";
+            
+            nlIdCoinGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoinGenesis();
+            nlIdUnorGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUnorGenesis();
+            nlCoinNumeroGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_CoinNumeroGenesis();
+            strUnorDescricaoGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_UnorDescricaoGenesis();
+            //strCoinHistoricoAnexos = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinHistoricoAnexos();
+            
+            //Verificamos se CI a ser encaminhada possui anexos
+            if(txtFAnexos.getChildren().size() > 0){
+                ObservableList<Node> nodes = txtFAnexos.getChildren();
+                StringBuilder sb = new StringBuilder();
+                for (Node node : nodes) { sb.append((((Text)node).getText()));}
+                strCoinHistoricoAnexos = strCoinHistoricoAnexos.concat(sb.toString());
+            }
+            ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, 
+                    strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
+                    nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                    strlAssinatura,
+                    strlAssunto);
+        }
         
     }
     @FXML
@@ -860,8 +924,10 @@ public class FXMLMainController implements Initializable {
         }else{
             String strHtmlConteudo = "";
             String strlAssinatura = "";
+            String strlAssunto = "";
             strHtmlConteudo = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
             strlAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+            strlAssunto = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Assunto();
             strIdUsuario = lblIdUsuario.getText();
             strNomeUsuario = lblNomeUsuario.getText();
             strIdUO = lblIdUO.getText();
@@ -891,15 +957,18 @@ public class FXMLMainController implements Initializable {
                 for (Node node : nodes) { sb.append((((Text)node).getText()));}
                 strCoinHistoricoAnexos = strCoinHistoricoAnexos.concat(sb.toString());
             }
-            ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
-            nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-            strlAssinatura);
+            ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, 
+                    strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
+                    nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                    strlAssinatura,
+                    strlAssunto);
         }
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, String strIdUO, String strNomeUO, String strIdPerfil, 
             String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
             int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
-            String strlUserLogin){
+            String strlUserLogin,
+            String strlAssunto){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
@@ -909,7 +978,8 @@ public class FXMLMainController implements Initializable {
                 nova_ci_controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, 
                         strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                        strlUserLogin);
+                        strlUserLogin,
+                        strlAssunto);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();
@@ -1148,7 +1218,9 @@ public class FXMLMainController implements Initializable {
     private void PreencherTxtFAnexos(int nlIdCI, String strCoinHistoricoAnexos){
         txtFAnexos.getChildren().clear();
         //Hyperlink linkArquivoSelecionado = new Hyperlink() ;
+        Text txtIdAnexo;
         Text txtArquivoSelecionado;
+        Text txtNomeArquivo;
         String strDelimiters = ";";
         
         if (nlIdCI > 0) {
@@ -1162,13 +1234,31 @@ public class FXMLMainController implements Initializable {
                 linkArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
                             
                             //txtArquivoSelecionado.getStyleClass().add("link");
-                
+                txtIdAnexo = new Text();
+                txtNomeArquivo = new Text();
                 txtArquivoSelecionado = new Text();                          
                 //txtArquivoSelecionado.setText("\""+ UOSelected.get(nContador)+ "\"; ");
-                txtArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
+                txtIdAnexo.setFill(Color.SILVER);
+                txtIdAnexo.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+                txtIdAnexo.setText(l.getIdAnexo() + "=" /*+ l.getAnexoNome() + " ;\n"*/);
+                
+                txtNomeArquivo.setFill(Color.BLUE);
+                txtNomeArquivo.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+                txtNomeArquivo.setText(l.getAnexoNome()/*+";\n"*/);
+                
+                TextFlow textFlow = new TextFlow(txtIdAnexo, txtNomeArquivo);
+                
                 txtArquivoSelecionado.setFill(Color.BLUE);
-                txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+                //txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+                //txtArquivoSelecionado.setText(txtIdAnexo.getText() + txtNomeArquivo.getText() );
+                
+                txtArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
+                
+                
+                
+                //txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
                 txtFAnexos.getChildren().add(txtArquivoSelecionado);                
+                //txtFAnexos.getChildren().add(textFlow);                
                 //txtFAnexos.getChildren().add(linkArquivoSelecionado);  
                 
 //                linkArquivoSelecionado.setOnAction(ev->{

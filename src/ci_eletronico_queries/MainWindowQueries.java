@@ -42,6 +42,15 @@ public class MainWindowQueries {
                 .getSingleResult();
         
         }
+    
+    public List<TbUnidadeOrganizacionalGestor> getIdsUOs(TbUnidadeOrganizacional nIdUO) {
+        
+        return em.createNamedQuery("TbUnidadeOrganizacionalGestor.findIdsUos",TbUnidadeOrganizacionalGestor.class)
+                .setParameter("idUnidadeOrganizacional", nIdUO )
+                .getResultList();
+        
+        }
+    
     public TbUnidadeOrganizacional getUODescricao(int nIdUO) {
         
         return em.createNamedQuery("TbUnidadeOrganizacional.findByIdUnidadeOrganizacional",TbUnidadeOrganizacional.class)

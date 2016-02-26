@@ -371,7 +371,7 @@ public class LoginController {
 //                             System.out.println("TbUsuarioPerfilUo campo 2 - " + lUO.getIdUnidadeOrganizacional().getUnorNome());
 //                             System.out.println("TbUsuarioPerfilUo campo 3 - " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil());
 //                             System.out.println("TbUsuarioPerfilUo campo 1 - " + lUO.getIdUsuarioPerfil().getPeusDescricao());
-                             cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + " - " + lUO.getIdUnidadeOrganizacional().getUnorNome() + " ; " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+" - "+lUO.getIdUsuarioPerfil().getPeusDescricao());
+                             cmbUO.getItems().add(lUO.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional() + " = " + lUO.getIdUnidadeOrganizacional().getUnorNome() + " ; " + lUO.getIdUsuarioPerfil().getIdUsuarioPerfil()+" = "+lUO.getIdUsuarioPerfil().getPeusDescricao());
                          }
                        
                         
@@ -480,7 +480,8 @@ public class LoginController {
         
         System.out.println("Valor do combobox selecionado: " + strcmbUO);
         //String delimiters = "\\s+|;\\s*|\\-\\s*";
-        String delimiters = "-|\\;";
+        //String delimiters = "-|\\;";
+        String delimiters = "=|\\;";
         String[] parts = strcmbUO.split(delimiters);
         strIdUO = parts[0].trim(); // 004
         strNomeUO = parts[1].trim(); // 034556

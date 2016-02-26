@@ -143,7 +143,8 @@ public class NovaCIController implements Initializable {
                                         String strIdUO, String strNomeUO, String strIdPerfil, String strDescricaoPerfil, String strHtmlAssinatura, 
                                         int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
                                         int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
-                                        String strlUserLogin) {
+                                        String strlUserLogin,
+                                        String strlAssunto) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -182,6 +183,11 @@ public class NovaCIController implements Initializable {
                 break;
             case 4:
                 btnEnviarNovaCI.setText("Encaminhar CI");
+                txtAssunto.setText(strlAssunto);
+                break;
+            case 7:
+                btnEnviarNovaCI.setText("Responder CI");
+                txtAssunto.setText(strlAssunto);
                 break;
             default:
                 btnEnviarNovaCI.setText("Enviar CI");
@@ -367,6 +373,7 @@ public class NovaCIController implements Initializable {
             //          2 - CI circular
             //          3 - CI confidencial
             //          4 - CI encaminhado
+            //          7 - CI respondida
             
             salvarCI(nTipoCI);
             //Ocultamos a janela de seleção UOs
@@ -535,6 +542,7 @@ public class NovaCIController implements Initializable {
         
         //Verificamos e seteamos as variaveis a serem persistidos dentro da tabela TB_COMUNICACAO_INTERNA
         boolean bCoinAutorizado = false;
+        boolean bUOSubalterna = false;
         boolean bCoinUOArquivado = false;
         boolean bCoinUOGestorArquivado = false;
         boolean bCoinReadOnly = false;
@@ -560,6 +568,30 @@ public class NovaCIController implements Initializable {
         TbComunicacaoInterna SequencialUO = new TbComunicacaoInterna();
         TbUnidadeOrganizacionalGestor UOGestorDestinatario = new TbUnidadeOrganizacionalGestor();
         MainWindowQueries consultaUOGestor = new MainWindowQueries();
+        
+        //Variaveis para procurar saber quais as UOs relacionadas com a UO criadora da CI
+        List<TbUnidadeOrganizacionalGestor> UOGestoraSubsidiaria = new ArrayList<>();
+        int nTamanho = 0;
+        int nlCounter = 0;
+        
+        MainWindowQueries consultaUOGestoraSubsidiaria = new MainWindowQueries();
+        
+        TbUnidadeOrganizacional nIdUORemitente = new TbUnidadeOrganizacional(nIdUO);
+        
+        UOGestoraSubsidiaria = consultaUOGestoraSubsidiaria.getIdsUOs(nIdUORemitente);
+        
+        nTamanho = UOGestoraSubsidiaria.size();
+        
+         int [] nArrayIdsUOs = new int[nTamanho];
+        
+        for(TbUnidadeOrganizacionalGestor l : UOGestoraSubsidiaria){            
+            nArrayIdsUOs[nlCounter] = l.getIdUnidadeOrganizacional().getIdUnidadeOrganizacional();           
+            nlCounter++;                        
+        }
+        //Variavel nArrayIdsUOs será utilizada para saber se Destinatário precisa de 
+        //autorização ou não
+        //---------------------------------------------------
+        
         int nSequencialUO = 0;
         String strPara="";
         String strComCopia = "";
@@ -612,6 +644,7 @@ public class NovaCIController implements Initializable {
                     bCoinRemitenteGestorAutorizado = true;
                     break;
                 default:
+                    
                     bCoinAutorizado = false;
                     bCoinRemitenteGestorAutorizado = false;
                     break;
@@ -693,6 +726,11 @@ public class NovaCIController implements Initializable {
         int j = 1;  //Variavel utilizada para saber se contador é multiplo de 2
         int y = 0;  //variavel utilizada  para setear o indice de array de String
         int z = 0;  //variavel utilizada  para setear o indice de array de int
+        
+        int nlIdUoDestinatario = 0;
+        int nToContadorUOs = 0;
+        int nCcContadorUOs = 0;
+        
         TbUnidadeOrganizacional nIdUOTemp;
         for (int i = 0; i < strParts.length; i++){
             System.out.println(strParts[i]);
@@ -714,12 +752,20 @@ public class NovaCIController implements Initializable {
                 UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
                 nArrayIdUOGestor[z] = UOGestorDestinatario.getIdUoGestor();
                 //---------------------------------
+                
+                //Código para quando IdUo é subalterna 
+                nlIdUoDestinatario = Integer.parseInt(strParts[i].trim());
+                
+                if (nlIdUoDestinatario != nIdUOGestor){
+                    nToContadorUOs++;                    
+                }
+                //-------------------------------------
                               
                 z++;
             }
             j++;
             
-        }
+        }       
         strPara = strPara.concat("</b><br />");
         
 //        System.out.println(strPara);
@@ -783,6 +829,13 @@ public class NovaCIController implements Initializable {
                 UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
                 nArrayCCIdUOGestor[z] = UOGestorDestinatario.getIdUoGestor();
                 //---------------------------------
+                
+                //Código para quando IdUo é subalterna 
+                nlIdUoDestinatario = Integer.parseInt(strParts[i].trim());
+                if (nlIdUoDestinatario != nIdUOGestor){
+                    nCcContadorUOs++;                    
+                }
+                //-------------------------------------
                 
                 z++;
             }
@@ -879,12 +932,30 @@ public class NovaCIController implements Initializable {
         } catch(Exception ex){
             nSequencialUO = 0;
             nSequencialUO++;
-        }            
+        }
+        
+        if((0 == nToContadorUOs) && (0 == nCcContadorUOs)){
+            bCoinAutorizado = true;
+            //bUOSubalterna = true;
+        }
+        else {
+            bCoinAutorizado = false;
+            //bUOSubalterna = false;
+        }
         
         if (4 == nTipoCI){
-            bCoinAutorizado = true;            
-            data_autorizado = data_criacao;
-            newTbCI.setCoinDataAutorizado(data_autorizado);
+            //Despacho agora precisa passar por aprovação do Gestor
+            //bCoinAutorizado = true;                        
+            //data_autorizado = data_criacao;
+            //newTbCI.setCoinDataAutorizado(data_autorizado);
+            if ((nIdUO == nIdUOGestor) && (1 == nTipoPerfil) /*&& (bUOSubalterna)*/){
+                bCoinAutorizado = true;     
+                data_autorizado = data_criacao;
+                newTbCI.setCoinDataAutorizado(data_autorizado);
+            } else {
+                bCoinAutorizado = false;
+            }
+            //---------------------------------------------
             
             //Valores para variaveis Genesis
             nlIdCoinGenesis = this.nlIdCoinGenesis;
@@ -898,6 +969,15 @@ public class NovaCIController implements Initializable {
             strMD5Assinatura = this.strgUserLogin; 
             
         }
+        
+        
+        
+//        //Verificamos se é para UO gerencial
+//        if(nArrayIdUODestinatario[n]==nIdUOGestor){
+//            bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
+//            bCoinRemitenteGestorAutorizado = true;                
+//        } 
+        
         //Seteamos entity TB_COMUNICACAO_INTERNA
 
         newTbCI.setCoinAssunto(txtAssunto.getText());
@@ -999,12 +1079,42 @@ public class NovaCIController implements Initializable {
                 }else{
                     bCoinDestinatarioGestorAutorizado = false;                    
                 }                
-            if (4 == nTipoCI){
-            data_autorizado = data_criacao;
-            newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
-            bCoinDestinatarioGestorAutorizado = true;     
-            bCoinRemitenteGestorAutorizado = true;
-            }
+                if (4 == nTipoCI){
+                    //Despacho agora precisa passar por aprovação do Gestor
+    //                data_autorizado = data_criacao;
+    //                newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
+    //                bCoinDestinatarioGestorAutorizado = true;     
+    //                bCoinRemitenteGestorAutorizado = true;
+
+                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
+                    bCoinRemitenteGestorAutorizado = false;
+                }
+            
+                
+                //Verificamos se é para UO gerencial  ou subsetor             
+                for (int q = 0; q < nTamanho; q++){
+                    if (nArrayIdsUOs[q]== nArrayIdUODestinatario[n]){
+                        bCoinDestinatarioGestorAutorizado = true;     
+                        bCoinRemitenteGestorAutorizado = true; 
+                        break;
+                    }else {
+                        bCoinDestinatarioGestorAutorizado = false;
+                        bCoinRemitenteGestorAutorizado = false;
+                    }                    
+                }
+                
+//                if(nArrayIdUODestinatario[n]==nIdUOGestor){
+//                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
+//                    bCoinRemitenteGestorAutorizado = true;                     
+//                } 
+//                else{
+//                    bCoinDestinatarioGestorAutorizado = false;
+//                }
+                    
+                
+
+            
+            
             //Seteamos Para
 
             newTbCIDestinatario.setIdCoin(nCoinId);
@@ -1070,10 +1180,16 @@ public class NovaCIController implements Initializable {
                         bCoinDestinatarioGestorAutorizado = false;                    
                     }  
                 if (4 == nTipoCI){
-                    data_autorizado = data_criacao;
-                    newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
-                    bCoinDestinatarioGestorAutorizado = true;     
-                    bCoinRemitenteGestorAutorizado = true;
+                    //Despacho agora precisa passar por aprovação do Gestor
+//                    data_autorizado = data_criacao;
+//                    newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
+//                    bCoinDestinatarioGestorAutorizado = true;     
+//                    bCoinRemitenteGestorAutorizado = true;
+                    
+                    //bCoinDestinatarioGestorAutorizado = false; 
+                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario 
+                    bCoinRemitenteGestorAutorizado = false;
+                    
                 }
                 
                 //Seteamos Com Copia
