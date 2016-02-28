@@ -789,6 +789,9 @@ public class FXMLMainController implements Initializable {
         strDescricaoPerfil = lblNomePerfil.getText();
         nTipoCI = 1;    //CI Normal
         
+        int nIdUORemitente = 0;
+        String strUONomeRemitente = "";
+        
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
         //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
         int nlIdCoinGenesis = 0;
@@ -801,7 +804,9 @@ public class FXMLMainController implements Initializable {
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                 strgUserLogin,
-                strlAssunto);
+                strlAssunto,
+                nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
+                strUONomeRemitente);
                         
     }
     @FXML
@@ -815,6 +820,9 @@ public class FXMLMainController implements Initializable {
         strDescricaoPerfil = lblNomePerfil.getText();
         nTipoCI = 2;    //CI Circular
         
+        int nIdUORemitente = 0;
+        String strUONomeRemitente = "";
+        
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
         //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
         int nlIdCoinGenesis = 0;
@@ -827,7 +835,9 @@ public class FXMLMainController implements Initializable {
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                 strgUserLogin,
-                strlAssunto);
+                strlAssunto,
+                nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
+                strUONomeRemitente);
         
     }
     @FXML
@@ -841,6 +851,9 @@ public class FXMLMainController implements Initializable {
         strDescricaoPerfil = lblNomePerfil.getText();
         nTipoCI = 3;    //CI Confidencial
         
+        int nIdUORemitente = 0;
+        String strUONomeRemitente = "";
+        
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
         //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
         int nlIdCoinGenesis = 0;
@@ -853,7 +866,9 @@ public class FXMLMainController implements Initializable {
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                 strgUserLogin,
-                strlAssunto);
+                strlAssunto,
+                nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
+                strUONomeRemitente);
         
     }
      @FXML
@@ -869,11 +884,19 @@ public class FXMLMainController implements Initializable {
             String strHtmlConteudo = "";
             String strlAssinatura = "";
             String strlAssunto = "";
-            int nIdRemitente = 0;
+            
+                       
             strHtmlConteudo = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Conteudo();
             strlAssinatura = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
             strlAssunto = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Assunto();
-            nIdRemitente = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUORemitente();
+            
+            //Valores para preencher o campo Para:
+            int nIdUORemitente = 0;
+            String strUONomeRemitente = "";
+            
+            nIdUORemitente = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUORemitente();
+            strUONomeRemitente = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_DescricaoUORemitente();
+            //-----------------------------------------
             
             strIdUsuario = lblIdUsuario.getText();
             strNomeUsuario = lblNomeUsuario.getText();
@@ -908,7 +931,9 @@ public class FXMLMainController implements Initializable {
                     strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlAssinatura,
-                    strlAssunto);
+                    strlAssunto,
+                    nIdUORemitente,
+                    strUONomeRemitente);
         }
         
     }
@@ -936,6 +961,9 @@ public class FXMLMainController implements Initializable {
             strDescricaoPerfil = lblNomePerfil.getText();
             nTipoCI = 4;    //CI Encaminhada
             
+            int nIdUORemitente = 0;
+            String strUONomeRemitente = "";
+            
             //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
             //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
             int nlIdCoinGenesis = 0;
@@ -943,6 +971,7 @@ public class FXMLMainController implements Initializable {
             int nlCoinNumeroGenesis = 0;
             String strCoinHistoricoAnexos = "";
             String strUnorDescricaoGenesis = "";
+           
             
             nlIdCoinGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoinGenesis();
             nlIdUnorGenesis = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUnorGenesis();
@@ -961,14 +990,18 @@ public class FXMLMainController implements Initializable {
                     strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlAssinatura,
-                    strlAssunto);
+                    strlAssunto,
+                    nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
+                    strUONomeRemitente);
         }
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, String strIdUO, String strNomeUO, String strIdPerfil, 
             String strDescricaoPerfil, String strHtmlAssinatura, int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
             int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
             String strlUserLogin,
-            String strlAssunto){
+            String strlAssunto,
+            int nIdUORemitente,
+            String strUONomeRemitente){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
@@ -979,7 +1012,9 @@ public class FXMLMainController implements Initializable {
                         strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                         strlUserLogin,
-                        strlAssunto);
+                        strlAssunto,
+                        nIdUORemitente, 
+                        strUONomeRemitente);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();

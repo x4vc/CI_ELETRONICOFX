@@ -144,7 +144,9 @@ public class NovaCIController implements Initializable {
                                         int nTipoCI, int nIdUOGestor, String strHtmlConteudo,
                                         int nlIdCoinGenesis, int nlIdUnorGenesis, int nlCoinNumeroGenesis, String strCoinHistoricoAnexos, String strUnorDescricaoGenesis,
                                         String strlUserLogin,
-                                        String strlAssunto) {
+                                        String strlAssunto,
+                                        int nIdUORemitente,
+                                        String strUONomeRemitente) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -165,6 +167,8 @@ public class NovaCIController implements Initializable {
         nTipoPerfil = Integer.parseInt(strIdPerfil);
         nIdUO = Integer.parseInt(strIdUO);
         strgUserLogin = strlUserLogin;
+        
+        Text txtArquivoSelecionado;
         
         //Preencher o editor Html com assinatura do usuário
         htmlEditor.setHtmlText(this.strHtmlAssinatura);
@@ -188,6 +192,12 @@ public class NovaCIController implements Initializable {
             case 7:
                 btnEnviarNovaCI.setText("Responder CI");
                 txtAssunto.setText(strlAssunto);
+                txtArquivoSelecionado = new Text();                          
+                //txtArquivoSelecionado.setText("\""+ UOSelected.get(nContador)+ "\"; ");
+                txtArquivoSelecionado.setText(nIdUORemitente + "-" + strUONomeRemitente + " ; ");
+                txtArquivoSelecionado.setFill(Color.BLACK);
+                txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
+                txtFPara.getChildren().add(txtArquivoSelecionado); 
                 break;
             default:
                 btnEnviarNovaCI.setText("Enviar CI");
