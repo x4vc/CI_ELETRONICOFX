@@ -708,6 +708,14 @@ public class NovaCIController implements Initializable {
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
                 strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
                 break;
+            case 7:
+                //CI - respondida
+                strPara = "<br><hr><br><b><FONT COLOR=\"0000FF\">CI RESPONDIDA</FONT></b>";
+                strPara = strPara.concat("<br><hr><br><FONT COLOR=\"000000\">De: <b>" + strNomeUO + "</b></FONT><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + strNomeUsuario + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br><br>");
+                strPara = strPara.concat("<FONT COLOR=\"000000\">Para: </FONT><b>");
+                break;
             default:
                 break;
         }
@@ -882,14 +890,29 @@ public class NovaCIController implements Initializable {
         
         //strPara = strPara.concat(strHtmlConteudo);
         
-        if (4 == nTipoCI ){
-            //Despacho
-            strPara = strPara.concat(strHtmlConteudo);
-            strPara = strPara.concat(strHtmlEncaminharConteudo);
-        }
-        else {
-            strPara = strPara.concat(strHtmlConteudo);
-        }
+//        if (4 == nTipoCI ){
+//            //Despacho
+//            strPara = strPara.concat(strHtmlConteudo);
+//            strPara = strPara.concat(strHtmlEncaminharConteudo);
+//        }
+//        else {
+//            strPara = strPara.concat(strHtmlConteudo);
+//        }
+        
+        switch (nTipoCI){
+            case 4: //Despacho
+                strPara = strPara.concat(strHtmlConteudo);
+                strPara = strPara.concat(strHtmlEncaminharConteudo);
+                break;
+            case 7: //CI Respondida
+                strPara = strPara.concat(strHtmlConteudo);
+                strPara = strPara.concat(strHtmlEncaminharConteudo);
+                break;
+            default:
+                strPara = strPara.concat(strHtmlConteudo);
+                break;
+        }        
+        
         
 //        System.out.println();
         //Seteamos número sequencial da CI de acordo ao UO Remitente
@@ -903,7 +926,7 @@ public class NovaCIController implements Initializable {
                 //Se for ntipoCI == 4 Encaminhar CI então Sequencial não muda
                 //e por default já está autorizado para ser visualizado pelos 
                 //destinatários
-                if (4 == nTipoCI){
+                if ((4 == nTipoCI) || (7 == nTipoCI) ){
                     nSequencialUO = Resultado.intValue();
                     
                     bCoinAutorizado = true;
@@ -987,13 +1010,33 @@ public class NovaCIController implements Initializable {
             //bCoinAutorizado = true;                        
             //data_autorizado = data_criacao;
             //newTbCI.setCoinDataAutorizado(data_autorizado);
-            if ((nIdUO == nIdUOGestor) && (1 == nTipoPerfil) /*&& (bUOSubalterna)*/){
-                bCoinAutorizado = true;     
-                data_autorizado = data_criacao;
-                newTbCI.setCoinDataAutorizado(data_autorizado);
+//            if ((nIdUO == nIdUOGestor) && (1 == nTipoPerfil) /*&& (bUOSubalterna)*/){
+//                bCoinAutorizado = true;     
+//                data_autorizado = data_criacao;
+//                newTbCI.setCoinDataAutorizado(data_autorizado);
+//            } else {
+//                bCoinAutorizado = false;
+//            }
+            
+            //A depender do perfil do usuário
+            //Verificamos se CI precisa ser autorizado   
+            if ((nIdUO == nIdUOGestor)){
+                switch (nTipoPerfil) {
+                    case 1: //Perfil de Gestor
+                        bCoinAutorizado = true;
+                        data_autorizado = data_criacao;
+                        newTbCI.setCoinDataAutorizado(data_autorizado);
+                        bCoinRemitenteGestorAutorizado = true;
+                        break;
+                    default:
+                        bCoinAutorizado = false;
+                        bCoinRemitenteGestorAutorizado = false;
+                        break;
+                }           
             } else {
                 bCoinAutorizado = false;
-            }
+                bCoinRemitenteGestorAutorizado = false;
+            }          
             //---------------------------------------------
             
             //Valores para variaveis Genesis
@@ -1118,47 +1161,75 @@ public class NovaCIController implements Initializable {
                 }else{
                     bCoinDestinatarioGestorAutorizado = false;                    
                 }                
-                if (4 == nTipoCI){
+                if ((4 == nTipoCI) || (7 == nTipoCI)){
                     //Despacho agora precisa passar por aprovação do Gestor
     //                data_autorizado = data_criacao;
     //                newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
     //                bCoinDestinatarioGestorAutorizado = true;     
     //                bCoinRemitenteGestorAutorizado = true;
 
-                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
-                    bCoinRemitenteGestorAutorizado = false;
+//                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
+//                    bCoinRemitenteGestorAutorizado = false;
+                    
+                    //Verificamos se é para UO gerencial  ou subsetor             
+                    for (int q = 0; q < nTamanho; q++){
+                        if (nArrayIdsUOs[q]== nArrayIdUODestinatario[n]){
+                            bCoinDestinatarioGestorAutorizado = true;     
+                            bCoinRemitenteGestorAutorizado = true; 
+                            break;
+                        }else {
+                            //A depender do perfil do usuário
+                            //Verificamos se CI precisa ser autorizado    
+                            if ((nIdUO == nIdUOGestor)){
+                                switch (nTipoPerfil) {
+                                    case 1: //Perfil de Gestor 
+                                        bCoinDestinatarioGestorAutorizado = true;
+                                        bCoinRemitenteGestorAutorizado = true;
+                                        break;
+                                    default:
+                                        bCoinDestinatarioGestorAutorizado = true;
+                                        bCoinRemitenteGestorAutorizado = false;
+                                        break;
+                                }           
+                            } else {
+                                bCoinDestinatarioGestorAutorizado = true;
+                                bCoinRemitenteGestorAutorizado = false;
+                            }
+    //                        bCoinDestinatarioGestorAutorizado = false;
+    //                        bCoinRemitenteGestorAutorizado = false;
+                        }                    
+                    }
+                    
+                } else {
+                    //Verificamos se é para UO gerencial  ou subsetor             
+                    for (int q = 0; q < nTamanho; q++){
+                        if (nArrayIdsUOs[q]== nArrayIdUODestinatario[n]){
+                            bCoinDestinatarioGestorAutorizado = true;     
+                            bCoinRemitenteGestorAutorizado = true; 
+                            break;
+                        }else {
+                            //A depender do perfil do usuário
+                            //Verificamos se CI precisa ser autorizado    
+                            if ((nIdUO == nIdUOGestor)){
+                                switch (nTipoPerfil) {
+                                    case 1: //Perfil de Gestor 
+                                        bCoinDestinatarioGestorAutorizado = false;
+                                        bCoinRemitenteGestorAutorizado = true;
+                                        break;
+                                    default:
+                                        bCoinDestinatarioGestorAutorizado = false;
+                                        bCoinRemitenteGestorAutorizado = false;
+                                        break;
+                                }           
+                            } else {
+                                bCoinDestinatarioGestorAutorizado = false;
+                                bCoinRemitenteGestorAutorizado = false;
+                            }
+    //                        bCoinDestinatarioGestorAutorizado = false;
+    //                        bCoinRemitenteGestorAutorizado = false;
+                        }                    
+                    }
                 }
-            
-                
-                //Verificamos se é para UO gerencial  ou subsetor             
-                for (int q = 0; q < nTamanho; q++){
-                    if (nArrayIdsUOs[q]== nArrayIdUODestinatario[n]){
-                        bCoinDestinatarioGestorAutorizado = true;     
-                        bCoinRemitenteGestorAutorizado = true; 
-                        break;
-                    }else {
-                        //A depender do perfil do usuário
-                        //Verificamos se CI precisa ser autorizado    
-                        if ((nIdUO == nIdUOGestor)){
-                            switch (nTipoPerfil) {
-                                case 1: //Perfil de Gestor 
-                                    bCoinDestinatarioGestorAutorizado = false;
-                                    bCoinRemitenteGestorAutorizado = true;
-                                    break;
-                                default:
-                                    bCoinDestinatarioGestorAutorizado = false;
-                                    bCoinRemitenteGestorAutorizado = false;
-                                    break;
-                            }           
-                        } else {
-                            bCoinDestinatarioGestorAutorizado = false;
-                            bCoinRemitenteGestorAutorizado = false;
-                        }
-//                        bCoinDestinatarioGestorAutorizado = false;
-//                        bCoinRemitenteGestorAutorizado = false;
-                    }                    
-                }
-                
 //                if(nArrayIdUODestinatario[n]==nIdUOGestor){
 //                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario    
 //                    bCoinRemitenteGestorAutorizado = true;                     
@@ -1235,7 +1306,7 @@ public class NovaCIController implements Initializable {
                     }else{
                         bCoinDestinatarioGestorAutorizado = false;                    
                     }  
-                if (4 == nTipoCI){
+                if ((4 == nTipoCI) || (7 == nTipoCI)){
                     //Despacho agora precisa passar por aprovação do Gestor
 //                    data_autorizado = data_criacao;
 //                    newTbCIDestinatario.setCoinDestinatarioGestorDataAutorizado(data_autorizado);
@@ -1243,40 +1314,69 @@ public class NovaCIController implements Initializable {
 //                    bCoinRemitenteGestorAutorizado = true;
                     
                     //bCoinDestinatarioGestorAutorizado = false; 
-                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario 
-                    bCoinRemitenteGestorAutorizado = false;
                     
-                }
-                
-                //Verificamos se é para UO gerencial  ou subsetor             
-                for (int q = 0; q < nTamanho; q++){
-                    if (nArrayIdsUOs[q]== nArrayCCIdUODestinatario[n]){
-                        bCoinDestinatarioGestorAutorizado = true;     
-                        bCoinRemitenteGestorAutorizado = true; 
-                        break;
-                    }else {
-                        //A depender do perfil do usuário
-                        //Verificamos se CI precisa ser autorizado    
-                        if ((nIdUO == nIdUOGestor)){
-                            switch (nTipoPerfil) {
-                                case 1: //Perfil de Gestor 
-                                    bCoinDestinatarioGestorAutorizado = false;
-                                    bCoinRemitenteGestorAutorizado = true;
-                                    break;
-                                default:
-                                    bCoinDestinatarioGestorAutorizado = false;
-                                    bCoinRemitenteGestorAutorizado = false;
-                                    break;
-                            }           
-                        } else {
-                            bCoinDestinatarioGestorAutorizado = false;
-                            bCoinRemitenteGestorAutorizado = false;
-                        }
-//                        bCoinDestinatarioGestorAutorizado = false;
-//                        bCoinRemitenteGestorAutorizado = false;
+//                    bCoinDestinatarioGestorAutorizado = true;   // Despacho não precisa de autorização do gestor destinatario 
+//                    bCoinRemitenteGestorAutorizado = false;
+                    
+                    //Verificamos se é para UO gerencial  ou subsetor             
+                    for (int q = 0; q < nTamanho; q++){
+                        if (nArrayIdsUOs[q]== nArrayCCIdUODestinatario[n]){
+                            bCoinDestinatarioGestorAutorizado = true;     
+                            bCoinRemitenteGestorAutorizado = true; 
+                            break;
+                        }else {
+                            //A depender do perfil do usuário
+                            //Verificamos se CI precisa ser autorizado    
+                            if ((nIdUO == nIdUOGestor)){
+                                switch (nTipoPerfil) {
+                                    case 1: //Perfil de Gestor 
+                                        bCoinDestinatarioGestorAutorizado = true;
+                                        bCoinRemitenteGestorAutorizado = true;
+                                        break;
+                                    default:
+                                        bCoinDestinatarioGestorAutorizado = true;
+                                        bCoinRemitenteGestorAutorizado = false;
+                                        break;
+                                }           
+                            } else {
+                                bCoinDestinatarioGestorAutorizado = true;
+                                bCoinRemitenteGestorAutorizado = false;
+                            }
+    //                        bCoinDestinatarioGestorAutorizado = false;
+    //                        bCoinRemitenteGestorAutorizado = false;
+                        }                    
                     }                    
-                }
+                } else {
                 
+                    //Verificamos se é para UO gerencial  ou subsetor             
+                    for (int q = 0; q < nTamanho; q++){
+                        if (nArrayIdsUOs[q]== nArrayCCIdUODestinatario[n]){
+                            bCoinDestinatarioGestorAutorizado = true;     
+                            bCoinRemitenteGestorAutorizado = true; 
+                            break;
+                        }else {
+                            //A depender do perfil do usuário
+                            //Verificamos se CI precisa ser autorizado    
+                            if ((nIdUO == nIdUOGestor)){
+                                switch (nTipoPerfil) {
+                                    case 1: //Perfil de Gestor 
+                                        bCoinDestinatarioGestorAutorizado = false;
+                                        bCoinRemitenteGestorAutorizado = true;
+                                        break;
+                                    default:
+                                        bCoinDestinatarioGestorAutorizado = false;
+                                        bCoinRemitenteGestorAutorizado = false;
+                                        break;
+                                }           
+                            } else {
+                                bCoinDestinatarioGestorAutorizado = false;
+                                bCoinRemitenteGestorAutorizado = false;
+                            }
+    //                        bCoinDestinatarioGestorAutorizado = false;
+    //                        bCoinRemitenteGestorAutorizado = false;
+                        }                    
+                    }
+                }
                 //Seteamos Com Copia
                 newTbCIDestinatario.setIdCoin(nCoinId);
                 newTbCIDestinatario.setIdUsuarioRemitente(nIdUsuario);
