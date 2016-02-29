@@ -704,6 +704,7 @@ public class FXMLMainController implements Initializable {
                 btnImprimirCI.setDisable(false);
                 
                 btnEncaminharCI.setDisable(false);
+                btnResponderCI.setDisable(false);
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 
@@ -729,6 +730,7 @@ public class FXMLMainController implements Initializable {
                 btnImprimirCI.setDisable(false);
                 btnAprovarCI.setDisable(true);
                 btnEncaminharCI.setDisable(false);
+                btnResponderCI.setDisable(false);
                 btnArquivarCI.setDisable(false);
                 btnDesarquivarCI.setDisable(false);
                 btnEditarCI.setDisable(true);
@@ -753,6 +755,7 @@ public class FXMLMainController implements Initializable {
                 btnImprimirCI.setDisable(true);
                 btnAprovarCI.setDisable(true);
                 btnEncaminharCI.setDisable(true);
+                btnResponderCI.setDisable(true);
                 btnArquivarCI.setDisable(true);
                 btnDesarquivarCI.setDisable(true);
                 
@@ -2900,6 +2903,7 @@ public class FXMLMainController implements Initializable {
         
         btnAprovarCI.setDisable(true);
         btnEncaminharCI.setDisable(false);
+        btnResponderCI.setDisable(false);
         btnArquivarCI.setDisable(false);
         btnDesarquivarCI.setDisable(true); 
         
@@ -2925,6 +2929,7 @@ public class FXMLMainController implements Initializable {
         
         btnAprovarCI.setDisable(true);
         btnEncaminharCI.setDisable(true);
+        btnResponderCI.setDisable(true);
         btnArquivarCI.setDisable(false);
         btnDesarquivarCI.setDisable(true);  
         
@@ -3207,6 +3212,7 @@ public class FXMLMainController implements Initializable {
                                 case 6: //6-Caixa de enviados
                                     btnAprovarCI.setDisable(true);
                                     btnEncaminharCI.setDisable(true);
+                                    btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(true);
@@ -3218,6 +3224,7 @@ public class FXMLMainController implements Initializable {
                                 case 5: //5-Caixa de enviados (arquivadas)
                                     btnAprovarCI.setDisable(true);
                                     btnEncaminharCI.setDisable(true);
+                                    btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(true);
                                     btnDesarquivarCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
@@ -3276,6 +3283,7 @@ public class FXMLMainController implements Initializable {
         
        
         btnEncaminharCI.setDisable(true);
+        btnResponderCI.setDisable(true);
         btnDesarquivarCI.setDisable(true);
         //btnEditarCI.setVisible(true);
         btnMarcarcomoPendencia.setDisable(true);
@@ -3496,6 +3504,7 @@ public class FXMLMainController implements Initializable {
                             
                             //btnAprovarCI.setDisable(false); 
                             btnEncaminharCI.setDisable(true);
+                            btnResponderCI.setDisable(true);
                             btnArquivarCI.setDisable(true);
                             btnDesarquivarCI.setDisable(true);
                             btnMarcarComoLido.setText("Marcar como Lido");
@@ -3570,6 +3579,7 @@ public class FXMLMainController implements Initializable {
         btnArquivarCI.setDisable(true);
         btnAprovarCI.setDisable(true);
         btnEncaminharCI.setDisable(true);
+        btnResponderCI.setDisable(true);
         boolean blPreencherTableView2 = false;
         PreencherCaixaEntrada(4, blPreencherTableView2);
         
@@ -3725,6 +3735,7 @@ public class FXMLMainController implements Initializable {
         btnArquivarCI.setDisable(true);
         btnAprovarCI.setDisable(true);
         btnEncaminharCI.setDisable(true);
+        btnResponderCI.setDisable(true);
         
         ngTabela = 1; // TB_COMUNICACAO_INTERNA
         ngBotao = 5;
@@ -4068,6 +4079,7 @@ public class FXMLMainController implements Initializable {
                                 case 2: //caixa de recebidas e pendentes de aprovação
                                     btnAprovarCI.setDisable(true);
                                     btnEncaminharCI.setDisable(false);
+                                    btnResponderCI.setDisable(false);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(false);
@@ -4089,6 +4101,7 @@ public class FXMLMainController implements Initializable {
                                 case 3://caixa de recebidas (pendencias)
                                     btnAprovarCI.setDisable(true);
                                     btnEncaminharCI.setDisable(false);
+                                    btnResponderCI.setDisable(false);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
                                     btnMarcarComoLido.setDisable(false);
@@ -4099,6 +4112,7 @@ public class FXMLMainController implements Initializable {
                                 case 4: //caixa de recebidas (arquivadas)
                                     btnAprovarCI.setDisable(true);
                                     btnEncaminharCI.setDisable(true);
+                                    btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(true);
                                     btnDesarquivarCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
@@ -4301,6 +4315,7 @@ public class FXMLMainController implements Initializable {
                                 //-----TableView2  
                                 //btnAprovarCI.setDisable(false); 
                                 btnEncaminharCI.setDisable(true);
+                                btnResponderCI.setDisable(true);
                                 btnArquivarCI.setDisable(true);
                                 btnDesarquivarCI.setDisable(true);
                                 btnMarcarComoLido.setText("Marcar como Lido");
