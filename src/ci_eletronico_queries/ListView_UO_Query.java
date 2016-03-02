@@ -26,10 +26,12 @@ public class ListView_UO_Query {
         
         em.getTransaction().begin();
     }
-    public List<TbUnidadeOrganizacional> listaUO() {       
+    public List<TbUnidadeOrganizacional> listaUO(int nIdUO) {       
         
         //return em.createNamedQuery("TbUsuario.findAll",TbUsuario.class).getResultList();
-        return em.createNamedQuery("TbUnidadeOrganizacional.findAll",TbUnidadeOrganizacional.class).getResultList();
+        return em.createNamedQuery("TbUnidadeOrganizacional.findAll",TbUnidadeOrganizacional.class)
+                .setParameter("idUnidadeOrganizacional", nIdUO)
+                .getResultList();
         
         }
        

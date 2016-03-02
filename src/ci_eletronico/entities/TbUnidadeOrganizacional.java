@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "TB_UNIDADE_ORGANIZACIONAL")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "TbUnidadeOrganizacional.findAll", query = "SELECT t FROM TbUnidadeOrganizacional t"),
+    @NamedQuery(name = "TbUnidadeOrganizacional.findAll", query = "SELECT t FROM TbUnidadeOrganizacional t WHERE t.unorAtivo = 1 AND t.idUnidadeOrganizacional NOT IN (:idUnidadeOrganizacional)"),
     @NamedQuery(name = "TbUnidadeOrganizacional.findByIdUnidadeOrganizacional", query = "SELECT t FROM TbUnidadeOrganizacional t WHERE t.idUnidadeOrganizacional = :idUnidadeOrganizacional"),
     @NamedQuery(name = "TbUnidadeOrganizacional.findByUnorDescricao", query = "SELECT t FROM TbUnidadeOrganizacional t WHERE t.unorDescricao = :unorDescricao"),
     @NamedQuery(name = "TbUnidadeOrganizacional.findByUnorNome", query = "SELECT t FROM TbUnidadeOrganizacional t WHERE t.unorNome = :unorNome"),

@@ -97,7 +97,7 @@ public class LoginController {
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
     private String strVersaoCodigo = "";
-    private String strRelease = "15022016";
+    private String strRelease = "02032016";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.
@@ -155,7 +155,7 @@ public class LoginController {
         String strVersaoBancoDados = "";
         //String strVersaoCodigo = "";
         
-        this.strVersaoCodigo = "1.3";
+        this.strVersaoCodigo = "1.4";
         
         LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
         List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();

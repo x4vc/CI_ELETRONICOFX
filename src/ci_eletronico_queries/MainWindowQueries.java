@@ -73,6 +73,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestorPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUoGestor", nidUoGestor)                
                 .setParameter("idTipoCoin",nValues)
@@ -93,6 +94,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbComunicacaoInterna.findByCIsEnviadasPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUnidadeOrganizacional", nidUoRemitente)
                 .setParameter("idTipoCoin",nValues)
@@ -516,6 +518,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbCiDestinatario.findByIdUoGestorDestinatarioPerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoGestorDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -536,6 +539,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbCiDestinatario.findByIdUoDestinatarioPerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -556,6 +560,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioPendentePerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -576,6 +581,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -596,6 +602,7 @@ public class MainWindowQueries {
         nValues.add(1);
         nValues.add(2);
         nValues.add(4);
+        nValues.add(7);
         return em.createNamedQuery("TbComunicacaoInterna.findByUOArquivadoPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUnidadeOrganizacional", nIdUo)
                 .setParameter("idTipoCoin",nValues)

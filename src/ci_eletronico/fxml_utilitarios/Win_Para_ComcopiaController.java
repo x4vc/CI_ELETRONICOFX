@@ -5,6 +5,7 @@
  */
 package ci_eletronico.fxml_utilitarios;
 
+import ci_eletronico.nova_ci.NovaCIController;
 import ci_eletronico_queries.ListView_UO_Query;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,6 +70,9 @@ public class Win_Para_ComcopiaController implements Initializable {
 
     private ObservableList<String> UOSelecionado = FXCollections.observableArrayList(ArraySelecionado);
     private ObservableList<String> selectedItens;
+    
+    private int nIdUO = 0;
+    
 //    private int nTipoDestinatario = 0;
     /**
      * Initializes the controller class.
@@ -92,9 +96,42 @@ public class Win_Para_ComcopiaController implements Initializable {
                 }
             });;
         
+//        //Preenchemos o listbox
+//        consulta  = new ListView_UO_Query();   
+//        listListaUO = consulta.listaUO();
+//        
+//       // obsList_listaUO = FXCollections.observableArrayList();
+//        for(ci_eletronico.entities.TbUnidadeOrganizacional l : listListaUO){
+//            Integer IdUO = l.getIdUnidadeOrganizacional();
+//            String strIdUO = IdUO.toString();
+//            String strNomeUO = l.getUnorNome();
+//            String strDescricaoUO = l.getUnorDescricao();
+//            boolean bAtivo = l.getUnorAtivo();
+//            //obsList_listaUO.add(new TbUnidadeOrganizacional(IdUO,strNomeUO,bAtivo));
+//            obsList_listaUO.add(strIdUO + "=" + strNomeUO + " - " + strDescricaoUO);
+//            }
+//        boxUOs.setItems(obsList_listaUO);
+//        //playersAvailable = FXCollections.observableArrayList("Kardi","Gilmore","Clark");
+//        //teamOutput = FXCollections.observableArrayList(team);
+//
+//        //boxUOs.setItems(UOsAvailable);
+//        boxUOsPara.setItems(UOSelecionado);
+        //-------------------------------------------
         
+        btnCancelar.setCancelButton(true);
+        btnAddAll.setTooltip(new Tooltip("Adicionar todas as UOs na caixa \"Selecionado(s)\""));     
+        btnAdd.setTooltip(new Tooltip("Adicionar UO na caixa \"Selecionado(s)\""));     
+        btnRemove.setTooltip(new Tooltip("Tirar UO da caixa \"Selecionado(s)\""));
+        btnRemoveAll.setTooltip(new Tooltip("Tirar todas as UOs da caixa \"Selecionado(s)\""));
+       
+    }
+    
+    public void setVariaveisAmbienteNovaCI(final NovaCIController novaCiController , int nIdUO) {
+        this.nIdUO = nIdUO;
+        
+        //Preenchemos o listbox
         consulta  = new ListView_UO_Query();   
-        listListaUO = consulta.listaUO();
+        listListaUO = consulta.listaUO(nIdUO);
         
        // obsList_listaUO = FXCollections.observableArrayList();
         for(ci_eletronico.entities.TbUnidadeOrganizacional l : listListaUO){
@@ -104,7 +141,7 @@ public class Win_Para_ComcopiaController implements Initializable {
             String strDescricaoUO = l.getUnorDescricao();
             boolean bAtivo = l.getUnorAtivo();
             //obsList_listaUO.add(new TbUnidadeOrganizacional(IdUO,strNomeUO,bAtivo));
-            obsList_listaUO.add(strIdUO + "-" + strNomeUO + " - " + strDescricaoUO);
+            obsList_listaUO.add(strIdUO + "=" + strNomeUO + " - " + strDescricaoUO);
             }
         boxUOs.setItems(obsList_listaUO);
         //playersAvailable = FXCollections.observableArrayList("Kardi","Gilmore","Clark");
@@ -112,13 +149,9 @@ public class Win_Para_ComcopiaController implements Initializable {
 
         //boxUOs.setItems(UOsAvailable);
         boxUOsPara.setItems(UOSelecionado);
-        btnCancelar.setCancelButton(true);
-        btnAddAll.setTooltip(new Tooltip("Adicionar todas as UOs na caixa \"Selecionado(s)\""));     
-        btnAdd.setTooltip(new Tooltip("Adicionar UO na caixa \"Selecionado(s)\""));     
-        btnRemove.setTooltip(new Tooltip("Tirar UO da caixa \"Selecionado(s)\""));
-        btnRemoveAll.setTooltip(new Tooltip("Tirar todas as UOs da caixa \"Selecionado(s)\""));
-       
+        
     }
+    
     public void handleSearchByKey2(String oldVal, String newVal) {
         // If the number of characters in the text box is less than last time
         // it must be because the user pressed delete

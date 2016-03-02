@@ -194,7 +194,7 @@ public class NovaCIController implements Initializable {
                 txtAssunto.setText(strlAssunto);
                 txtArquivoSelecionado = new Text();                          
                 //txtArquivoSelecionado.setText("\""+ UOSelected.get(nContador)+ "\"; ");
-                txtArquivoSelecionado.setText(nIdUORemitente + "-" + strUONomeRemitente + " ; ");
+                txtArquivoSelecionado.setText(nIdUORemitente + "=" + strUONomeRemitente + " ; ");
                 txtArquivoSelecionado.setFill(Color.BLACK);
                 txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
                 txtFPara.getChildren().add(txtArquivoSelecionado); 
@@ -411,6 +411,8 @@ public class NovaCIController implements Initializable {
         scene.setRoot((Parent) loader.load());
 
         Win_Para_ComcopiaController controller = loader.getController();
+        
+        controller.setVariaveisAmbienteNovaCI(this, nIdUO);
         //controller.setTipoDestinatario(nTipoDestinatario);
 
         Stage stage = new Stage();
@@ -456,13 +458,15 @@ public class NovaCIController implements Initializable {
         int nContador;
         String strId;
         String strNome;
-        String delimiters = "-|\\;";
+        //String delimiters = "-|\\;";
+        String delimiters = "=|\\;";
         
         for (nContador = 0; nContador < nSize; nContador++){
             String[] parts = UOSelected.get(nContador).split(delimiters);
             strId = parts[0].trim(); // 004
             strNome = parts[1].trim(); // 034556
-            UOsFiltrados.add(strId + "-" + strNome);            
+            //UOsFiltrados.add(strId + "-" + strNome);            
+            UOsFiltrados.add(strId + "=" + strNome);            
         }
 //        String[] parts = strcmbUO.split(delimiters);
 //        strIdUO = parts[0].trim(); // 004
@@ -607,7 +611,8 @@ public class NovaCIController implements Initializable {
         int nSequencialUO = 0;
         String strPara="";
         String strComCopia = "";
-        String strDelimiters = "-|\\;";
+        //String strDelimiters = "-|\\;";
+        String strDelimiters = "=|\\;";
         String strHtmlConteudo = "";
         
         int [] nArrayCCIdUODestinatario = new int[0]; // = new int[strParts.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
