@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findAll", query = "SELECT t FROM TbCiDestinatario t"),
     @NamedQuery(name = "TbCiDestinatario.findByIdCoinDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idCoinDestinatario = :idCoinDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByIdCoin", query = "SELECT t FROM TbCiDestinatario t WHERE t.idCoin = :idCoin AND t.coinRemitenteGestorAutorizado = 0"),
+    @NamedQuery(name = "TbCiDestinatario.findByIdCoinIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idCoin = :idCoin AND t.idUoDestinatario = :idUoDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUsuarioRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUsuarioRemitente = :idUsuarioRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByUsuNomeCompletoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.usuNomeCompletoRemitente = :usuNomeCompletoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoRemitente = :idUoRemitente"),

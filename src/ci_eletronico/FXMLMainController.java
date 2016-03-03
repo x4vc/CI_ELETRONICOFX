@@ -795,6 +795,16 @@ public class FXMLMainController implements Initializable {
         int nIdUORemitente = 0;
         String strUONomeRemitente = "";
         
+        //Variaveis para arquivar CI após enviado
+        int nBotao = 0;
+        int nTabela = 0;
+        int nIdCiEletronica = 0;
+
+//        nBotao = this.ngBotao;
+//        nTabela = this.ngTabela;
+//        nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        //---------------------------------------------
+        
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
         //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
         int nlIdCoinGenesis = 0;
@@ -809,7 +819,8 @@ public class FXMLMainController implements Initializable {
                 strgUserLogin,
                 strlAssunto,
                 nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
-                strUONomeRemitente);
+                strUONomeRemitente,
+                nBotao, nTabela, nIdCiEletronica);
                         
     }
     @FXML
@@ -826,6 +837,16 @@ public class FXMLMainController implements Initializable {
         int nIdUORemitente = 0;
         String strUONomeRemitente = "";
         
+        //Variaveis para arquivar CI após enviado
+        int nBotao = 0;
+        int nTabela = 0;
+        int nIdCiEletronica = 0;
+
+//        nBotao = this.ngBotao;
+//        nTabela = this.ngTabela;
+//        nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        //---------------------------------------------
+        
         //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
         //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
         int nlIdCoinGenesis = 0;
@@ -840,7 +861,8 @@ public class FXMLMainController implements Initializable {
                 strgUserLogin,
                 strlAssunto,
                 nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
-                strUONomeRemitente);
+                strUONomeRemitente,
+                nBotao, nTabela, nIdCiEletronica);
         
     }
     @FXML
@@ -866,12 +888,23 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         String strlAssunto = "";
         
+        //Variaveis para arquivar CI após enviado
+        int nBotao = 0;
+        int nTabela = 0;
+        int nIdCiEletronica = 0;
+
+//        nBotao = this.ngBotao;
+//        nTabela = this.ngTabela;
+//        nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        //---------------------------------------------
+        
         ShowNovaCIe(this , strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil, strHtmlAssinatura, nTipoCI, nIdUOGestor, strHtmlConteudo,
                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                 strgUserLogin,
                 strlAssunto,
                 nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
-                strUONomeRemitente);
+                strUONomeRemitente,
+                nBotao, nTabela, nIdCiEletronica);
         
     }
      @FXML
@@ -909,6 +942,16 @@ public class FXMLMainController implements Initializable {
             strDescricaoPerfil = lblNomePerfil.getText();
             nTipoCI = 7;    //CI Respondida
             
+            //Variaveis para arquivar CI após enviado
+            int nBotao = 0;
+            int nTabela = 0;
+            int nIdCiEletronica = 0;
+            
+            nBotao = this.ngBotao;
+            nTabela = this.ngTabela;
+            nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+            //---------------------------------------------
+            
             //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
             //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
             int nlIdCoinGenesis = 0;
@@ -936,7 +979,8 @@ public class FXMLMainController implements Initializable {
                     strlAssinatura,
                     strlAssunto,
                     nIdUORemitente,
-                    strUONomeRemitente);
+                    strUONomeRemitente,
+                    nBotao, nTabela, nIdCiEletronica);
         }
         
     }
@@ -963,6 +1007,16 @@ public class FXMLMainController implements Initializable {
             strIdPerfil = lblIdPerfil.getText();
             strDescricaoPerfil = lblNomePerfil.getText();
             nTipoCI = 4;    //CI Encaminhada
+            
+            //Variaveis para arquivar CI após enviado
+            int nBotao = 0;
+            int nTabela = 0;
+            int nIdCiEletronica = 0;
+            
+            nBotao = this.ngBotao;
+            nTabela = this.ngTabela;
+            nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+            //---------------------------------------------
             
             int nIdUORemitente = 0;
             String strUONomeRemitente = "";
@@ -995,7 +1049,8 @@ public class FXMLMainController implements Initializable {
                     strlAssinatura,
                     strlAssunto,
                     nIdUORemitente/*nIdUORemitente = 0 quando for diferente de 7 - CI respondida*/,
-                    strUONomeRemitente);
+                    strUONomeRemitente,
+                    nBotao, nTabela, nIdCiEletronica);
         }
     }
     public void ShowNovaCIe(final FXMLMainController mainController , String strIdUsuario, String strNomeUsuario, String strIdUO, String strNomeUO, String strIdPerfil, 
@@ -1004,7 +1059,8 @@ public class FXMLMainController implements Initializable {
             String strlUserLogin,
             String strlAssunto,
             int nIdUORemitente,
-            String strUONomeRemitente){
+            String strUONomeRemitente,
+            int nBotao, int nTabela, int nIdCiEletronica /*arquivamento após Ci enviado*/ ){
         try{
                 scene = new Scene(new SplitPane());
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/nova_ci/NovaCI.fxml"));
@@ -1028,6 +1084,16 @@ public class FXMLMainController implements Initializable {
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
                 stage.showAndWait();
+                
+                //Arquivamos as CIs que foram do tipo Ci - Encaminhada ==>4 ou Ci -respondida ==>7
+                switch (nTipoCI){
+                    case 4: case 7:
+                        ArquivarCiRespondidaOuEncaminhada(Integer.parseInt(strIdUO),nIdCiEletronica, nTabela);
+                        break;
+                    default:
+                        break;
+                }
+                
 //                                
             }catch (IOException ex) {
                 Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
@@ -2530,6 +2596,72 @@ public class FXMLMainController implements Initializable {
         }
         
     }
+    
+    private void ArquivarCiRespondidaOuEncaminhada(int nIdUO, int nlIdCI, int nlTabela){
+        
+        //Valores dos botões 
+        //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+        //2-caixa de recebidas - btnCaixaEntrada
+        //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+        //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+        //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+        //6-Caixa de enviados - btnCaixaSaida;
+        //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+        int nlButtonSelected = 0;
+        nlButtonSelected = ngBotao;
+        
+        
+        boolean bUpdate = false;  
+        TbComunicacaoInterna nIdCoin = new TbComunicacaoInterna(nlIdCI);
+        
+        try{
+            bUpdate = consulta.ArquivarCIRespondidaOuEncaminhada(nIdCoin, nIdUO);                    
+        }catch(Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Arquivar CI Respondida ou  CI Encaminhada");
+            alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();                                            
+        }
+        if(bUpdate){
+            
+             //Refresh da TableView
+            switch(nlButtonSelected){
+                case 1:
+                    btnCaixaEntradaSolicitandoAprovacao.fire();
+                    break;
+                case 2:
+                    btnCaixaEntrada.fire();
+                    break;
+                case 3:
+                    btnCaixaPendencias.fire();
+                    break;
+                case 4:
+                    btnCaixaArquivadas.fire();
+                    break;
+                case 5:
+                    btnCaixaEnviadosArquivados.fire();
+                    break;
+                case 6:
+                    btnCaixaSaida.fire();
+                    break;
+                case 7:
+                    btnPendentesAprovacao.fire();
+                    break;
+                default:
+                    break;                
+            } 
+            
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Não foi possível arquivar CI");
+            alert.setContentText("Favor contatar o Administrador do sistema");
+            alert.showAndWait();
+            
+        }
+    }
+    
     private void ArquivarCI(int nlIdCI, int nlTabela){
         boolean bUpdate = false;        
         

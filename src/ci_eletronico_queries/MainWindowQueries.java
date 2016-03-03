@@ -244,6 +244,33 @@ public class MainWindowQueries {
         }
     }
     
+    
+    
+    public boolean ArquivarCIRespondidaOuEncaminhada(TbComunicacaoInterna nlIdCI, int nIdUO) throws Exception{
+        boolean bArquivado = true;
+        Date data = new Date();
+        try {
+            //TbCiDestinatario ArquivarCI = em.find(TbCiDestinatario.class, nlIdCI);
+            TbCiDestinatario ArquivarCI = em.createNamedQuery("TbCiDestinatario.findByIdCoinIdUoDestinatario",TbCiDestinatario.class)
+                    .setParameter("idCoin", nlIdCI)
+                    .setParameter("idUoDestinatario", nIdUO )
+                    .getSingleResult();           
+            
+            ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);            
+            em.merge(ArquivarCI);
+            em.getTransaction().commit();            
+            em.close();
+            emf.close();
+            return true;            
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }    
+         
+     }
+    
     public boolean ArquivarCIRecebida(int nlIdCI, int nlButtonSelected) throws Exception{
         boolean bArquivado = true;
         Date data = new Date();

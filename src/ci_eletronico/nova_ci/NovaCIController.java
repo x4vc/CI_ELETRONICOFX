@@ -1296,6 +1296,7 @@ public class NovaCIController implements Initializable {
         }
         }catch(javax.persistence.PersistenceException e){
             //e.printStackTrace();
+            System.out.println(e);
             em.close();
             emf.close();            
         }
