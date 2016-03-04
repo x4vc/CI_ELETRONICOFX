@@ -97,7 +97,7 @@ public class LoginController {
     private int nIdUOGestor = 0;
     private String strgUserLogin = "";
     private String strVersaoCodigo = "";
-    private String strRelease = "02032016";
+    private String strRelease = "04032016";
     //private LoginQuery consulta  = new LoginQuery();
     /**
      * Initializes the controller class.

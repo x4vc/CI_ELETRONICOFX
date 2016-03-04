@@ -71,6 +71,8 @@ public class NovaCIController implements Initializable {
     private Integer nTipoPerfil = 0;
     private Integer nIdUsuario = 0;
     private Integer nIdUO = 0;
+    private Integer nIdCiEletronica = 0;
+    private Integer nButtonSelected = 0;
     private String strNomeUsuario = "";
     private String strDescricaoPerfil = "";
     private String strNomeUO = "";
@@ -146,7 +148,8 @@ public class NovaCIController implements Initializable {
                                         String strlUserLogin,
                                         String strlAssunto,
                                         int nIdUORemitente,
-                                        String strUONomeRemitente) {
+                                        String strUONomeRemitente,
+                                        int nIdCiEletronica, int nBotao) {
         
         this.strNomeUsuario = strNomeUsuario;
         this.strNomeUO = strNomeUO;          
@@ -166,6 +169,8 @@ public class NovaCIController implements Initializable {
         nIdUsuario = Integer.parseInt(strIdUsuario);        
         nTipoPerfil = Integer.parseInt(strIdPerfil);
         nIdUO = Integer.parseInt(strIdUO);
+        this.nIdCiEletronica = nIdCiEletronica;
+        this.nButtonSelected = nBotao;
         strgUserLogin = strlUserLogin;
         
         Text txtArquivoSelecionado;
@@ -1439,7 +1444,20 @@ public class NovaCIController implements Initializable {
         em.getTransaction().commit();            
         em.close();
         emf.close();
-        // Show the error message.
+        
+        //Atualizamos o banco de dados para que a CI passe para estatus de Arquivado
+        // uando for CI Encaminhada ==> 4 ou CI Respondida ==>7
+        switch(nTipoCI){
+            case 4: case 7:
+                ArquivarCiRespondidaOuEncaminhada(this.nIdUO,this.nIdCiEletronica, this.nButtonSelected);
+                break;
+            default:
+                break;            
+        }
+        //----------------------------------------------------------
+        
+        
+        // Show the  message.
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Informação");
         alert.setHeaderText("Envio de CI");
@@ -1458,6 +1476,34 @@ public class NovaCIController implements Initializable {
             emf.close();
         }        
     }
+    
+    private void ArquivarCiRespondidaOuEncaminhada(int nIdUO, int nlIdCI, int nlButtonSelected){
+        boolean bUpdate = false;  
+        MainWindowQueries consulta;
+        consulta  = new MainWindowQueries();
+        TbComunicacaoInterna nIdCoin = new TbComunicacaoInterna(nlIdCI);
+        
+        try{
+            bUpdate = consulta.ArquivarCIRespondidaOuEncaminhada(nIdCoin, nIdUO, nlButtonSelected);                    
+        }catch(Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Arquivar CI Respondida ou  CI Encaminhada");
+            alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();                                            
+        }
+        if(bUpdate){
+            
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Não foi possível arquivar CI");
+            alert.setContentText("Favor contatar o Administrador do sistema");
+            alert.showAndWait();
+            
+        }
+    }
+    
     
     public byte[] readImageOldWay(File file) throws IOException {
     //Logger.getLogger(Main.class.getName()).log(Level.INFO, "[Open File] " + file.getAbsolutePath());

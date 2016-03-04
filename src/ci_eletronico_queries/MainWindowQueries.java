@@ -246,17 +246,36 @@ public class MainWindowQueries {
     
     
     
-    public boolean ArquivarCIRespondidaOuEncaminhada(TbComunicacaoInterna nlIdCI, int nIdUO) throws Exception{
+    public boolean ArquivarCIRespondidaOuEncaminhada(TbComunicacaoInterna nlIdCI, int nIdUO, int nButtonSelected) throws Exception{
         boolean bArquivado = true;
+        boolean bCiPendente = false;
         Date data = new Date();
         try {
             //TbCiDestinatario ArquivarCI = em.find(TbCiDestinatario.class, nlIdCI);
             TbCiDestinatario ArquivarCI = em.createNamedQuery("TbCiDestinatario.findByIdCoinIdUoDestinatario",TbCiDestinatario.class)
                     .setParameter("idCoin", nlIdCI)
                     .setParameter("idUoDestinatario", nIdUO )
-                    .getSingleResult();           
-            
-            ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);            
+                    .getSingleResult();  
+            //Valores dos botões 
+            //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+            //2-caixa de recebidas - btnCaixaEntrada
+            //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+            //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+            //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+            //6-Caixa de enviados - btnCaixaSaida;
+            //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+            switch(nButtonSelected){
+                case 2:
+                    ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);
+                    break;
+                case 3:
+                    ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);
+                    ArquivarCI.setCoinDestinatarioPendente(bCiPendente);
+                    break;
+                default:
+                    break;
+            }
+            //ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);            
             em.merge(ArquivarCI);
             em.getTransaction().commit();            
             em.close();

@@ -1073,7 +1073,8 @@ public class FXMLMainController implements Initializable {
                         strlUserLogin,
                         strlAssunto,
                         nIdUORemitente, 
-                        strUONomeRemitente);
+                        strUONomeRemitente,
+                        nIdCiEletronica, nBotao);
                 //controller.setVariaveisAmbienteNovaCI(mainController, strIdUsuario, strNomeUsuario, strIdUO, strNomeUO, strIdPerfil, strDescricaoPerfil);                
                 
                 Stage stage = new Stage();
@@ -1088,7 +1089,35 @@ public class FXMLMainController implements Initializable {
                 //Arquivamos as CIs que foram do tipo Ci - Encaminhada ==>4 ou Ci -respondida ==>7
                 switch (nTipoCI){
                     case 4: case 7:
-                        ArquivarCiRespondidaOuEncaminhada(Integer.parseInt(strIdUO),nIdCiEletronica, nTabela);
+                        //ArquivarCiRespondidaOuEncaminhada(Integer.parseInt(strIdUO),nIdCiEletronica, nTabela);
+                        
+                        //Refresh da TableView
+                        switch(nBotao){
+                            case 1:
+                                btnCaixaEntradaSolicitandoAprovacao.fire();
+                                break;
+                            case 2:
+                                btnCaixaEntrada.fire();
+                                break;
+                            case 3:
+                                btnCaixaPendencias.fire();
+                                break;
+                            case 4:
+                                btnCaixaArquivadas.fire();
+                                break;
+                            case 5:
+                                btnCaixaEnviadosArquivados.fire();
+                                break;
+                            case 6:
+                                btnCaixaSaida.fire();
+                                break;
+                            case 7:
+                                btnPendentesAprovacao.fire();
+                                break;
+                            default:
+                                break;                
+                        } 
+                        
                         break;
                     default:
                         break;
@@ -2596,7 +2625,7 @@ public class FXMLMainController implements Initializable {
         }
         
     }
-    
+/*    
     private void ArquivarCiRespondidaOuEncaminhada(int nIdUO, int nlIdCI, int nlTabela){
         
         //Valores dos botões 
@@ -2615,7 +2644,7 @@ public class FXMLMainController implements Initializable {
         TbComunicacaoInterna nIdCoin = new TbComunicacaoInterna(nlIdCI);
         
         try{
-            bUpdate = consulta.ArquivarCIRespondidaOuEncaminhada(nIdCoin, nIdUO);                    
+            bUpdate = consulta.ArquivarCIRespondidaOuEncaminhada(nIdCoin, nIdUO, nlButtonSelected);                    
         }catch(Exception e){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Arquivar CI Respondida ou  CI Encaminhada");
@@ -2661,7 +2690,7 @@ public class FXMLMainController implements Initializable {
             
         }
     }
-    
+*/    
     private void ArquivarCI(int nlIdCI, int nlTabela){
         boolean bUpdate = false;        
         
