@@ -74,6 +74,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        
         return em.createNamedQuery("TbComunicacaoInterna.findPorAprovarByIdUoGestorPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUoGestor", nidUoGestor)                
                 .setParameter("idTipoCoin",nValues)
@@ -95,6 +96,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        nValues.add(8);
         return em.createNamedQuery("TbComunicacaoInterna.findByCIsEnviadasPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUnidadeOrganizacional", nidUoRemitente)
                 .setParameter("idTipoCoin",nValues)
@@ -487,6 +489,20 @@ public class MainWindowQueries {
             return false;            
         }
     }
+    
+    public TbCiDestinatario getEntidadeTbCiDestinatario(int nlIdCI) throws Exception{
+        try {
+            TbCiDestinatario entidadeCiDestinatario = em.find(TbCiDestinatario.class, nlIdCI);
+            return entidadeCiDestinatario;
+        } catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return null;            
+        }
+        
+    }
+    
     public TbCiDestinatario DesaprovarCIRecebida(int nlIdCI) throws Exception{
         boolean bDesaprovado = true;
         Date data = new Date();
@@ -522,6 +538,19 @@ public class MainWindowQueries {
         
         }
     public String getMessagemCiDesaprovada(String strNomeParametro){
+        String strMessagem = "";
+        List<TbParametro> listaParametro = new ArrayList<TbParametro>();
+        listaParametro = em.createNamedQuery("TbParametro.findByNomeParametro",TbParametro.class) 
+                .setParameter("nomeParametro", strNomeParametro)
+                .getResultList();  
+        for(TbParametro l : listaParametro){
+            strMessagem = l.getRetornoParametro();
+        }
+        
+        return strMessagem;
+        
+    }
+    public String getMessagemCiLida(String strNomeParametro){
         String strMessagem = "";
         List<TbParametro> listaParametro = new ArrayList<TbParametro>();
         listaParametro = em.createNamedQuery("TbParametro.findByNomeParametro",TbParametro.class) 
@@ -586,6 +615,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        nValues.add(8);
         return em.createNamedQuery("TbCiDestinatario.findByIdUoDestinatarioPerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -607,6 +637,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        nValues.add(8);
         return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioPendentePerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -628,6 +659,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        nValues.add(8);
         return em.createNamedQuery("TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2",TbCiDestinatario.class) 
                 .setParameter("idUoDestinatario", nIdUoDestinatario)
                 .setParameter("idTipoCoin",nValues)
@@ -649,6 +681,7 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(4);
         nValues.add(7);
+        nValues.add(8);
         return em.createNamedQuery("TbComunicacaoInterna.findByUOArquivadoPerfil2",TbComunicacaoInterna.class) 
                 .setParameter("idUnidadeOrganizacional", nIdUo)
                 .setParameter("idTipoCoin",nValues)

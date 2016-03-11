@@ -12,6 +12,7 @@ import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico.entities.TbTipoComunicacoInterna;
 import ci_eletronico.entities.TbTipoEnvio;
 import ci_eletronico.entities.TbUnidadeOrganizacional;
+import ci_eletronico.entities.TbUnidadeOrganizacionalGestor;
 import ci_eletronico.entities.TbUsuario;
 import static ci_eletronico.nova_ci.NovaCIController.ltrim;
 import static ci_eletronico.nova_ci.NovaCIController.rtrim;
@@ -1922,6 +1923,206 @@ public class FXMLMainController implements Initializable {
         }
         
     }
+    
+    private void EnviarMsgCiLida(int nlIdCI/*, int nlTabela, TbComunicacaoInterna EntidadeTbCI, TbCiDestinatario EntidadeTbCIDest*/){
+        // Iniciamos a Persistencia de dados
+        EntityManager em;
+        EntityManagerFactory emf;
+        
+        emf = Persistence.createEntityManagerFactory("CI_EletronicoPU");
+        em = emf.createEntityManager();        
+        em.getTransaction().begin();
+        
+        MainWindowQueries consulta  = new MainWindowQueries();         
+       
+        //---------------------------------------------------
+        //Pegamos os dados da entidade fonte
+        
+        TbCiDestinatario entidadeTbCiDestinatario = new TbCiDestinatario();
+        try{
+            entidadeTbCiDestinatario = consulta.getEntidadeTbCiDestinatario(nlIdCI);
+        } catch (Exception ex){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("CI - Lida ");
+            alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();        
+        }
+        //-------------------------------------------------------------
+        
+        //Instanciar novo objeto a ser salvo
+        
+        TbTipoComunicacoInterna TipoCI = new TbTipoComunicacoInterna(8); //8 ==> CI Lida
+        
+        TbComunicacaoInterna newTbCI = new TbComunicacaoInterna(); 
+        TbCiDestinatario newTbCIDestinatario = new TbCiDestinatario();
+        TbUnidadeOrganizacionalGestor UOGestorDestinatario = new TbUnidadeOrganizacionalGestor();
+        //---------------------------------------------------------
+        TbUnidadeOrganizacional nIdUOTemp;
+        nIdUOTemp = new TbUnidadeOrganizacional(this.nIdUnidadeOrganizacional);
+        MainWindowQueries consultaUOGestor = new MainWindowQueries();
+        UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
+        
+        
+        int nIdCoin = 0;
+        String strlAssunto = "";
+        //strlAssunto = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_Assunto();
+        nIdCoin = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        
+        
+        //Valores para preencher o campo Para:
+        int nIdUORemitente = 0;
+        String strUONomeRemitente = "";        
+
+        nIdUORemitente = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idUORemitente();
+        strUONomeRemitente = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_DescricaoUORemitente();
+        
+        String strSequencialCI = this.lblNumeroSequencialCI.getText();
+        String strlUODescricao = "";
+        String strlCITitulo = "";
+        String strlConteudo = "";
+        String strPara = "";
+        //Seteamos Datas
+        String strToday = "";
+        String strTodayCI = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // utilizado para banco de dados
+        DateFormat dfCI = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // utilizado para mostrar na aplicação
+        
+        java.util.Date data_criacao; 
+        data_criacao = new Date();
+        strToday = df.format(data_criacao);        
+        strTodayCI = dfCI.format(data_criacao); 
+        
+        Calendar data = Calendar.getInstance();
+        int nYear = data.get(Calendar.YEAR);
+        
+        //
+        
+        //strlAssunto = strlAssunto.concat(" - CI - " + strSequencialCI + " foi lida pelo destinatário. Ref Id:" + Integer.toString(nIdCoin));
+        strlAssunto = "CI: " + strSequencialCI + " foi lida pelo destinatário. Ref Id: " + Integer.toString(nIdCoin);
+        
+        consulta= new MainWindowQueries();
+        strlConteudo = consulta.getMessagemCiLida("NOTIFICACAO_CI_LIDA");
+        
+        strlCITitulo = "<br /><p align=\"center\"><b>" + strSequencialCI + "</b></p>";
+        //strlConteudo = "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"><p><span style=\"font-family: 'Segoe UI';\">Prezado(a),&nbsp;</span></p><p><font face=\"Segoe UI\">Informamos que a CI foi cancelada pela UO Gestora e por esse motivo não será possível o seu envio para seu(s) destinatário(s).</font></p><p><font face=\"Segoe UI\">Atenciosamente,&nbsp;</font></p><p><font face=\"Segoe UI\">Sistema CI-eletrônica.</font></p></body></html>";
+        
+        strPara = strPara.concat(strlCITitulo);
+        strPara = strPara.concat("<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI Lida</FONT></b>");
+        strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + this.lblNomeUO.getText() + "</b></FONT><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + this.lblNomeUsuario.getText() + "</FONT><br /><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
+        strPara = strPara.concat(strlConteudo);
+        
+        try {
+        //Seteamos número sequencial da CI de acordo ao UO Remitente
+        TypedQuery<Integer> query = em.createQuery("SELECT max(c.coinNumero) FROM TbComunicacaoInterna c WHERE c.idUnidadeOrganizacional = :idUnidadeOrganizacional AND FUNCTION('YEAR',c.coinDataCriacao) = :Ano",Integer.class)            
+                                            .setParameter("idUnidadeOrganizacional", nIdUnidadeOrganizacional)
+                                            .setParameter("Ano", nYear);
+        Integer Resultado = query.getSingleResult(); 
+        
+        //-----------------------------------------------------------
+        
+        //
+        //Seteamos entity TB_COMUNICACAO_INTERNA
+
+        newTbCI.setCoinAssunto(strlAssunto);
+        //newTbCI.setCoinConteudo(htmlEditor.getHtmlText());
+        newTbCI.setCoinConteudo(strPara);
+        newTbCI.setIdUsuario(this.nIdUsuarioLogado);
+        newTbCI.setUsuNomeCompleto(this.lblNomeUsuario.getText());
+        newTbCI.setIdUnidadeOrganizacional(this.nIdUnidadeOrganizacional);
+        newTbCI.setUnorDescricao(this.lblNomeUO.getText());
+        newTbCI.setIdUoGestor(this.nIdUOGestor);
+        newTbCI.setCoinAutorizado(true);
+        newTbCI.setIdTipoCoin(TipoCI);
+        newTbCI.setCoinApensamento("");
+        newTbCI.setCoinNumero(Resultado.intValue());
+        newTbCI.setCoinUoArquivado(false);
+        newTbCI.setCoinUoGestorArquivado(false);
+        newTbCI.setCoinDataCriacao(data_criacao);
+        newTbCI.setCoinDataAutorizado(data_criacao);
+        newTbCI.setCoinReadOnly(false);
+        newTbCI.setCoinTemAnexos(false);
+        //newTbCI.setCoinEnviadoPara("");
+        //newTbCI.setCoinEnviadoComCopia("");
+        
+        newTbCI.setIdCoinGenesis(entidadeTbCiDestinatario.getIdCoinGenesis());
+        newTbCI.setIdUnorGenesis(entidadeTbCiDestinatario.getIdUnorGenesis());
+        newTbCI.setCoinNumeroGenesis(entidadeTbCiDestinatario.getCoinNumeroGenesis());
+        newTbCI.setCoinHistoricoAnexos("");
+        newTbCI.setUnorDescricaoGenesis(entidadeTbCiDestinatario.getUnorDescricaoGenesis());
+        
+        newTbCI.setCoinAssinatura(entidadeTbCiDestinatario.getCoinAssinatura());
+        
+        em.persist(newTbCI);
+        em.flush();
+        
+        
+        long IdCoin = newTbCI.getIdCoin();
+        TbComunicacaoInterna nCoinId = new TbComunicacaoInterna((int)IdCoin);
+        TbTipoEnvio nIdTipoEnvio = new TbTipoEnvio(1); //1 - Tipo = ENVIADO "PARA"
+        
+        //Procuramos saber qual UO gestora da UO destinataria
+        nIdUOTemp = new TbUnidadeOrganizacional(nIdUORemitente);
+        UOGestorDestinatario = consultaUOGestor.getIdUOGestor(nIdUOTemp);
+        //-----------------------------------------------------------
+        
+        
+        newTbCIDestinatario.setIdCoin(nCoinId);
+        newTbCIDestinatario.setIdUsuarioRemitente(this.nIdUsuarioLogado);
+        newTbCIDestinatario.setUsuNomeCompletoRemitente(this.lblNomeUsuario.getText());
+        newTbCIDestinatario.setIdUoRemitente(this.nIdUnidadeOrganizacional);
+        newTbCIDestinatario.setInorDescricaoRemitente(this.lblNomeUO.getText());
+        newTbCIDestinatario.setIdUoDestinatario(nIdUORemitente);
+        newTbCIDestinatario.setUnorDescricaoDestinatario(strUONomeRemitente);
+        newTbCIDestinatario.setIdUoGestorDestinatario(UOGestorDestinatario.getIdUoGestor());
+        newTbCIDestinatario.setCoinDestinatarioGestorAutorizado(true);
+        newTbCIDestinatario.setCoinDestinatarioUoArquivado(false);
+        newTbCIDestinatario.setCoinDestinatarioUoGestorArquivado(false);
+        newTbCIDestinatario.setCoinDestinatarioAssunto(strlAssunto);
+        newTbCIDestinatario.setCoinDestinatarioConteudo(strPara);
+        newTbCIDestinatario.setCoinDestinatarioPendente(false);
+        newTbCIDestinatario.setCoinDestinatarioLido(false);
+        newTbCIDestinatario.setCoinDestinatarioDataCriacao(data_criacao);
+        newTbCIDestinatario.setIdTipoEnvio(nIdTipoEnvio);
+        newTbCIDestinatario.setCoinDestinatarioNumero(Resultado.intValue());
+        newTbCIDestinatario.setCoinDestinatarioReadOnly(false);
+        newTbCIDestinatario.setCoinDestinatarioTemAnexos(false);
+        newTbCIDestinatario.setCoinRemitenteGestorAutorizado(true);
+
+        //Variaveis Genesis
+        newTbCIDestinatario.setIdCoinGenesis(entidadeTbCiDestinatario.getIdCoinGenesis());
+        newTbCIDestinatario.setIdUnorGenesis(entidadeTbCiDestinatario.getIdUnorGenesis());
+        newTbCIDestinatario.setCoinNumeroGenesis(entidadeTbCiDestinatario.getCoinNumeroGenesis());
+        newTbCIDestinatario.setCoinHistoricoAnexos("");
+        newTbCIDestinatario.setUnorDescricaoGenesis(entidadeTbCiDestinatario.getUnorDescricaoGenesis());
+        //----------------------------------
+        newTbCIDestinatario.setIdTipoCoin(TipoCI);
+
+        newTbCIDestinatario.setCoinAssinatura(entidadeTbCiDestinatario.getCoinAssinatura());
+
+        em.persist(newTbCIDestinatario);   
+        }catch(javax.persistence.PersistenceException e){
+            //e.printStackTrace();
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("Falha no envio da CI - Lida");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            em.close();
+            emf.close();            
+        }
+        
+        //----------FIM da rotina para salvar a CI na tabela TB_CI_DESTINATARIO        
+        em.getTransaction().commit();            
+        em.close();
+        emf.close();
+        
+        
+    }
+    
     private boolean EnviarMsgCiDesaprovada(int nlIdCI, int nlTabela, TbComunicacaoInterna EntidadeTbCI, TbCiDestinatario EntidadeTbCIDest){
         // Iniciamos a Persistencia de dados
         EntityManager em;
@@ -3765,7 +3966,7 @@ public class FXMLMainController implements Initializable {
             
             nBotao = this.ngBotao;
             nTabela = this.ngTabela;
-
+            
             // Aprovamos CI
             //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
             // 0 ==> Sem tabela definida
@@ -3818,7 +4019,10 @@ public class FXMLMainController implements Initializable {
                 break;
             case 2: //Tabela TB_CI_DESTINATARIO
                 try{
-                    bUpdate = consulta.MarcarComoLido(nlIdCI, nlButtonSelected, blCILido);                    
+                    bUpdate = consulta.MarcarComoLido(nlIdCI, nlButtonSelected, blCILido);
+                    if (blCILido){
+                        EnviarMsgCiLida(nlIdCI);
+                    }
                 }catch(Exception e){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("CI - Marcar como Lido/não Lido");
@@ -3826,6 +4030,7 @@ public class FXMLMainController implements Initializable {
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();                                            
                 }
+                
                 break;
             default:
                 break;

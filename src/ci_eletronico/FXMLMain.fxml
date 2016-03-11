@@ -290,7 +290,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnSalvarTodosArquivos" layoutX="532.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleBtnSalvarTodosArquivos" text="Salvar Arquivos" AnchorPane.leftAnchor="565.0" AnchorPane.topAnchor="40.0" />
+                  <Button fx:id="btnSalvarTodosArquivos" layoutX="532.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleBtnSalvarTodosArquivos" text="Salvar Arquivos" AnchorPane.leftAnchor="570.0" AnchorPane.topAnchor="40.0" />
                   <Label layoutX="54.0" layoutY="6.0" text="Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse" />
                   <Button fx:id="btnResponderCI" layoutX="532.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleBtnCIResponder" prefHeight="35.0" prefWidth="120.0" text="Responder CI" AnchorPane.leftAnchor="425.0" AnchorPane.topAnchor="90.0">
                      <graphic>
