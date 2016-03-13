@@ -4753,12 +4753,15 @@ public class FXMLMainController implements Initializable {
             nTabela = this.ngTabela;
             nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
             //---------------------------------------------
-            ShowHistoricoCIe(this, nIdCiEletronica, strSequencialCI);
+            
+            //Mostramos o historico
+            ShowHistoricoCIe(this, nIdCiEletronica, strSequencialCI, nBotao, nTabela);
             
         }
         
     }
-    public void ShowHistoricoCIe(final FXMLMainController mainController, int nIdCiEletronica, String strSequencialCI){
+    public void ShowHistoricoCIe(final FXMLMainController mainController, int nIdCiEletronica, String strSequencialCI,
+            int nBotao, int nTabela) {
         try {
             scene = new Scene(new SplitPane());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/HistoricoCI.fxml"));
@@ -4766,7 +4769,7 @@ public class FXMLMainController implements Initializable {
                 
             ci_eletronico.fxml_utilitarios.HistoricoCIController HistoricoCiController = loader.<ci_eletronico.fxml_utilitarios.HistoricoCIController>getController();     
             
-            HistoricoCiController.setVariaveisAmbienteHistoricoCI(mainController, nIdCiEletronica, strSequencialCI);
+            HistoricoCiController.setVariaveisAmbienteHistoricoCI(mainController, nIdCiEletronica, strSequencialCI, nBotao, nTabela);
             
             Stage stage = new Stage();
             stage.setTitle("Histórico da CI-eletrônica");

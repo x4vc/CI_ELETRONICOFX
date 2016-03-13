@@ -6,8 +6,15 @@
 package ci_eletronico.fxml_utilitarios;
 
 import ci_eletronico.FXMLMainController;
+import ci_eletronico.entities.TbCIPorAprovar;
+import ci_eletronico.entities.TbCiDestinatario;
+import ci_eletronico_queries.MainWindowQueries;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -51,9 +58,44 @@ public class HistoricoCIController implements Initializable {
     }
     
     public void setVariaveisAmbienteHistoricoCI(final FXMLMainController mainController, int nIdCiEletronica, 
-            String strSequencialCI){
+            String strSequencialCI, int nBotao, int nTabela){
         
         this.txtCodigoCi.setText(strSequencialCI);
+        preencherTabelaHistorico(nIdCiEletronica,nBotao,nTabela);
+        
+    }
+    
+    public void preencherTabelaHistorico(int nIdCiEletronica, int nBotao, int nTabela){
+        MainWindowQueries consulta;
+        consulta  = new MainWindowQueries();
+        
+        //Iniciamos a criação da TableView
+        List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
+        ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();
+        
+        //Valores nTabela:
+        // 1 - TB_COMUNICACAO_INTERNA
+        // 2 - TB_CI_DESTINATARIO
+        //--------------------------------------------------------
+        //Valores dos botões:
+        //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaPendentesAprovacao
+        //2-caixa de recebidas - btnCaixaEntrada
+        //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+        //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+        //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+        //6-Caixa de enviados - btnCaixaSaida;
+        //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+        switch (nBotao){
+            case 1: case 2: case 3: case 4: //TB_CI_DESTINATARIO
+                
+                break;
+                
+            case 5: case 6: case 7:         //TB_COMUNICACAO_INTERNA
+                break;
+                
+            default:
+                break;
+        }
         
     }
     
