@@ -8,9 +8,10 @@ package ci_eletronico.fxml_utilitarios;
 import ci_eletronico.FXMLMainController;
 import ci_eletronico.entities.TbCIPorAprovar;
 import ci_eletronico.entities.TbCiDestinatario;
-import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico_queries.MainWindowQueries;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -41,7 +43,15 @@ public class HistoricoCIController implements Initializable {
     @FXML
     private TableColumn ClIdCoin;
     @FXML
+    private TableColumn ClCoinAssinatura;
+    @FXML
     private TableColumn ClData;
+    @FXML
+    private TableColumn ClFrom;
+    @FXML
+    private TableColumn ClTo;
+    @FXML
+    private TableColumn ClTipoCoinDescricao;
 
     /**
      * Initializes the controller class.
@@ -84,7 +94,11 @@ public class HistoricoCIController implements Initializable {
         String strRemitente = "";
         String strDestinatario = "";
         String strTipoCoin = "";
+        
         Date dataCriacao;
+        String strDataCriacao = "";
+        //Variaveis de apoio
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm"); 
         
         try {
             listaCiDestinatario = consultaTbCiDestinatario.getHistoricoTbCiDestinatario(strAssinaturaCI);
@@ -92,14 +106,23 @@ public class HistoricoCIController implements Initializable {
                 nIdCoindestinatario = l.getIdCoinDestinatario();
                 nIdCoin = l.getIdCoin().getIdCoin();
                 strAssinatura = l.getCoinAssinatura();
+                
                 dataCriacao = l.getCoinDestinatarioDataCriacao();
+                strDataCriacao = df.format(dataCriacao);
+                
                 strRemitente = l.getInorDescricaoRemitente();
                 strDestinatario = l.getUnorDescricaoDestinatario();
                 strTipoCoin = l.getIdTipoCoin().getTiciDescricao();
                 
                 obslistaHistoricoCI.add(new TbCIPorAprovar(nIdCoindestinatario, nIdCoin, strAssinatura, dataCriacao, 
-                        strRemitente, strDestinatario, strTipoCoin));
+                        strDataCriacao, strRemitente, strDestinatario, strTipoCoin));
             }
+            ClData.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));
+            ClFrom.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));
+            ClTo.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
+            ClTipoCoinDescricao.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_TipoCoinDescricao"));
+            tbViewHistoricoCi.setItems(obslistaHistoricoCI);
+            
         } catch (Exception ex){
             
         }

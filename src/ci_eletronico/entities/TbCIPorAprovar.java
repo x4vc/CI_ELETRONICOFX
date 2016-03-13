@@ -92,6 +92,10 @@ public class TbCIPorAprovar {
     
     private BooleanProperty boolp_CoinCancelado;
     
+    // Variavel para criação do historico da CI
+    private StringProperty strp_TipoCoinDescricao;
+    //---------------------------------------------
+    
     //private StringProperty strp_dataCriacao;
     
     //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
@@ -99,14 +103,21 @@ public class TbCIPorAprovar {
     //private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
     //------------------------------------------
     
-    
 
     public TbCIPorAprovar() {
     }
     
     //Construtor do historico da CI
     public TbCIPorAprovar(int nIdCoindestinatario, int nIdCoin, String strAssinaturaCI, Date dataCriacaoCI, 
-            String strRemitente, String strDestinatario, String strTipoCoinDescricao) {
+            String strDataCriacao, String strRemitente, String strDestinatario, String strTipoCoinDescricao) {
+        intp_idCoinDestinatario = new SimpleIntegerProperty(nIdCoindestinatario);
+        intp_idCoin = new SimpleIntegerProperty(nIdCoin);
+        strp_CoinAssinatura = new SimpleStringProperty(strAssinaturaCI);
+        dataCriacao = dataCriacaoCI;
+        strp_dataCriacao = new SimpleStringProperty(strDataCriacao);
+        strp_DescricaoUORemitente = new SimpleStringProperty(strRemitente);
+        strp_DescricaoUODestinatario = new SimpleStringProperty(strDestinatario);
+        strp_TipoCoinDescricao = new SimpleStringProperty(strTipoCoinDescricao);
     }
     //---------------------------------------
     
@@ -679,6 +690,12 @@ public class TbCIPorAprovar {
     public void setBoolp_CoinCancelado(Boolean boolp_CoinCancelado) {
         this.boolp_CoinCancelado.setValue(boolp_CoinCancelado);
     }
-    
+    public String getStrp_TipoCoinDescricao() {
+        return strp_TipoCoinDescricao.getValue();
+    }
+
+    public void setStrp_TipoCoinDescricao(String strp_TipoCoinDescricao) {
+        this.strp_TipoCoinDescricao.setValue(strp_TipoCoinDescricao);
+    }
     
 }
