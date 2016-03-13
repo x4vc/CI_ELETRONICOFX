@@ -8,6 +8,7 @@ package ci_eletronico.fxml_utilitarios;
 import ci_eletronico.FXMLMainController;
 import ci_eletronico.entities.TbCIPorAprovar;
 import ci_eletronico.entities.TbCiDestinatario;
+import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico_queries.MainWindowQueries;
 import java.net.URL;
 import java.util.ArrayList;
@@ -66,10 +67,14 @@ public class HistoricoCIController implements Initializable {
     }
     
     public void preencherTabelaHistorico(int nIdCiEletronica, int nBotao, int nTabela){
-        MainWindowQueries consulta;
-        consulta  = new MainWindowQueries();
+        MainWindowQueries consultaTbComunicacaoInterna;
+        consultaTbComunicacaoInterna  = new MainWindowQueries();
+        
+        MainWindowQueries consultaTbCiDestinatario;
+        consultaTbCiDestinatario  = new MainWindowQueries(); 
         
         //Iniciamos a criação da TableView
+        List<TbComunicacaoInterna> listaComunicacaoInterna = new ArrayList<TbComunicacaoInterna>();
         List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
         ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();
         
