@@ -234,7 +234,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnArquivarCI" contentDisplay="TOP" layoutX="365.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleBtnArquivarCI" prefHeight="35.0" prefWidth="150.0" text="Arquivar CI" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="125.0">
+                  <Button fx:id="btnArquivarCI" contentDisplay="TOP" layoutX="365.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleBtnArquivarCI" prefHeight="35.0" prefWidth="100.0" text="Arquivar CI" AnchorPane.leftAnchor="315.0" AnchorPane.topAnchor="125.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -243,7 +243,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnDesarquivarCI" contentDisplay="TOP" layoutX="497.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleBtnDesarquivarCI" prefHeight="35.0" prefWidth="145.0" text="Desarquivar CI" AnchorPane.leftAnchor="485.0" AnchorPane.topAnchor="125.0">
+                  <Button fx:id="btnDesarquivarCI" contentDisplay="TOP" layoutX="497.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleBtnDesarquivarCI" prefHeight="35.0" prefWidth="100.0" text="Desarquivar CI" AnchorPane.leftAnchor="415.0" AnchorPane.topAnchor="125.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -271,7 +271,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnMarcarcomoPendencia" contentDisplay="TOP" graphicTextGap="0.0" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoPendencia" prefHeight="35.0" prefWidth="165.0" text="Direcionar para Pendências" wrapText="true" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="125.0">
+                  <Button fx:id="btnMarcarcomoPendencia" contentDisplay="TOP" graphicTextGap="0.0" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoPendencia" prefHeight="35.0" prefWidth="165.0" text="Direcionar para Pendências" wrapText="true" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="125.0">
                      <graphic>
                         <ImageView>
                            <image>
@@ -280,7 +280,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnMarcarComoLido" contentDisplay="TOP" graphicTextGap="0.0" layoutX="5.0" layoutY="124.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoLido" prefHeight="48.0" prefWidth="165.0" text="Marcar como lido" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="125.0" />
+                  <Button fx:id="btnMarcarComoLido" contentDisplay="TOP" graphicTextGap="0.0" layoutX="5.0" layoutY="124.0" mnemonicParsing="false" onAction="#handleBtnMarcarcomoLido" prefHeight="48.0" prefWidth="145.0" text="Marcar como lido" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="125.0" />
                   <Button fx:id="btnDesaprovarCI" layoutX="380.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnDesaprovarCI" prefHeight="35.0" prefWidth="120.0" text="Desaprovar CI" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="90.0">
                      <graphic>
                         <ImageView>
@@ -297,6 +297,15 @@
                         <ImageView>
                            <image>
                               <Image url="@../resources/Mail_reply_24.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnHistoricoCI" contentDisplay="TOP" layoutX="493.0" layoutY="125.0" mnemonicParsing="false" onAction="#handleBtnHistoricoCI" prefHeight="35.0" prefWidth="100.0" text="Histórico da CI" AnchorPane.leftAnchor="515.0" AnchorPane.topAnchor="125.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../resources/Business-Process-icon_24.png" />
                            </image>
                         </ImageView>
                      </graphic>

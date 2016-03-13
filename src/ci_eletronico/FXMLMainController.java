@@ -245,6 +245,8 @@ public class FXMLMainController implements Initializable {
     private Button btnNovaCIConfidencial;
     @FXML
     private Button btnResponderCI;
+    @FXML
+    private Button btnHistoricoCI;
     
     @FXML    
     private TableView<TbCIPorAprovar> TbViewGeral2;
@@ -4729,6 +4731,54 @@ public class FXMLMainController implements Initializable {
                     }
                 });        
             //}
+        }
+        
+    }
+    @FXML
+    private void handleBtnHistoricoCI(ActionEvent event) throws IOException{
+        if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText("CI não foi selecionado.");
+            alert.setContentText("Favor selecionar uma CI da tabela");
+            alert.showAndWait();
+        }else{
+            //Variaveis para construir o Histórico da CI
+            String strSequencialCI = this.lblNumeroSequencialCI.getText();
+            int nBotao = 0;
+            int nTabela = 0;
+            int nIdCiEletronica = 0;
+            
+            nBotao = this.ngBotao;
+            nTabela = this.ngTabela;
+            nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+            //---------------------------------------------
+            ShowHistoricoCIe(this, nIdCiEletronica, strSequencialCI);
+            
+        }
+        
+    }
+    public void ShowHistoricoCIe(final FXMLMainController mainController, int nIdCiEletronica, String strSequencialCI){
+        try {
+            scene = new Scene(new SplitPane());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/HistoricoCI.fxml"));
+            scene.setRoot((Parent) loader.load());
+                
+            ci_eletronico.fxml_utilitarios.HistoricoCIController HistoricoCiController = loader.<ci_eletronico.fxml_utilitarios.HistoricoCIController>getController();     
+            
+            HistoricoCiController.setVariaveisAmbienteHistoricoCI(mainController, nIdCiEletronica, strSequencialCI);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Histórico da CI-eletrônica");
+            //set icon
+            stage.getIcons().add(new Image("/resources/Business-Process-icon_16.png"));
+
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);     //Window Parent fica inativo
+            stage.showAndWait();
+            
+        }catch (IOException ex) {
+                Logger.getLogger(FXMLMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
