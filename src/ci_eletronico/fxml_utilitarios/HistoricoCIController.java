@@ -12,6 +12,7 @@ import ci_eletronico.entities.TbComunicacaoInterna;
 import ci_eletronico_queries.MainWindowQueries;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -59,24 +60,49 @@ public class HistoricoCIController implements Initializable {
     }
     
     public void setVariaveisAmbienteHistoricoCI(final FXMLMainController mainController, int nIdCiEletronica, 
-            String strSequencialCI, int nBotao, int nTabela){
+            String strSequencialCI, int nBotao, int nTabela, String strAssinaturaCI){
         
         this.txtCodigoCi.setText(strSequencialCI);
-        preencherTabelaHistorico(nIdCiEletronica,nBotao,nTabela);
+        preencherTabelaHistorico(nIdCiEletronica,nBotao,nTabela, strAssinaturaCI);
         
     }
     
-    public void preencherTabelaHistorico(int nIdCiEletronica, int nBotao, int nTabela){
-        MainWindowQueries consultaTbComunicacaoInterna;
-        consultaTbComunicacaoInterna  = new MainWindowQueries();
-        
+    public void preencherTabelaHistorico(int nIdCiEletronica, int nBotao, int nTabela, String strAssinaturaCI){
+               
         MainWindowQueries consultaTbCiDestinatario;
         consultaTbCiDestinatario  = new MainWindowQueries(); 
         
         //Iniciamos a criação da TableView
-        List<TbComunicacaoInterna> listaComunicacaoInterna = new ArrayList<TbComunicacaoInterna>();
+        //TbCiDestinatario AssinaturaCiDestinatario = new TbCiDestinatario();
         List<TbCiDestinatario> listaCiDestinatario = new ArrayList<TbCiDestinatario>();
-        ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada = FXCollections.observableArrayList();
+        ObservableList<TbCIPorAprovar> obslistaHistoricoCI = FXCollections.observableArrayList();
+        
+        //Variaveis para construção da TableView
+        int nIdCoindestinatario = 0;
+        int nIdCoin = 0;
+        String strAssinatura = "";
+        String strRemitente = "";
+        String strDestinatario = "";
+        String strTipoCoin = "";
+        Date dataCriacao;
+        
+        try {
+            listaCiDestinatario = consultaTbCiDestinatario.getHistoricoTbCiDestinatario(strAssinaturaCI);
+            for(TbCiDestinatario l : listaCiDestinatario){
+                nIdCoindestinatario = l.getIdCoinDestinatario();
+                nIdCoin = l.getIdCoin().getIdCoin();
+                strAssinatura = l.getCoinAssinatura();
+                dataCriacao = l.getCoinDestinatarioDataCriacao();
+                strRemitente = l.getInorDescricaoRemitente();
+                strDestinatario = l.getUnorDescricaoDestinatario();
+                strTipoCoin = l.getIdTipoCoin().getTiciDescricao();
+                
+                obslistaHistoricoCI.add(new TbCIPorAprovar(nIdCoindestinatario, nIdCoin, strAssinatura, dataCriacao, 
+                        strRemitente, strDestinatario, strTipoCoin));
+            }
+        } catch (Exception ex){
+            
+        }
         
         //Valores nTabela:
         // 1 - TB_COMUNICACAO_INTERNA
@@ -90,17 +116,7 @@ public class HistoricoCIController implements Initializable {
         //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
         //6-Caixa de enviados - btnCaixaSaida;
         //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
-        switch (nBotao){
-            case 1: case 2: case 3: case 4: //TB_CI_DESTINATARIO
-                
-                break;
-                
-            case 5: case 6: case 7:         //TB_COMUNICACAO_INTERNA
-                break;
-                
-            default:
-                break;
-        }
+        
         
     }
     

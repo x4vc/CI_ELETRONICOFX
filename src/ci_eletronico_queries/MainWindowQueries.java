@@ -704,5 +704,43 @@ public class MainWindowQueries {
                 .getResultList();   
         
         }
+     
+     public TbCiDestinatario getAssinaturaTbCiDestinatario(int nIdCoin) {    
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(3);        
+        
+        return em.createNamedQuery("TbCiDestinatario.findAll",TbCiDestinatario.class) 
+                .setParameter("idCoin", nIdCoin)                
+                .setParameter("idTipoCoin",nValues)
+                .getSingleResult();   
+        
+        }
+    public List<TbCiDestinatario> getHistoricoTbCiDestinatario(String strAssinatura) {
+        /*
+        ID	DESCRICAO
+        1	CI NORMAL
+        2	CI CIRCULAR
+        3	CI CONFIDENCIAL
+        4	CI ENCAMINHADO
+        5	CI APROVADO
+        6	CI DESAPROVADO
+        7	CI RESPONDIDA
+        8	CI LIDA
+        */
+        List<Integer> nValues = new ArrayList<>();
+        nValues.add(1);
+        nValues.add(2);
+        nValues.add(3); 
+        nValues.add(4);
+        nValues.add(7);
+        
+        return em.createNamedQuery("TbCiDestinatario.findByAssinatura",TbCiDestinatario.class) 
+                .setParameter("coinAssinatura", strAssinatura)                
+                .setParameter("idTipoCoin",nValues)
+                .getResultList();   
+        
+        }
     
 }

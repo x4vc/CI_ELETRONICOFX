@@ -104,6 +104,12 @@ public class TbCIPorAprovar {
     public TbCIPorAprovar() {
     }
     
+    //Construtor do historico da CI
+    public TbCIPorAprovar(int nIdCoindestinatario, int nIdCoin, String strAssinaturaCI, Date dataCriacaoCI, 
+            String strRemitente, String strDestinatario, String strTipoCoinDescricao) {
+    }
+    //---------------------------------------
+    
     //Construtor utilizado para TB_COMUNICACAO_INTERNA
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
             Integer nIdUsuario, String strUsuarioNomeCompleto, Integer nIdUO, 

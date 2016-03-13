@@ -3579,6 +3579,7 @@ public class FXMLMainController implements Initializable {
                                     btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
+                                    btnHistoricoCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
                                     //btnEditarCI.setVisible(false);
@@ -3591,6 +3592,7 @@ public class FXMLMainController implements Initializable {
                                     btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(true);
                                     btnDesarquivarCI.setDisable(false);
+                                    btnHistoricoCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
                                     //btnEditarCI.setVisible(false);
@@ -3649,6 +3651,7 @@ public class FXMLMainController implements Initializable {
         btnEncaminharCI.setDisable(true);
         btnResponderCI.setDisable(true);
         btnDesarquivarCI.setDisable(true);
+        btnHistoricoCI.setDisable(true);
         //btnEditarCI.setVisible(true);
         btnMarcarcomoPendencia.setDisable(true);
         
@@ -3871,6 +3874,7 @@ public class FXMLMainController implements Initializable {
                             btnResponderCI.setDisable(true);
                             btnArquivarCI.setDisable(true);
                             btnDesarquivarCI.setDisable(true);
+                            btnHistoricoCI.setDisable(true);
                             btnMarcarComoLido.setText("Marcar como Lido");
                             btnMarcarComoLido.setDisable(true);                            
                             btnMarcarcomoPendencia.setDisable(true);
@@ -3921,6 +3925,7 @@ public class FXMLMainController implements Initializable {
         setBotoesMainWindow(nTipoPerfil);
         
         btnDesarquivarCI.setDisable(true);
+        btnHistoricoCI.setDisable(false);
         
         btnEditarCI.setDisable(true);
         btnDesaprovarCI.setDisable(true);
@@ -4450,6 +4455,7 @@ public class FXMLMainController implements Initializable {
                                     btnResponderCI.setDisable(false);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
+                                    btnHistoricoCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(false);
                                     btnMarcarcomoPendencia.setDisable(false);
                                     btnEditarCI.setDisable(true);  
@@ -4472,6 +4478,7 @@ public class FXMLMainController implements Initializable {
                                     btnResponderCI.setDisable(false);
                                     btnArquivarCI.setDisable(false);
                                     btnDesarquivarCI.setDisable(true);
+                                    btnHistoricoCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(false);
                                     btnMarcarcomoPendencia.setDisable(true); 
                                     btnEditarCI.setDisable(true);
@@ -4483,6 +4490,7 @@ public class FXMLMainController implements Initializable {
                                     btnResponderCI.setDisable(true);
                                     btnArquivarCI.setDisable(true);
                                     btnDesarquivarCI.setDisable(false);
+                                    btnHistoricoCI.setDisable(false);
                                     btnMarcarComoLido.setDisable(true);
                                     btnMarcarcomoPendencia.setDisable(true);
                                     btnEditarCI.setDisable(true);
@@ -4686,6 +4694,7 @@ public class FXMLMainController implements Initializable {
                                 btnResponderCI.setDisable(true);
                                 btnArquivarCI.setDisable(true);
                                 btnDesarquivarCI.setDisable(true);
+                                btnHistoricoCI.setDisable(true);
                                 btnMarcarComoLido.setText("Marcar como Lido");
                                 btnMarcarComoLido.setDisable(true);                            
                                 btnMarcarcomoPendencia.setDisable(true);
@@ -4736,32 +4745,77 @@ public class FXMLMainController implements Initializable {
     }
     @FXML
     private void handleBtnHistoricoCI(ActionEvent event) throws IOException{
-        if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erro");
-            alert.setHeaderText("CI não foi selecionado.");
-            alert.setContentText("Favor selecionar uma CI da tabela");
-            alert.showAndWait();
-        }else{
-            //Variaveis para construir o Histórico da CI
-            String strSequencialCI = this.lblNumeroSequencialCI.getText();
-            int nBotao = 0;
-            int nTabela = 0;
-            int nIdCiEletronica = 0;
-            
-            nBotao = this.ngBotao;
-            nTabela = this.ngTabela;
-            nIdCiEletronica = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        int nBotao = 0;
+        nBotao = this.ngBotao;
+        
+        //Variaveis para construir o Histórico da CI
+        String strSequencialCI = this.lblNumeroSequencialCI.getText();            
+        int nTabela = 0;
+        int nIdCoinDestinatario = 0;
+        int nIdCoin = 0;
+        String strAssinaturaTbCiDestinatario = "";
+        String strAssinaturaTbCi = "";
+        
+        nTabela = this.ngTabela;
+        
+        //Valores nTabela:
+        // 1 - TB_COMUNICACAO_INTERNA
+        // 2 - TB_CI_DESTINATARIO
+        //--------------------------------------------------------
+        //Valores dos botões:
+        //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaPendentesAprovacao
+        //2-caixa de recebidas - btnCaixaEntrada
+        //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+        //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+        //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+        //6-Caixa de enviados - btnCaixaSaida;
+        //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+        
+        switch (nBotao){
+            case 1: case 2: case 3: case 4: //TB_CI_DESTINATARIO
+                if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erro");
+                    alert.setHeaderText("CI não foi selecionado.");
+                    alert.setContentText("Favor selecionar uma CI da tabela");
+                    alert.showAndWait();
+                }else{
+                    nIdCoinDestinatario = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoinDestinatario();
+                    nIdCoin = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                    strAssinaturaTbCiDestinatario = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+                    System.out.println();
+                    //Mostramos o historico
+                    ShowHistoricoCIe(this, nIdCoinDestinatario, strSequencialCI, nBotao, nTabela, strAssinaturaTbCiDestinatario);
             //---------------------------------------------
-            
-            //Mostramos o historico
-            ShowHistoricoCIe(this, nIdCiEletronica, strSequencialCI, nBotao, nTabela);
-            
+                    
+                }
+                break;
+            case 5: case 6: case 7: //TB_COMUNICACAO_INTERNA
+                if (null == TbViewGeral.getSelectionModel().getSelectedItem()){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erro");
+                    alert.setHeaderText("CI não foi selecionado.");
+                    alert.setContentText("Favor selecionar uma CI da tabela");
+                    alert.showAndWait();
+                }else{
+                    //nIdCoinDestinatario = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoinDestinatario();
+                    nIdCoin = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                    strAssinaturaTbCi = TbViewGeral.getSelectionModel().getSelectedItem().getStrp_CoinAssinatura();
+                    System.out.println();
+                    //Mostramos o historico
+                    ShowHistoricoCIe(this, nIdCoin, strSequencialCI, nBotao, nTabela, strAssinaturaTbCi);
+            //---------------------------------------------
+                    
+                }
+                break;
+            default:
+                break;
         }
+        
         
     }
     public void ShowHistoricoCIe(final FXMLMainController mainController, int nIdCiEletronica, String strSequencialCI,
-            int nBotao, int nTabela) {
+            int nBotao, int nTabela, String strAssinaturaCI) {
         try {
             scene = new Scene(new SplitPane());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ci_eletronico/fxml_utilitarios/HistoricoCI.fxml"));
@@ -4769,7 +4823,7 @@ public class FXMLMainController implements Initializable {
                 
             ci_eletronico.fxml_utilitarios.HistoricoCIController HistoricoCiController = loader.<ci_eletronico.fxml_utilitarios.HistoricoCIController>getController();     
             
-            HistoricoCiController.setVariaveisAmbienteHistoricoCI(mainController, nIdCiEletronica, strSequencialCI, nBotao, nTabela);
+            HistoricoCiController.setVariaveisAmbienteHistoricoCI(mainController, nIdCiEletronica, strSequencialCI, nBotao, nTabela, strAssinaturaCI);
             
             Stage stage = new Stage();
             stage.setTitle("Histórico da CI-eletrônica");

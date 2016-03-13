@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "TbComunicacaoInterna.findAll", query = "SELECT t FROM TbComunicacaoInterna t"),
     @NamedQuery(name = "TbComunicacaoInterna.findByIdCoin", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idCoin = :idCoin"),
+    @NamedQuery(name = "TbComunicacaoInterna.findAssinatura", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idCoin = :idCoin AND t.idTipoCoin IN :idTipoCoin"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinAssunto", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinAssunto = :coinAssunto"),
     @NamedQuery(name = "TbComunicacaoInterna.findByCoinConteudo", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.coinConteudo = :coinConteudo"),
     @NamedQuery(name = "TbComunicacaoInterna.findByIdUsuario", query = "SELECT t FROM TbComunicacaoInterna t WHERE t.idUsuario = :idUsuario"),
