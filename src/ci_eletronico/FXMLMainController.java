@@ -2013,6 +2013,7 @@ public class FXMLMainController implements Initializable {
         strPara = strPara.concat("<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI Lida</FONT></b>");
         strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + this.lblNomeUO.getText() + "</b></FONT><br />");
         strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + this.lblNomeUsuario.getText() + "</FONT><br /><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Assunto: " + strlAssunto + "</FONT><br /><br />");
         strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
         strPara = strPara.concat(strlConteudo);
         
@@ -2144,6 +2145,15 @@ public class FXMLMainController implements Initializable {
         //Seteamos Datas
         String strToday = "";
         String strTodayCI = "";
+        
+        
+        //Construimos a frase do campo Assunto:
+        //int nIdCoin = 0;
+        String strlAssunto = "";        
+        
+        //nIdCoin = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
+        //----------------------------------------
+        
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // utilizado para banco de dados
         DateFormat dfCI = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // utilizado para mostrar na aplicação
         
@@ -2156,6 +2166,9 @@ public class FXMLMainController implements Initializable {
         MainWindowQueries consulta= new MainWindowQueries();
         strlConteudo = consulta.getMessagemCiDesaprovada("NOTIFICACAO_CI_DESAPROVADA");
         
+        //strlAssunto = "CI: " + strSequencialCI + " foi desaprovada pelo Gestor da UO. Ref Id: " + Integer.toString(nIdCoin);
+        strlAssunto = "CI: " + strSequencialCI + " foi desaprovada pelo Gestor da UO.";
+        
         strlCITitulo = "<br /><p align=\"center\"><b>" + strSequencialCI + "</b></p>";
         //strlConteudo = "<html dir=\"ltr\"><head></head><body contenteditable=\"true\"><p><span style=\"font-family: 'Segoe UI';\">Prezado(a),&nbsp;</span></p><p><font face=\"Segoe UI\">Informamos que a CI foi cancelada pela UO Gestora e por esse motivo não será possível o seu envio para seu(s) destinatário(s).</font></p><p><font face=\"Segoe UI\">Atenciosamente,&nbsp;</font></p><p><font face=\"Segoe UI\">Sistema CI-eletrônica.</font></p></body></html>";
         
@@ -2163,6 +2176,7 @@ public class FXMLMainController implements Initializable {
         strPara = strPara.concat("<br /><hr><br /><b><FONT COLOR=\"0000FF\">CI Desaprovada</FONT></b>");
         strPara = strPara.concat("<br /><hr><br /><FONT COLOR=\"000000\">De: <b>" + this.lblNomeUO.getText() + "</b></FONT><br />");
         strPara = strPara.concat("<FONT COLOR=\"000000\">Usuário remitente: " + this.lblNomeUsuario.getText() + "</FONT><br /><br />");
+        strPara = strPara.concat("<FONT COLOR=\"000000\">Assunto: " + strlAssunto + "</FONT><br /><br />");
         strPara = strPara.concat("<FONT COLOR=\"000000\">Data criação: " + strTodayCI + "</FONT><br /><br />");
         strPara = strPara.concat(strlConteudo);
         

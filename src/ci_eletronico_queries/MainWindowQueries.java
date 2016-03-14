@@ -734,7 +734,15 @@ public class MainWindowQueries {
         nValues.add(2);
         nValues.add(3); 
         nValues.add(4);
+        
+        // Aprovado ou não Aprovado
+        nValues.add(5);
+        nValues.add(6);
+        //---------------
+        
         nValues.add(7);
+        
+        //nValues.add(8); //Desabilitado até que for autorizado pela ASSTI mostrâ-lo no histórico da CI
         
         return em.createNamedQuery("TbCiDestinatario.findByAssinatura",TbCiDestinatario.class) 
                 .setParameter("coinAssinatura", strAssinatura)                
