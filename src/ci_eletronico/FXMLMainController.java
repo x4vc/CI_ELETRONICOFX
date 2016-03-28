@@ -4012,6 +4012,7 @@ public class FXMLMainController implements Initializable {
     }
     
     private void MarcarComoLido(int nlIdCI, int nlTabela, boolean blCILido){
+        Alert alert;
         boolean bUpdate = false;   
         int nlButtonSelected = 0;
         nlButtonSelected = ngBotao;
@@ -4042,10 +4043,21 @@ public class FXMLMainController implements Initializable {
                 try{
                     bUpdate = consulta.MarcarComoLido(nlIdCI, nlButtonSelected, blCILido);
                     if (blCILido){
-                        EnviarMsgCiLida(nlIdCI);
+                        alert = new Alert(AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmar envio de menssagem");
+                        alert.setHeaderText("O remitente pode ser notificado que a CI foi lida");
+                        alert.setContentText("Deseja enviar menssagem para o remitente informando que a CI foi Lida?"); 
+
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == ButtonType.OK){
+                                EnviarMsgCiLida(nlIdCI);
+                        }
+                        else{
+                            //Do nothing                            
+                        }
                     }
                 }catch(Exception e){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("CI - Marcar como Lido/não Lido");
                     alert.setHeaderText("Tabela TB_CI_DESTINATARIO");
                     alert.setContentText(e.getMessage());
@@ -4059,7 +4071,7 @@ public class FXMLMainController implements Initializable {
         if (bUpdate){
 //                        System.out.println("IdUsuario = " + nIdUserUO);
 //                        System.out.println("Update deve acontecer");
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informação");
             alert.setHeaderText(null);
             alert.setContentText("CI foi marcada com sucesso.");
@@ -4101,7 +4113,7 @@ public class FXMLMainController implements Initializable {
             } 
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erro");
             alert.setHeaderText("Não foi possível marcar como Lido/não Lido");
             alert.setContentText("Favor contatar o Administrador do sistema");
