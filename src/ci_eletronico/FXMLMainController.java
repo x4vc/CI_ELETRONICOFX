@@ -4042,20 +4042,20 @@ public class FXMLMainController implements Initializable {
             case 2: //Tabela TB_CI_DESTINATARIO
                 try{
                     bUpdate = consulta.MarcarComoLido(nlIdCI, nlButtonSelected, blCILido);
-                    if (blCILido){
-                        alert = new Alert(AlertType.CONFIRMATION);
-                        alert.setTitle("Confirmar envio de menssagem");
-                        alert.setHeaderText("O remitente pode ser notificado que a CI foi lida");
-                        alert.setContentText("Deseja enviar menssagem para o remitente informando que a CI foi Lida?"); 
-
-                        Optional<ButtonType> result = alert.showAndWait();
-                        if (result.get() == ButtonType.OK){
-                                EnviarMsgCiLida(nlIdCI);
-                        }
-                        else{
-                            //Do nothing                            
-                        }
-                    }
+//                    if (blCILido){
+//                        alert = new Alert(AlertType.CONFIRMATION);
+//                        alert.setTitle("Confirmar envio de menssagem");
+//                        alert.setHeaderText("O remitente pode ser notificado que a CI foi lida");
+//                        alert.setContentText("Deseja enviar menssagem para o remitente informando que a CI foi Lida?"); 
+//
+//                        Optional<ButtonType> result = alert.showAndWait();
+//                        if (result.get() == ButtonType.OK){
+//                                EnviarMsgCiLida(nlIdCI);
+//                        }
+//                        else{
+//                            //Do nothing                            
+//                        }
+//                    }
                 }catch(Exception e){
                     alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("CI - Marcar como Lido/não Lido");

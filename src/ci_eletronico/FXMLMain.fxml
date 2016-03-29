@@ -126,8 +126,8 @@
                         <TableColumn fx:id="ClLido" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" text="Lido" />
                         <TableColumn fx:id="ClIdCoin" prefWidth="40.0" text="ID" />
                         <TableColumn fx:id="ClUODestinatario" prefWidth="45.0" text="Para" visible="false" />
-                      <TableColumn fx:id="ClDataEnvio" prefWidth="110.0" text="Data criação" />
-                      <TableColumn fx:id="ClUORemitente" prefWidth="85.0" text="UO Remitente" />
+                      <TableColumn fx:id="ClDataEnvio" prefWidth="95.0" text="Data criação" />
+                      <TableColumn fx:id="ClUORemitente" prefWidth="100.0" text="UO Remetente" />
                         <TableColumn fx:id="ClAutorRemitente" text="Autor" />
                         <TableColumn fx:id="ClAssunto" prefWidth="250.0" text="Assunto" />
                     </columns>
@@ -142,8 +142,8 @@
                       <TableColumn fx:id="ClAprovado" prefWidth="75.0" text="Aprovado" visible="false" />
                         <TableColumn fx:id="ClUODestinatario2" prefWidth="75.0" text="Para" visible="false" />
                       <TableColumn fx:id="ClIdCoin2" prefWidth="40.0" text="ID" />
-                        <TableColumn fx:id="ClDataEnvio2" prefWidth="110.0" text="Data criação" />
-                        <TableColumn fx:id="ClUORemitente2" prefWidth="85.0" text="UO Remitente" />
+                        <TableColumn fx:id="ClDataEnvio2" prefWidth="91.0" text="Data criação" />
+                        <TableColumn fx:id="ClUORemitente2" prefWidth="104.0" text="UO Remetente" />
                         <TableColumn fx:id="ClAutorRemitente2" text="Autor" />
                         <TableColumn fx:id="ClAssunto2" prefWidth="250.0" text="Assunto" />
                     </columns>
