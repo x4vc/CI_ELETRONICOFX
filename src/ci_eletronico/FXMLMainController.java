@@ -253,6 +253,8 @@ public class FXMLMainController implements Initializable {
     @FXML
     private TableColumn ClIdCoin2;
     @FXML
+    private TableColumn ClICiSequencial2;
+    @FXML
     private TableColumn ClUODestinatario2;
     @FXML
     private TableColumn ClDataEnvio2; 
@@ -270,6 +272,8 @@ public class FXMLMainController implements Initializable {
     private TableView<TbCIPorAprovar> TbViewGeral;
     @FXML
     private TableColumn ClIdCoin;
+    @FXML
+    private TableColumn ClICiSequencial;
     @FXML
     private TableColumn ClUODestinatario;
     @FXML
@@ -3383,6 +3387,13 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         //----------------------------------------------------------
         
+        //Variavel para construção da Ci Sequencial
+        String strCiSequencial = "";
+        String strAno = "";        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy"); 
+        //---------------------------------------------------
+        
+        
         String strlDescricaoUODestinatario = "";
         
         //Assinatura MD5
@@ -3485,16 +3496,25 @@ public class FXMLMainController implements Initializable {
             
             bCancelado = l.getCoinCancelado();
             
+            //Construção da CI sequencial            
+            strAno = sdf.format(dataCriacao);
+            strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+            //----------------------------------------------------------
+            
             obslistaTbCaixaSaida.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                     nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                     dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlDescricaoUODestinatario,
-                    strlAssinatura, bCoinLido, bCancelado));
+                    strlAssinatura, bCoinLido, bCancelado,
+                    strCiSequencial));
         }
         //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
         ClLido.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_CoinLido"));
         ClIdCoin.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+        
+        ClICiSequencial.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
+        
         ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
         ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
         ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
@@ -3721,6 +3741,12 @@ public class FXMLMainController implements Initializable {
         String strUnorDescricaoGenesis = "";
         //-------------------------------------------
         
+        //Variavel para construção da Ci Sequencial
+        String strCiSequencial = "";
+        String strAno = "";        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy"); 
+        //----------------------------------------------------
+        
         String strlDescricaoUODestinatario = "";
         
         //Assinatura MD5
@@ -3776,6 +3802,11 @@ public class FXMLMainController implements Initializable {
                     strlAssinatura = l.getCoinAssinatura();
                     
                     bCancelado = l.getCoinCancelado();
+                    
+                    //Construção da CI sequencial            
+                    strAno = sdf.format(dataCriacao);
+                    strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+                    //----------------------------------------------------------
 
 
         //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
@@ -3785,7 +3816,8 @@ public class FXMLMainController implements Initializable {
                                 dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                                 strlDescricaoUODestinatario,
-                                strlAssinatura, bCoinLido, bCancelado));
+                                strlAssinatura, bCoinLido, bCancelado,
+                                strCiSequencial));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -3797,6 +3829,9 @@ public class FXMLMainController implements Initializable {
                 //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
                 ClAprovado.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_Autorizado"));
                 ClIdCoin2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+                
+                ClICiSequencial2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
+                
                 ClUODestinatario2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
                 ClDataEnvio2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
                 ClUORemitente2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
@@ -4207,6 +4242,11 @@ public class FXMLMainController implements Initializable {
         String strCoinHistoricoAnexos = "";
         String strUnorDescricaoGenesis = "";
         
+        //Variavel para construção da Ci Sequencial
+        String strCiSequencial = "";
+        String strAno = "";        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");  
+        
         //Variaveis de apoio
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");        
         int nIdCoin = 0;
@@ -4357,6 +4397,12 @@ public class FXMLMainController implements Initializable {
                 bCancelado = l.getCoinCancelado();
 
                 strDataCriacao = df.format(dataCriacao);
+                
+                //Construção da CI sequencial                
+                strAno = sdf.format(dataCriacao);
+                strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+                //----------------------------------------------------------
+                
                 obslistaTbCaixaEntrada.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
                         strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
                         strDescricaoUODestinatario, nlIdUOGestorDestinatario, strDescricaoUOGestorDestinatario, 
@@ -4365,12 +4411,16 @@ public class FXMLMainController implements Initializable {
                         bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
                         bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                        nlTipoCoin, strlAssinatura, bCoinLido, bCancelado));
+                        nlTipoCoin, strlAssinatura, bCoinLido, bCancelado,
+                        strCiSequencial));
 
                 System.out.println();
             }
             ClLido.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_CoinLido"));
             ClIdCoin.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+            
+            ClICiSequencial.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
+            
             ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
             ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
             ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
@@ -4603,6 +4653,12 @@ public class FXMLMainController implements Initializable {
                     bCancelado = l.getCoinCancelado();
 
                     strDataCriacao = df.format(dataCriacao);
+                    
+                    //Construção da CI sequencial                    
+                    strAno = sdf.format(dataCriacao);
+                    strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+                    //----------------------------------------------------------
+                    
                     obslistaTbCaixaEntrada2.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
                             strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
                             strDescricaoUODestinatario, nlIdUOGestorDestinatario, strDescricaoUOGestorDestinatario, 
@@ -4611,12 +4667,16 @@ public class FXMLMainController implements Initializable {
                             bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
                             bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                             nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
-                            nlTipoCoin, strlAssinatura, bCoinLido, bCancelado));
+                            nlTipoCoin, strlAssinatura, bCoinLido, bCancelado,
+                            strCiSequencial));
 
                     System.out.println();
                 }
                 ClAprovado.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_AutorizadoPeloGestor"));
                 ClIdCoin2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+                
+                ClICiSequencial2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
+                
                 ClUODestinatario2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
                 ClDataEnvio2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
                 ClUORemitente2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
