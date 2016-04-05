@@ -127,7 +127,7 @@
                         <TableColumn fx:id="ClICiSequencial" prefWidth="135.0" text="CI" />
                       <TableColumn fx:id="ClDataEnvio" prefWidth="95.0" text="Data criação" />
                       <TableColumn fx:id="ClUORemitente" prefWidth="100.0" text="UO Remetente" />
-                        <TableColumn fx:id="ClUODestinatario" prefWidth="77.0" text="Para" visible="false" />
+                        <TableColumn fx:id="ClUODestinatario" prefWidth="77.0" text="Para" />
                         <TableColumn fx:id="ClAutorRemitente" prefWidth="57.0" text="Autor" />
                         <TableColumn fx:id="ClAssunto" prefWidth="87.0" text="Assunto" />
                         <TableColumn fx:id="ClIdCoin" prefWidth="194.0" text="ID" />

@@ -58,6 +58,27 @@ public class MainWindowQueries {
                 .getSingleResult();
         
         }
+    
+    public List<TbCiDestinatario> getlistaDestinatarios(TbComunicacaoInterna nidCoin) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbCiDestinatario.findDestinatariosCIsAutorizados",TbCiDestinatario.class) 
+                .setParameter("idCoin", nidCoin)
+                //.setParameter("idUoGestor", nidUoGestor)
+                .getResultList();   
+        
+        }
+    
+    public List<TbCiDestinatario> getlistaDestinatariosNaoAutorizados(TbComunicacaoInterna nidCoin) {
+    //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
+        
+        return em.createNamedQuery("TbCiDestinatario.findDestinatariosCIsNaoAutorizados",TbCiDestinatario.class) 
+                .setParameter("idCoin", nidCoin)
+                //.setParameter("idUoGestor", nidUoGestor)
+                .getResultList();   
+        
+        }
+    
     public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar(int nidUoGestor) {
     //public List<TbComunicacaoInterna> getlistaTbComunicacaoInternaPorAprovar() {
         

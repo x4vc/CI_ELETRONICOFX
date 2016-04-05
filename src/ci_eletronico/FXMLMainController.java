@@ -3421,6 +3421,13 @@ public class FXMLMainController implements Initializable {
         
         MainWindowQueries consulta  = new MainWindowQueries();
         
+        //Para construir campo destinatario
+        MainWindowQueries consultaDestinatario  = new MainWindowQueries();
+        List<TbCiDestinatario> listaDestinatario = new ArrayList<TbCiDestinatario>();
+        
+        String strDestinatarios = "";
+        //----------------------------------------------------------------------
+        
         
         //Método utilizado para preencher TableView: private void PreencherCaixaEntrada(int nlTipoPreenchimento)
         //Método utilizado para preencher TableView: private void PreencherCaixaSaida(int nlTipoPreenchimento)
@@ -3501,13 +3508,24 @@ public class FXMLMainController implements Initializable {
             strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
             //----------------------------------------------------------
             
+            //Construção dos destinatarios
+            strDestinatarios = "";
+            TbComunicacaoInterna nTbIdCoin = new TbComunicacaoInterna(nIdCoin);
+            listaDestinatario = consultaDestinatario.getlistaDestinatarios(nTbIdCoin);
+
+            for (TbCiDestinatario lista : listaDestinatario){
+                strDestinatarios = strDestinatarios.concat(lista.getUnorDescricaoDestinatario() + "; ");                        
+            }
+
+            //----------------------------------------------------------
+            
             obslistaTbCaixaSaida.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                     nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
                     dataAutorizado, bCoinReadOnly, bTemAnexos ,nIdTabelaFonte,
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlDescricaoUODestinatario,
                     strlAssinatura, bCoinLido, bCancelado,
-                    strCiSequencial));
+                    strCiSequencial, strDestinatarios));
         }
         //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
         ClLido.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_CoinLido"));
@@ -3515,7 +3533,8 @@ public class FXMLMainController implements Initializable {
         
         ClICiSequencial.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
         
-        ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
+        //ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
+        ClUODestinatario.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_Destinatarios"));
         ClDataEnvio.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
         ClUORemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
         ClAutorRemitente.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_UsuarioNomeCompleto"));        
@@ -3762,6 +3781,13 @@ public class FXMLMainController implements Initializable {
         MainWindowQueries consulta2  = new MainWindowQueries();
         List<TbComunicacaoInterna> listaCiSemAprovar2 = new ArrayList<TbComunicacaoInterna>();
         
+        //Para construir campo destinatario
+        MainWindowQueries consultaDestinatario  = new MainWindowQueries();
+        List<TbCiDestinatario> listaDestinatario = new ArrayList<TbCiDestinatario>();
+        
+        String strDestinatarios = "";
+        //----------------------------------------------------------------------
+        
         //Deve-se mostrar as Cis para aprovação só para usuário que faz parte da UO Gestora
         if (this.nIdUOGestor == this.nIdUnidadeOrganizacional){
             if (1 == nlTipoPerfil){ //Perfil Gestor
@@ -3807,6 +3833,17 @@ public class FXMLMainController implements Initializable {
                     strAno = sdf.format(dataCriacao);
                     strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
                     //----------------------------------------------------------
+                    
+                    //Construção dos destinatarios
+                    strDestinatarios = "";
+                    TbComunicacaoInterna nTbIdCoin = new TbComunicacaoInterna(nIdCoin);
+                    listaDestinatario = consultaDestinatario.getlistaDestinatariosNaoAutorizados(nTbIdCoin);
+                    
+                    for (TbCiDestinatario lista : listaDestinatario){
+                        strDestinatarios = strDestinatarios.concat(lista.getUnorDescricaoDestinatario() + "; ");                        
+                    }
+                    
+                    //----------------------------------------------------------
 
 
         //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
@@ -3817,7 +3854,7 @@ public class FXMLMainController implements Initializable {
                                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                                 strlDescricaoUODestinatario,
                                 strlAssinatura, bCoinLido, bCancelado,
-                                strCiSequencial));
+                                strCiSequencial, strDestinatarios));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");

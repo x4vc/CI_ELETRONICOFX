@@ -104,6 +104,7 @@ public class TbCIPorAprovar {
     //------------------------------------------
     
     private StringProperty strp_CiSequencial;
+    private StringProperty strp_Destinatarios;
 
     public TbCIPorAprovar() {
     }
@@ -133,7 +134,7 @@ public class TbCIPorAprovar {
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
             String strp_DescricaoUODestinatario, /*variavel String sempre vazio*/
             String strp_CoinAssinatura, boolean boolp_CoinLido, boolean boolp_CoinCancelado,
-            String strCiSequencial) {
+            String strCiSequencial, String strDestinatarios) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -172,6 +173,7 @@ public class TbCIPorAprovar {
         this.boolp_CoinCancelado = new SimpleBooleanProperty(boolp_CoinCancelado);
         
         this.strp_CiSequencial = new SimpleStringProperty(strCiSequencial);
+        this.strp_Destinatarios = new SimpleStringProperty(strDestinatarios);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -711,6 +713,14 @@ public class TbCIPorAprovar {
 
     public void setStrp_CiSequencial(String strp_CiSequencial) {
         this.strp_CiSequencial.setValue(strp_CiSequencial);
+    }
+
+    public String getStrp_Destinatarios() {
+        return strp_Destinatarios.getValue();
+    }
+
+    public void setStrp_Destinatarios(String strp_Destinatarios) {
+        this.strp_Destinatarios.setValue(strp_Destinatarios);
     }
     
     
