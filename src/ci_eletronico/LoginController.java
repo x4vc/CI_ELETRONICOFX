@@ -155,7 +155,7 @@ public class LoginController {
         String strVersaoBancoDados = "";
         //String strVersaoCodigo = "";
         
-        this.strVersaoCodigo = "1.5.2";
+        this.strVersaoCodigo = "1.5.3";
         
         LoginQuery consulta_TB_ATUALIZAR_SISTEMA  = new LoginQuery(); 
         List<ci_eletronico.entities.TbAtualizarSistema> listaVersoes = new ArrayList<>();
