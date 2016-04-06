@@ -126,10 +126,10 @@
                         <TableColumn fx:id="ClLido" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" text="Lido" />
                         <TableColumn fx:id="ClICiSequencial" prefWidth="135.0" text="CI" />
                       <TableColumn fx:id="ClDataEnvio" prefWidth="95.0" text="Data criação" />
-                      <TableColumn fx:id="ClUORemitente" prefWidth="100.0" text="UO Remetente" />
-                        <TableColumn fx:id="ClUODestinatario" prefWidth="77.0" text="Para" />
-                        <TableColumn fx:id="ClAutorRemitente" prefWidth="57.0" text="Autor" />
+                      <TableColumn fx:id="ClUORemitente" prefWidth="100.0" text="Remetente" />
+                        <TableColumn fx:id="ClUODestinatario" prefWidth="77.0" text="Destinatário" />
                         <TableColumn fx:id="ClAssunto" prefWidth="87.0" text="Assunto" />
+                        <TableColumn fx:id="ClAutorRemitente" prefWidth="57.0" text="Autor" />
                         <TableColumn fx:id="ClIdCoin" prefWidth="194.0" text="ID" />
                     </columns>
                   </TableView>
@@ -141,12 +141,12 @@
                   <TableView fx:id="TbViewGeral2" layoutX="1.0" layoutY="360.0" prefHeight="300.0" prefWidth="492.0" AnchorPane.bottomAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="ClAprovado" prefWidth="75.0" text="Aprovado" visible="false" />
-                        <TableColumn fx:id="ClUODestinatario2" prefWidth="75.0" text="Para" visible="false" />
                         <TableColumn fx:id="ClICiSequencial2" prefWidth="135.0" text="CI" />
                         <TableColumn fx:id="ClDataEnvio2" prefWidth="91.0" text="Data criação" />
-                        <TableColumn fx:id="ClUORemitente2" prefWidth="104.0" text="UO Remetente" />
-                        <TableColumn fx:id="ClAutorRemitente2" text="Autor" />
-                        <TableColumn fx:id="ClAssunto2" prefWidth="250.0" text="Assunto" />
+                        <TableColumn fx:id="ClUORemitente2" prefWidth="104.0" text="Remetente" />
+                        <TableColumn fx:id="ClUODestinatario2" prefWidth="75.0" text="Destinatário" />
+                        <TableColumn fx:id="ClAssunto2" prefWidth="106.0" text="Assunto" />
+                        <TableColumn fx:id="ClAutorRemitente2" prefWidth="224.0" text="Autor" />
                       <TableColumn fx:id="ClIdCoin2" prefWidth="40.0" text="ID" />
                     </columns>
                   </TableView>
