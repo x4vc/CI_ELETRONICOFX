@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -88,7 +89,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-
 
 
 /**
@@ -323,6 +323,9 @@ public class FXMLMainController implements Initializable {
     private ScrollPane scrollPaneTextFlow;
     @FXML
     private Button btnSalvarTodosArquivos;
+    
+    @FXML
+    private ListView<Choice> lviewAnexos;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -382,13 +385,18 @@ public class FXMLMainController implements Initializable {
         
         this.btnPendentesAprovacao.setVisible(false);
         this.btnCaixaEntradaSolicitandoAprovacao.setVisible(false);
-        this.scrollPaneTextFlow.setTooltip(new Tooltip("Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse"));
+        
+        //A partir da versão 1.5.3 debemos esconder o ScrollPane e TextFlow
+        this.scrollPaneTextFlow.setVisible(false);
+        //this.scrollPaneTextFlow.setTooltip(new Tooltip("Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse"));
+        //---------------------------------------------------------------------
         
         tPaneRecebidas.setCollapsible(false);
         tPaneEnviadas.setCollapsible(false);
         tPaneArquivadas.setCollapsible(false);
         
         this.btnSalvarTodosArquivos.setVisible(true);
+        this.lviewAnexos.setTooltip(new Tooltip("Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse"));
     }
     public void VerificarMarcadosComoPendencia(){
         Long lQuantidade = 0L;
@@ -1357,18 +1365,32 @@ public class FXMLMainController implements Initializable {
     }
     private void PreencherTxtFAnexos(int nlIdCI, String strCoinHistoricoAnexos){
         txtFAnexos.getChildren().clear();
+        lviewAnexos.getItems().clear();
+        
         //Hyperlink linkArquivoSelecionado = new Hyperlink() ;
         Text txtIdAnexo;
         Text txtArquivoSelecionado;
         Text txtNomeArquivo;
         String strDelimiters = ";";
+        String strSeparador = "=|\\;";
+        
+         //Preenchemos Ids e nomes dos arquivos
+            ObservableList<Choice> choicesArquivos = FXCollections.observableArrayList();
+         //------------------------------------------------
         
         if (nlIdCI > 0) {
+            
+           
+            
+           
+            
             consulta  = new MainWindowQueries();
             List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
             TbComunicacaoInterna nlIdCoin = new TbComunicacaoInterna(nlIdCI);
             listaAnexos = consulta.getlistaAnexo(nlIdCoin);
             for(TbAnexo l : listaAnexos){
+                
+                choicesArquivos.add(new Choice(l.getIdAnexo(), l.getAnexoNome()));  
                 
                 linkArquivoSelecionado = new Hyperlink();
                 linkArquivoSelecionado.setText(l.getIdAnexo() + "=" + l.getAnexoNome() + " ;\n");
@@ -1398,6 +1420,8 @@ public class FXMLMainController implements Initializable {
                 
                 //txtArquivoSelecionado.setFont(Font.font("Arial", FontPosture.REGULAR, 12));
                 txtFAnexos.getChildren().add(txtArquivoSelecionado);                
+                
+                
                 //txtFAnexos.getChildren().add(textFlow);                
                 //txtFAnexos.getChildren().add(linkArquivoSelecionado);  
                 
@@ -1407,10 +1431,67 @@ public class FXMLMainController implements Initializable {
 //                });    
                 
             }
+            lviewAnexos.setItems(choicesArquivos);
         }
         if (strCoinHistoricoAnexos.length()>0){
+            
+            
+            //Utilizamos o controle ListView
+            String strHistoricoAnexos = strCoinHistoricoAnexos;
+            strHistoricoAnexos = ltrim(strHistoricoAnexos);
+            strHistoricoAnexos = rtrim(strHistoricoAnexos);
+            //System.out.println("strHistoricoAnexos <==> " + strHistoricoAnexos);
+            String[] strParteSeparada = strHistoricoAnexos.split(strSeparador);
+            
+//            // Initialize Scanner object
+//		Scanner scan = new Scanner(strHistoricoAnexos);
+//		// initialize the string delimiter
+//		scan.useDelimiter("=");
+//		// Printing the delimiter used
+//		System.out.println("The delimiter use is "+scan.delimiter());
+//		// Printing the tokenized Strings
+//		while(scan.hasNext()){
+//			System.out.println(scan.next());
+//		}
+//		// closing the scanner stream
+//		scan.close();
+            
+            int j = 1;
+            int y = 0;
+            int z = 0;
+            int nContador = strParteSeparada.length/2;
+            int [] nArrayId = new int[strParteSeparada.length/2];   //Dividimos x 2 para pegar só a quantidade exata de Ids no array
+            String [] strArrayNomeArquivo = new String[strParteSeparada.length/2];
+            
+            for (int i = 0; i < strParteSeparada.length; i++){
+                if ((j%2) == 0){
+                    strArrayNomeArquivo[y] = strParteSeparada[i].trim();
+                    //System.out.println("Nome Arquivo <==> " + strArrayNomeArquivo[y]);
+                    y++;                    
+                    
+                } else {
+                    nArrayId[z] = Integer.parseInt(strParteSeparada[i].trim());
+                    //System.out.println("Id <==> " + nArrayId[z]);
+                    z++;
+                }
+                
+                //System.out.println("Anexo = "+strParteSeparada[i]);
+                j++;
+                
+            }
+            //System.out.println("Fim");
+            for (int i = 0; i < nContador; i++){
+                choicesArquivos.add(new Choice(nArrayId[i], strArrayNomeArquivo[i]));
+            }
+            lviewAnexos.setItems(choicesArquivos);           
+            
+            
+            //----------------------------------------------------------------
+            
             String[] strParts = strCoinHistoricoAnexos.split(strDelimiters);
             for (int i = 0; i < strParts.length; i++){
+                
+                //choicesArquivos.add(new Choice(l.getIdAnexo(), l.getAnexoNome()));
                 
                 linkArquivoSelecionado = new Hyperlink();
                 linkArquivoSelecionado.setText(strParts[i] + " ;\n");
@@ -1432,6 +1513,64 @@ public class FXMLMainController implements Initializable {
 //                    System.out.println("Click on  link: " + linkArquivoSelecionado.getText());
 ////                    AbrirArquivo(linkArquivoSelecionado.getText(),1);
 //                }); 
+        lviewAnexos.setOnMouseClicked(ev -> {
+                        if (1 == ev.getClickCount()){
+                            Choice choiceAnexo = lviewAnexos.getSelectionModel().getSelectedItem();
+                            System.out.println();
+
+                        }
+                        if (2 == ev.getClickCount()){
+                            Choice choiceAnexo = lviewAnexos.getSelectionModel().getSelectedItem();
+                            System.out.println();//                            
+                            AbrirAnexo(choiceAnexo.id,1);
+
+                        }
+                    });
+        
+        lviewAnexos.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+            public void handle(MouseEvent ev) {
+                boolean bPrimary = false;
+                boolean bMiddle = false;
+                boolean bSecondary = false;
+                bPrimary = ev.isPrimaryButtonDown();
+                bMiddle = ev.isMiddleButtonDown();
+                bSecondary = ev.isSecondaryButtonDown();
+                
+                final ContextMenu contextMenu = new ContextMenu();
+                MenuItem menuItemAbrir = new MenuItem("Abrir arquivo");
+                MenuItem menuItemSalvar = new MenuItem("Salvar arquivo");        
+                contextMenu.getItems().addAll(menuItemAbrir, menuItemSalvar);
+                contextMenu.hide();
+                menuItemAbrir.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent e) {
+                        
+                        Choice choiceAnexo = lviewAnexos.getSelectionModel().getSelectedItem();
+                        System.out.println();                        
+                        AbrirAnexo(choiceAnexo.id,1);
+                    }
+                });
+                menuItemSalvar.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent e) {
+//                        System.out.println("Salvar arquivo clicked");
+                        
+                        Choice choiceAnexo = lviewAnexos.getSelectionModel().getSelectedItem();
+                        System.out.println();
+                        
+                        AbrirAnexo(choiceAnexo.id,2);
+                    }
+                });
+                
+                if (ev.isSecondaryButtonDown()){
+                    if (1 == ev.getClickCount()){
+                        if(ev.getTarget() instanceof Text) {                            
+                            contextMenu.show(txtFAnexos, ev.getScreenX(), ev.getScreenY());
+                        }
+                    }
+                }    
+            }
+        });        
+        
         
         txtFAnexos.setOnMouseClicked(ev -> {
                         if (1 == ev.getClickCount()){
@@ -1454,22 +1593,7 @@ public class FXMLMainController implements Initializable {
                             }
                         }
                     });
-//        
-//        linkArquivoSelecionado.setOnMousePressed(new EventHandler<MouseEvent>(){
-//            @Override
-//            public void handle(ActionEvent actionEvent) {
-//                    
-//            }        
-//        });
-//        linkArquivoSelecionado.setOnMouseClicked(e->{
-//            String strNomeArquivo = "";
-//            strNomeArquivo = linkArquivoSelecionado.getText();
-//            AbrirArquivo(strNomeArquivo,1);
-//                });
-            
-        //linkArquivoSelecionado.setOnMousePressed(new EventHandler<MouseEvent>(){
-        //linkArquivoSelecionado.setOnMouseClicked(e->AbrirArquivo(clicked.getText(),1));
-            
+
 	
         
         
@@ -1562,6 +1686,45 @@ public class FXMLMainController implements Initializable {
         }
         
     }
+    
+    private void AbrirAnexo(int nlIdAnexo, int nlMenuItem){
+        File outfile = null;
+        String strFileName = "";
+        String strUserHome = System.getProperty("user.home") + "//Downloads//";
+        
+        consulta  = new MainWindowQueries();
+        List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+        
+        //Extrair o Id para realizar o download do arquivo
+        
+        listaAnexos = consulta.downloadAnexo(nlIdAnexo);
+        for(TbAnexo l : listaAnexos){
+            strFileName = l.getAnexoNome();
+            outfile = new File(strUserHome + l.getAnexoNome());
+            try {
+                writeArquivo(outfile, l.getAnexoBlob());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        switch(nlMenuItem){
+            case 1:
+                    openArquivo(outfile);
+                    break;
+            case 2:
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Salvar arquivo");
+                    alert.setHeaderText("O arquivo " + strFileName + " foi salvo com sucesso");
+                    alert.setContentText("IMPORTANTE: O arquivo foi salvo na pasta Downloads");
+                    alert.showAndWait();
+                    break;
+            default:
+                    break;
+        }
+        
+    }
+    
+    
     public void openArquivo(File file){
         try {
             desktop.open(file);
@@ -2005,7 +2168,7 @@ public class FXMLMainController implements Initializable {
         //
         
         //strlAssunto = strlAssunto.concat(" - CI - " + strSequencialCI + " foi lida pelo destinatário. Ref Id:" + Integer.toString(nIdCoin));
-        strlAssunto = "CI: " + strSequencialCI + " foi lida pelo destinatário. Ref Id: " + Integer.toString(nIdCoin);
+        strlAssunto = "Menssagem de confirmação: " + strSequencialCI + " foi lida pelo destinatário. Ref Id: " + Integer.toString(nIdCoin);
         
         consulta= new MainWindowQueries();
         strlConteudo = consulta.getMessagemCiLida("NOTIFICACAO_CI_LIDA");
@@ -3667,6 +3830,7 @@ public class FXMLMainController implements Initializable {
                         PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                     } 
                     else {
+                        lviewAnexos.getItems().clear();
                         txtFAnexos.getChildren().clear();
                     }
                 }
@@ -3983,6 +4147,7 @@ public class FXMLMainController implements Initializable {
                                 PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                             }
                             else {
+                                lviewAnexos.getItems().clear();
                                 txtFAnexos.getChildren().clear();
                             }
                         }
@@ -4086,6 +4251,7 @@ public class FXMLMainController implements Initializable {
     private void MarcarComoLido(int nlIdCI, int nlTabela, boolean blCILido){
         Alert alert;
         boolean bUpdate = false;   
+        boolean bSolicitaEnvioMsgCiLida = false;
         int nlButtonSelected = 0;
         nlButtonSelected = ngBotao;
         
@@ -4114,20 +4280,26 @@ public class FXMLMainController implements Initializable {
             case 2: //Tabela TB_CI_DESTINATARIO
                 try{
                     bUpdate = consulta.MarcarComoLido(nlIdCI, nlButtonSelected, blCILido);
-//                    if (blCILido){
-//                        alert = new Alert(AlertType.CONFIRMATION);
-//                        alert.setTitle("Confirmar envio de menssagem");
-//                        alert.setHeaderText("O remitente pode ser notificado que a CI foi lida");
-//                        alert.setContentText("Deseja enviar menssagem para o remitente informando que a CI foi Lida?"); 
-//
-//                        Optional<ButtonType> result = alert.showAndWait();
-//                        if (result.get() == ButtonType.OK){
-//                                EnviarMsgCiLida(nlIdCI);
-//                        }
-//                        else{
-//                            //Do nothing                            
-//                        }
-//                    }
+                    
+                    if (blCILido){
+                        consulta  = new MainWindowQueries();                        
+                        bSolicitaEnvioMsgCiLida = consulta.SolicitaConfirmacaoLeitura(nlIdCI);
+                        
+                        if (bSolicitaEnvioMsgCiLida){
+                            alert = new Alert(AlertType.CONFIRMATION);
+                            alert.setTitle("Confirmar envio de menssagem");
+                            alert.setHeaderText("O remitente solicitou confirmação de leitura da CI");
+                            alert.setContentText("Deseja enviar menssagem confirmando que a CI foi Lida?"); 
+
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.get() == ButtonType.OK){
+                                    EnviarMsgCiLida(nlIdCI);
+                            }
+                            else{
+                                //Do nothing                            
+                            }
+                        }
+                    }
                 }catch(Exception e){
                     alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("CI - Marcar como Lido/não Lido");
@@ -4235,6 +4407,7 @@ public class FXMLMainController implements Initializable {
             TbViewGeral.getItems().clear();
         }
         htmlEditorCI.setHtmlText("");
+        lviewAnexos.getItems().clear();
         txtFAnexos.getChildren().clear();
     }
     private void PreencherCaixaEntrada(int nlTipoPreenchimento, boolean blPreencherTableView2){
@@ -4627,6 +4800,7 @@ public class FXMLMainController implements Initializable {
                                 PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                             }                    
                             else {
+                                lviewAnexos.getItems().clear();
                                 txtFAnexos.getChildren().clear();
                             }
 
@@ -4847,6 +5021,7 @@ public class FXMLMainController implements Initializable {
                                     PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
                                 }                    
                                 else {
+                                    lviewAnexos.getItems().clear();
                                     txtFAnexos.getChildren().clear();
                                 }
 
@@ -4962,4 +5137,29 @@ public class FXMLMainController implements Initializable {
         }
         
     }
+}
+
+
+class Choice {        
+      
+    Integer id; String displayString; String displayString2;
+    Choice(Integer id)                       { this(id, null,null); }
+    Choice(String  displayString)            { this(null, displayString); }        
+    Choice(Integer id, String displayString) { this.id = id; this.displayString = displayString;}
+    Choice(Integer id, String displayString, String displayString2) { this.id = id; this.displayString = displayString; this.displayString2 = displayString2;}
+
+    @Override public String toString() { return displayString; } 
+    
+    @Override public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Choice choice = (Choice) o;
+      return displayString != null && displayString.equals(choice.displayString) || id != null && id.equals(choice.id);      
+    }
+
+    @Override public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (displayString != null ? displayString.hashCode() : 0);
+        return result;
+        }
 }
