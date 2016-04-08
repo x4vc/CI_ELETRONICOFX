@@ -392,6 +392,22 @@ public class MainWindowQueries {
             return false;            
         }
     }
+    
+    public boolean SolicitaConfirmacaoLeitura(int nlIdCI) throws Exception{
+        boolean bSolicita = false;
+        try {
+            TbCiDestinatario entity = em.find(TbCiDestinatario.class, nlIdCI);
+            bSolicita = entity.getCoinDestinatarioConfirmarLeitura();
+            return bSolicita;
+        }catch (javax.persistence.PersistenceException e) {
+            e.printStackTrace();
+            em.close();
+            emf.close();
+            return false;            
+        }
+        
+    }
+    
     public boolean MarcarComoLido(int nlIdCI, int nlButtonSelected, boolean blCILido) throws Exception{
         //boolean bMarcado = true;
 //        Date data = new Date();

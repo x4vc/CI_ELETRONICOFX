@@ -416,6 +416,70 @@ public class FXMLMainController implements Initializable {
         }
     }
     @FXML
+    private void handleBtnSalvarTodosAnexos(ActionEvent event) throws IOException{
+        int nSize = 0;
+        String strFileName = "";
+        File outfile = null;
+        
+        if (0==lviewAnexos.getItems().size()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("A CI-Eletrônica não possui arquivos para serem salvos");
+            alert.showAndWait();            
+        } else {
+            
+            //Preenchemos Ids e nomes dos arquivos
+            ObservableList<Choice> choicesArquivos = FXCollections.observableArrayList();
+            //------------------------------------------------
+            
+            //Quantidade de arquvios a serem salvos
+            nSize = lviewAnexos.getItems().size();
+            
+            //Selecionamos a pasta de destino 
+            Stage stage = new Stage();
+
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("CI-Eletrônica");
+            //File defaultDirectory = new File("c:/dev/javafx");
+            dirChooser.setInitialDirectory(new File(System.getProperty("user.home") + "//Downloads"));
+            File selectedDirectory = dirChooser.showDialog(stage);            
+            //-----------------------------------------------
+            
+            if (selectedDirectory!= null){
+                choicesArquivos = lviewAnexos.getItems();
+                
+                for (int i = 0; i < nSize; i++){
+                    //Salvamos o arquivo na pasta selecionada pelo usuário
+                        MainWindowQueries consulta  = new MainWindowQueries();
+                        List<TbAnexo> listaAnexos = new ArrayList<TbAnexo>();
+
+                        //Extrair o Id para realizar o download do arquivo
+
+                        listaAnexos = consulta.downloadAnexo(choicesArquivos.get(i).id);
+                        for(TbAnexo l : listaAnexos){
+                            strFileName = l.getAnexoNome();
+                            outfile = new File(selectedDirectory + "\\" + l.getAnexoNome());
+                            try {
+                                writeArquivo(outfile, l.getAnexoBlob());
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+                }
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informação");
+                alert.setHeaderText(null);
+                alert.setContentText("Os arquivos foram salvos na pasta selecionada pelo usuário.");
+                alert.showAndWait();
+                
+            }
+             
+        }
+        
+    }
+    
+    @FXML
     private void handleBtnSalvarTodosArquivos(ActionEvent event) throws IOException{
         int nSize = 0;
         int j = 0;

@@ -42,6 +42,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
@@ -117,6 +118,8 @@ public class NovaCIController implements Initializable {
     ComboBox cmbApensamento;
     @FXML
     TextField txtApensamento;
+    @FXML
+    CheckBox checkBoxSolicitarConfirmarLeitura;
     
     
     // Clases para tratar Anexar Arquivos
@@ -1296,6 +1299,8 @@ public class NovaCIController implements Initializable {
             newTbCIDestinatario.setIdTipoCoin(TipoCI);
             
             newTbCIDestinatario.setCoinAssinatura(strMD5Assinatura);
+            
+            newTbCIDestinatario.setCoinDestinatarioConfirmarLeitura(checkBoxSolicitarConfirmarLeitura.isSelected());
             
             em.persist(newTbCIDestinatario);            
         }

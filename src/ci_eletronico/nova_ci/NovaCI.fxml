@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.3438395415472779" orientation="VERTICAL" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.nova_ci.NovaCIController">
+<SplitPane dividerPositions="0.3438395415472779" orientation="VERTICAL" prefHeight="780.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ci_eletronico.nova_ci.NovaCIController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="231.0" prefWidth="798.0" style="-fx-background-color: #fff3e5;">
          <children>
@@ -59,8 +59,9 @@
             <Label layoutX="170.0" layoutY="204.0" text="Apensamento:" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="204.0" />
             <ComboBox fx:id="cmbApensamento" layoutX="30.0" layoutY="200.0" prefHeight="25.0" prefWidth="60.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="200.0" />
             <TextField fx:id="txtApensamento" layoutX="618.0" layoutY="200.0" prefHeight="25.0" prefWidth="618.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="200.0" />
+            <CheckBox fx:id="checkBoxSolicitarConfirmarLeitura" layoutX="170.0" layoutY="241.0" mnemonicParsing="false" text="Solicitar Confirmação de Leitura" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="240.0" />
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="349.0" prefWidth="798.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="898.0">
          <children>
             <HTMLEditor fx:id="htmlEditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="125.0" layoutY="83.0" prefHeight="200.0" prefWidth="506.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
          </children></AnchorPane>

@@ -118,6 +118,15 @@
                         </AnchorPane>
                      </content>
                   </TitledPane>
+                  <ScrollPane fx:id="scrollPaneTextFlow" layoutX="44.0" layoutY="445.0" prefHeight="66.0" prefWidth="116.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="480.0">
+                     <content>
+                        <TextFlow fx:id="txtFAnexos" prefHeight="63.0" prefWidth="112.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </TextFlow>
+                     </content>
+                  </ScrollPane>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="704.0" prefWidth="441.0">
                <children>
@@ -254,15 +263,6 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <ScrollPane fx:id="scrollPaneTextFlow" layoutX="52.0" layoutY="21.0" prefHeight="66.0" prefWidth="473.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="21.0">
-                     <content>
-                        <TextFlow fx:id="txtFAnexos" prefHeight="63.0" prefWidth="461.0">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                        </TextFlow>
-                     </content>
-                  </ScrollPane>
                   <Label layoutY="41.0" text="Anexos:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="40.0" />
                   <Button fx:id="btnEditarCI" graphicTextGap="0.0" layoutX="255.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBtnEditarCI" prefHeight="35.0" prefWidth="100.0" text="Editar CI" AnchorPane.leftAnchor="205.0" AnchorPane.topAnchor="90.0">
                      <graphic>
@@ -292,7 +292,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnSalvarTodosArquivos" layoutX="532.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleBtnSalvarTodosArquivos" text="Salvar Arquivos" AnchorPane.leftAnchor="570.0" AnchorPane.topAnchor="40.0" />
+                  <Button fx:id="btnSalvarTodosArquivos" layoutX="532.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleBtnSalvarTodosAnexos" text="Salvar Arquivos" AnchorPane.leftAnchor="570.0" AnchorPane.topAnchor="40.0" />
                   <Label layoutX="54.0" layoutY="6.0" text="Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse" />
                   <Button fx:id="btnResponderCI" layoutX="532.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleBtnCIResponder" prefHeight="35.0" prefWidth="120.0" text="Responder CI" AnchorPane.leftAnchor="425.0" AnchorPane.topAnchor="90.0">
                      <graphic>
@@ -312,6 +312,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <ListView fx:id="lviewAnexos" layoutX="54.0" layoutY="25.0" prefHeight="64.0" prefWidth="506.0" />
                </children>
             </AnchorPane>
         </items>
