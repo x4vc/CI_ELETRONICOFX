@@ -74,6 +74,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -318,6 +319,10 @@ public class FXMLMainController implements Initializable {
     @FXML
     private TitledPane tPaneArquivadas;
     @FXML
+    private TitledPane tPaneCisPorAprovar;
+    @FXML
+    private Button btnCiPorAprovar;
+    @FXML
     private Accordion accordionCaixa;
     @FXML
     private ScrollPane scrollPaneTextFlow;
@@ -326,6 +331,11 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     private ListView<Choice> lviewAnexos;
+    
+    @FXML
+    private AnchorPane anchorPaneButoes;
+    @FXML
+    private AnchorPane anchorPaneTables;
                
     // Clases para tratar Anexar Arquivos
     private Desktop desktop = Desktop.getDesktop();
@@ -394,6 +404,7 @@ public class FXMLMainController implements Initializable {
         tPaneRecebidas.setCollapsible(false);
         tPaneEnviadas.setCollapsible(false);
         tPaneArquivadas.setCollapsible(false);
+        //tPaneCisPorAprovar.setCollapsible(false);
         
         this.btnSalvarTodosArquivos.setVisible(true);
         this.lviewAnexos.setTooltip(new Tooltip("Para visualizar, favor selecione o arquivo e clique 2 vezes no botão esquerdo do Mouse"));
@@ -3485,6 +3496,28 @@ public class FXMLMainController implements Initializable {
     }
     
     @FXML
+    private void handleBtnCaixaPendentesAprovacao(ActionEvent event) throws IOException {
+        //Solicitação de Patricia para juntar todas as CIs pendentes de aprovação numa caixa só
+        
+        lblCaixa.setText("");
+        lblCaixa.setText("CIs AGUARDANDO APROVAÇÃO");
+        TbViewGeral.setVisible(false);
+        
+        TbViewGeral2.setVisible(true);                
+        TbViewGeral2.setLayoutX(1);
+        TbViewGeral2.setLayoutY(30);
+        TbViewGeral2.setPrefHeight(656);
+        lblAguardandoAprovacao.setVisible(false);
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação");
+        alert.setHeaderText(null);
+        alert.setContentText("Botão Caixa de CIs pendentes de aprovação.");
+        alert.showAndWait();
+        
+    }
+    
+    @FXML
     private void handleBtnCaixaEntrada(ActionEvent event) throws IOException {
         lblCaixa.setText("");
         lblCaixa.setText("CAIXA DE RECEBIDAS");
@@ -3671,8 +3704,24 @@ public class FXMLMainController implements Initializable {
                 ngBotao = 6;
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
                 TbViewGeral2.setVisible(true);
-                TbViewGeral.setPrefHeight(328);
-                lblAguardandoAprovacao.setVisible(true);
+                
+                //----Não será mais visualizado TableView Cis aguardando aprovação
+                TbViewGeral2.setVisible(false);                    
+                lblAguardandoAprovacao.setVisible(false);
+                
+                
+//                TbViewGeral2.setVisible(true);                
+//                TbViewGeral2.setLayoutX(1);
+//                TbViewGeral2.setLayoutY(360);
+//                TbViewGeral2.setPrefHeight(492);                
+//                lblAguardandoAprovacao.setVisible(true);
+                ///----------------------------------------
+                
+                
+                TbViewGeral.setVisible(true);
+//                TbViewGeral.setPrefHeight(328);
+                TbViewGeral.setPrefHeight(656);
+                
                 
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     listaComunicacaoInterna = consulta.getlistaTbComunicacaoInternaEnviados(nlIdUnidadeOrganizacional);                    
@@ -3685,6 +3734,8 @@ public class FXMLMainController implements Initializable {
                 ngBotao = 5;
                 ngTabela = 1; // TB_COMUNICACAO_INTERNA
                 TbViewGeral2.setVisible(false);
+                
+                TbViewGeral.setVisible(true);
                 TbViewGeral.setPrefHeight(656);
                 lblAguardandoAprovacao.setVisible(false);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
@@ -4576,9 +4627,21 @@ public class FXMLMainController implements Initializable {
                 ngBotao = 2;
                 ngTabela = 2; // TB_CI_DESTINATARIO
                 btnAprovarCI.setDisable(true);
-                TbViewGeral2.setVisible(true);
-                lblAguardandoAprovacao.setVisible(true);
-                TbViewGeral.setPrefHeight(328);
+                
+                //----Não será mais visualizado TableView Cis aguardando aprovação
+                TbViewGeral2.setVisible(false);                    
+                lblAguardandoAprovacao.setVisible(false);
+                
+//                TbViewGeral2.setVisible(true);                    
+//                TbViewGeral2.setLayoutX(1);
+//                TbViewGeral2.setLayoutY(360);
+//                TbViewGeral2.setPrefHeight(492);                
+//                lblAguardandoAprovacao.setVisible(true);
+                //---------------------------------------
+                
+                TbViewGeral.setVisible(true);
+//                TbViewGeral.setPrefHeight(328);
+                TbViewGeral.setPrefHeight(656);
                 if (1 == nlTipoPerfil){ //Perfil Gestor
                     //TableView1
                     listaCiDestinatario = consulta.getlistaCaixaEntrada(nlIdUnidadeOrganizacional);
@@ -4597,6 +4660,8 @@ public class FXMLMainController implements Initializable {
                 btnMarcarcomoPendencia.setDisable(true);
                 TbViewGeral2.setVisible(false);
                 lblAguardandoAprovacao.setVisible(false);
+                
+                TbViewGeral.setVisible(true);
                 TbViewGeral.setPrefHeight(656);
                 //TbViewGeral.setMaxHeight(656);
                 
@@ -4612,6 +4677,8 @@ public class FXMLMainController implements Initializable {
                 TbViewGeral2.setVisible(false);
                 lblAguardandoAprovacao.setVisible(false);
                 btnAprovarCI.setDisable(true);
+                
+                TbViewGeral.setVisible(true);
                 TbViewGeral.setPrefHeight(656);
 //                if ((this.nIdUnidadeOrganizacional == this.nIdUOGestor) &&(this.nTipoPerfil == 1)){
 //                    listaCiDestinatario = consulta.getlistaGestorCaixaEntradaArquivados(this.nIdUnidadeOrganizacional);
