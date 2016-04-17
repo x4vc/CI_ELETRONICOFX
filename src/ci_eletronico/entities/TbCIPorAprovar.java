@@ -58,10 +58,7 @@ public class TbCIPorAprovar {
     private BooleanProperty boolp_CoinLido;
     
     
-    //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
-    //por tanto, não existe fisicamente mapeado para tabela nenhuma
-    private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
-    //------------------------------------------
+    
     
     //variables a serem utilizadas na
     //persistencia da tabela TB_CI_DESTINATARIO
@@ -105,6 +102,15 @@ public class TbCIPorAprovar {
     
     private StringProperty strp_CiSequencial;
     private StringProperty strp_Destinatarios;
+    
+    //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
+    //por tanto, não existe fisicamente mapeado para tabela nenhuma
+    private IntegerProperty intp_idTabelaFonte;    //1- TB_COMUNICACAO_INTERNA, 2- TB_CI_DESTINATARIO    
+    
+    //Variavel para saber a procedencia da CI que aguarda Aprovação
+    private StringProperty strp_CiAguardandoAprovacao;
+    
+    //------------------------------------------
 
     public TbCIPorAprovar() {
     }
@@ -134,7 +140,7 @@ public class TbCIPorAprovar {
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
             String strp_DescricaoUODestinatario, /*variavel String sempre vazio*/
             String strp_CoinAssinatura, boolean boolp_CoinLido, boolean boolp_CoinCancelado,
-            String strCiSequencial, String strDestinatarios) {
+            String strCiSequencial, String strDestinatarios, String strTituloCiporAprovar) {
         
         intp_idCoin = new SimpleIntegerProperty(nIdCoin);
         strp_Assunto = new SimpleStringProperty(strAssunto);
@@ -174,6 +180,8 @@ public class TbCIPorAprovar {
         
         this.strp_CiSequencial = new SimpleStringProperty(strCiSequencial);
         this.strp_Destinatarios = new SimpleStringProperty(strDestinatarios);
+        
+        this.strp_CiAguardandoAprovacao = new SimpleStringProperty(strTituloCiporAprovar);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -206,7 +214,7 @@ public class TbCIPorAprovar {
             String strp_dataCriacao, Integer intp_idTabelaFonte, 
             Integer intp_idCoinGenesis, Integer intp_idUnorGenesis, Integer intp_CoinNumeroGenesis, String strp_CoinHistoricoAnexos, String strp_UnorDescricaoGenesis,
             Integer nTipoCoin, String strp_CoinAssinatura, boolean boolp_CoinLido, boolean boolp_CoinCancelado,
-            String strCiSequencial) {
+            String strCiSequencial, String strTituloCiporAprovar) {
         this.intp_idCoinDestinatario = new SimpleIntegerProperty(intp_idCoinDestinatario);
         this.intp_idCoin = new SimpleIntegerProperty(intp_idCoin);
         this.intp_idUsuarioRemitente = new SimpleIntegerProperty(intp_idUsuarioRemitente);
@@ -248,6 +256,8 @@ public class TbCIPorAprovar {
         this.boolp_CoinCancelado = new SimpleBooleanProperty(boolp_CoinCancelado);
         
         this.strp_CiSequencial = new SimpleStringProperty(strCiSequencial);
+        
+        this.strp_CiAguardandoAprovacao = new SimpleStringProperty(strTituloCiporAprovar);
     }
     
 //    //Metodos para TableView
@@ -721,6 +731,14 @@ public class TbCIPorAprovar {
 
     public void setStrp_Destinatarios(String strp_Destinatarios) {
         this.strp_Destinatarios.setValue(strp_Destinatarios);
+    }
+
+    public String getStrp_CiAguardandoAprovacao() {
+        return strp_CiAguardandoAprovacao.getValue();
+    }
+
+    public void setStrp_CiAguardandoAprovacao(String strp_CiAguardandoAprovacao) {
+        this.strp_CiAguardandoAprovacao.setValue(strp_CiAguardandoAprovacao);
     }
     
     
