@@ -252,6 +252,8 @@ public class FXMLMainController implements Initializable {
     @FXML    
     private TableView<TbCIPorAprovar> TbViewGeral2;
     @FXML
+    private TableColumn ClTipoAprovacao;
+    @FXML
     private TableColumn ClIdCoin2;
     @FXML
     private TableColumn ClICiSequencial2;
@@ -3670,6 +3672,7 @@ public class FXMLMainController implements Initializable {
         
         //Agora TB_COMUNICACAO_INTERNA
         int nIdUsuario = 0;
+        int nIdUOGestor = 0;
         int nIdUO = 0;
         String strUODescricao = "";
         boolean bAutorizado = false;
@@ -3766,7 +3769,9 @@ public class FXMLMainController implements Initializable {
             }
             
         }
+        //ClAprovado.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_CiAguardandoAprovacao"));
         ClAprovado.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_AutorizadoPeloGestor"));
+        ClTipoAprovacao.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_CiAguardandoAprovacao"));
         ClIdCoin2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
 
         ClICiSequencial2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
@@ -3888,11 +3893,11 @@ public class FXMLMainController implements Initializable {
         });        
         
         
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Informação");
-        alert.setHeaderText(null);
-        alert.setContentText("Botão Caixa de CIs pendentes de aprovação.");
-        alert.showAndWait();
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle("Informação");
+//        alert.setHeaderText(null);
+//        alert.setContentText("Botão Caixa de CIs pendentes de aprovação.");
+//        alert.showAndWait();
         
     }
     
