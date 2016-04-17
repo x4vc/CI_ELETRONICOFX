@@ -1978,6 +1978,9 @@ public class FXMLMainController implements Initializable {
                 case 7:
                     btnPendentesAprovacao.fire();
                     break;
+                case 8: //handleBtnCaixaPendentesAprovacao()
+                    btnCiPorAprovar.fire();
+                    break;
                 default:
                     break;                
             } 
@@ -2155,6 +2158,9 @@ public class FXMLMainController implements Initializable {
                     break;
                 case 7:
                     btnPendentesAprovacao.fire();
+                    break;
+                case 8: //handleBtnCaixaPendentesAprovacao()
+                    btnCiPorAprovar.fire();
                     break;
                 default:
                     break;                
@@ -3230,6 +3236,9 @@ public class FXMLMainController implements Initializable {
                 case 7:
                     btnPendentesAprovacao.fire();
                     break;
+                case 8: //handleBtnCaixaPendentesAprovacao()
+                    btnCiPorAprovar.fire();
+                    break;
                 default:
                     break;                
             } 
@@ -3323,6 +3332,9 @@ public class FXMLMainController implements Initializable {
                     break;
                 case 7:
                     btnPendentesAprovacao.fire();
+                    break;
+                case 8: //handleBtnCaixaPendentesAprovacao()
+                    btnCiPorAprovar.fire();
                     break;
                 default:
                     break;                
@@ -3500,6 +3512,7 @@ public class FXMLMainController implements Initializable {
     @FXML
     private void handleBtnCaixaPendentesAprovacao(ActionEvent event) throws IOException {
         //Solicitação de Patricia para juntar todas as CIs pendentes de aprovação numa caixa só
+        this.ngBotao = 8;
         
         lblCaixa.setText("");
         lblCaixa.setText("CIs AGUARDANDO APROVAÇÃO");
