@@ -3503,11 +3503,390 @@ public class FXMLMainController implements Initializable {
         lblCaixa.setText("CIs AGUARDANDO APROVAÇÃO");
         TbViewGeral.setVisible(false);
         
+        String strTituloCiporAprovar="";
+        
+        int nlIdCoinDestinatario = 0;
+        TbComunicacaoInterna nlIdCoin;
+        int nlIdUsuarioRemitente = 0;
+        String strUsuarioNomeCompleto = "";
+        int nlIdUORemitente = 0;
+        String strDescricaoUORemitente = "";
+        int nlIdUODestinatario = 0;
+        String strDescricaoUODestinatario = "";
+        int nlIdUOGestorDestinatario = 0;
+        String strDescricaoUOGestorDestinatario = "";
+        boolean bAutorizadoPeloGestor = false;
+        boolean bArquivadoPeloUODestinatario = false;
+        boolean bArquivadoPeloUOGestor = false;    
+        String strAssunto = "";
+        String strConteudo = "";
+        boolean bPendentePeloUODestinatario = false;
+        Date dataAutorizadoPeloGestorDestinatario;
+        boolean bLidoPeloUODestinatario = false;
+        Date dataCriacao;
+        TbTipoEnvio nlIdTipoEnvio;  //1-Enviado "Para; 2-Enviado "Com cópia"; 3-Enviado "Com cópia oculta" 
+        //TbTipoComunicacoInterna tbTipoCoin;
+        int nlTipoCoin = 0;
+        int nlIdCoinNumero = 0; //Número sequencial das CIs para cada UO
+        boolean bReadOnlyUODestinatario = false;
+        boolean bCoinTemAnexos = false;
+        boolean bAutorizadoPeloGestorRemitente = false;
+
+        String strDataCriacao = "";
+        
+        //Variaveis utilizadas nas CIs encaminhadas para não perder número de CI
+        //criada e quem foi o Remitente inicial (serve para saber quais anexos acompanham o despacho também)
+        int nlIdCoinGenesis = 0;
+        int nlIdUnorGenesis = 0;
+        int nlCoinNumeroGenesis = 0;
+        String strCoinHistoricoAnexos = "";
+        String strUnorDescricaoGenesis = "";
+        
+        //Variavel para construção da Ci Sequencial
+        String strCiSequencial = "";
+        String strAno = "";        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");  
+        
+        //Variaveis de apoio
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");        
+        int nIdCoin = 0;
+        int nIdTipoEnvio = 0;
+        
+        //Assinatura MD5
+        String strlAssinatura = "";
+        
+        //CI Lido ou não
+        boolean bCoinLido = false;
+        
+        boolean bCancelado = false;
+        
+        //A variavel intp_idTabelaFonte foi criada para saber qual a fonte de dados
+        //por tanto, não existe fisicamente mapeado para tabela nenhuma
+        int nlIdTabelaFonte = 0;
+        //-----------------------------------------------------
+        
+        MainWindowQueries consultaTbCiDestinatario;
+        consultaTbCiDestinatario  = new MainWindowQueries(); 
+        
+        MainWindowQueries consultaTbComunicacaoInterna  = new MainWindowQueries();
+        
+        
         TbViewGeral2.setVisible(true);                
         TbViewGeral2.setLayoutX(1);
         TbViewGeral2.setLayoutY(30);
         TbViewGeral2.setPrefHeight(656);
         lblAguardandoAprovacao.setVisible(false);
+        lblRecordCount.setText("");
+        
+        //Unidade Organizacional utilizado nas queries
+        int nlIdUnidadeOrganizacional = 0;
+        nlIdUnidadeOrganizacional = this.nIdUnidadeOrganizacional;
+        
+        //Tipo de perfil
+        int nlTipoPerfil = 0;
+        nlTipoPerfil = this.nTipoPerfil;
+        
+        List<TbCiDestinatario> listaCiDestinatario2 = new ArrayList<TbCiDestinatario>();
+        List<TbComunicacaoInterna> listaCiSemAprovar2 = new ArrayList<TbComunicacaoInterna>();
+        
+        ObservableList<TbCIPorAprovar> obslistaTbCaixaEntrada2 = FXCollections.observableArrayList();
+        
+        if (1 == nlTipoPerfil){ //Perfil Gestor
+                    
+            //TableView2
+            listaCiDestinatario2 = consultaTbCiDestinatario.getlistaCaixaEntradaSolicitandoAprovacao(nlIdUnidadeOrganizacional);
+        } else {
+
+            //TableView2
+            listaCiDestinatario2 = consultaTbCiDestinatario.getlistaCaixaEntradaSolicitandoAprovacaoPerfil2(nlIdUnidadeOrganizacional);
+        }
+        
+        for(TbCiDestinatario l : listaCiDestinatario2){
+            nlIdCoinDestinatario = l.getIdCoinDestinatario();
+            nlIdCoin = l.getIdCoin();
+            nIdCoin = nlIdCoin.getIdCoin();
+            nlIdUsuarioRemitente = l.getIdUsuarioRemitente();
+            strUsuarioNomeCompleto = l.getUsuNomeCompletoRemitente();
+            nlIdUORemitente = l.getIdUoRemitente();
+            strDescricaoUORemitente = l.getInorDescricaoRemitente();
+            nlIdUODestinatario = l.getIdUoDestinatario();
+            strDescricaoUODestinatario = l.getUnorDescricaoDestinatario();
+            nlIdUOGestorDestinatario = l.getIdUoGestorDestinatario();
+            strDescricaoUOGestorDestinatario = l.getUnorDescricaoGestorDestinatario();
+            bAutorizadoPeloGestor = l.getCoinDestinatarioGestorAutorizado();
+            bArquivadoPeloUODestinatario = l.getCoinDestinatarioUoArquivado();
+            bArquivadoPeloUOGestor = l.getCoinDestinatarioUoGestorArquivado();    
+            strAssunto = l.getCoinDestinatarioAssunto();
+            strConteudo = l.getCoinDestinatarioConteudo();
+            bPendentePeloUODestinatario = l.getCoinDestinatarioPendente();
+            dataAutorizadoPeloGestorDestinatario = l.getCoinDestinatarioGestorDataAutorizado();
+            bLidoPeloUODestinatario = l.getCoinDestinatarioLido();
+            dataCriacao = l.getCoinDestinatarioDataCriacao();
+            nlIdTipoEnvio = l.getIdTipoEnvio();  //1-Enviado "Para; 2-Enviado "Com cópia"; 3-Enviado "Com cópia oculta" 
+            nIdTipoEnvio = nlIdTipoEnvio.getIdTipoEnvio();
+            nlIdCoinNumero = l.getCoinDestinatarioNumero(); //Número sequencial das CIs para cada UO
+            bReadOnlyUODestinatario = l.getCoinDestinatarioReadOnly();
+            bCoinTemAnexos = l.getCoinDestinatarioTemAnexos();
+            bAutorizadoPeloGestorRemitente = l.getCoinRemitenteGestorAutorizado();
+
+            nlIdCoinGenesis = l.getIdCoinGenesis();
+            nlIdUnorGenesis = l.getIdUnorGenesis();
+            nlCoinNumeroGenesis = l.getCoinNumeroGenesis();
+            strCoinHistoricoAnexos = l.getCoinHistoricoAnexos();
+            strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();
+
+            nlTipoCoin = l.getIdTipoCoin().getIdTipoCoin();
+
+            strlAssinatura = l.getCoinAssinatura();
+
+            bCoinLido = l.getCoinDestinatarioLido();
+
+            bCancelado = l.getCoinCancelado();
+
+            strDataCriacao = df.format(dataCriacao);
+
+            //Construção da CI sequencial                    
+            strAno = sdf.format(dataCriacao);
+            strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+            //----------------------------------------------------------
+            
+            nlIdTabelaFonte = 2;
+            
+            strTituloCiporAprovar = "RECEBIDAS";
+
+            obslistaTbCaixaEntrada2.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
+                    strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
+                    strDescricaoUODestinatario, nlIdUOGestorDestinatario, strDescricaoUOGestorDestinatario, 
+                    bAutorizadoPeloGestor, bArquivadoPeloUODestinatario, bArquivadoPeloUOGestor, strAssunto, 
+                    strConteudo, bPendentePeloUODestinatario, dataAutorizadoPeloGestorDestinatario,
+                    bLidoPeloUODestinatario, dataCriacao, nIdTipoEnvio, nlIdCoinNumero, bReadOnlyUODestinatario, 
+                    bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
+                    nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                    nlTipoCoin, strlAssinatura, bCoinLido, bCancelado,
+                    strCiSequencial, strTituloCiporAprovar));
+
+//            System.out.println();
+        }
+        
+        //Agora TB_COMUNICACAO_INTERNA
+        int nIdUsuario = 0;
+        int nIdUO = 0;
+        String strUODescricao = "";
+        boolean bAutorizado = false;
+        int nTipoCoin = 0;
+        String strApensamento = "";
+        int nSequencial = 0;
+        boolean bArquivadoUO = false;
+        boolean bArquivadoUOGestor = false;
+        Date dataAutorizado;
+        boolean bCoinReadOnly = false;
+        boolean bTemAnexos = false;
+        String strlDescricaoUODestinatario = "";
+        //Deve-se mostrar as Cis para aprovação só para usuário que faz parte da UO Gestora
+        if (this.nIdUOGestor == this.nIdUnidadeOrganizacional){
+            if (1 == nlTipoPerfil){ //Perfil Gestor
+                listaCiSemAprovar2 = consultaTbComunicacaoInterna.getlistaTbComunicacaoInternaPorAprovar(this.nIdUOGestor);
+            } else {
+                listaCiSemAprovar2 = consultaTbComunicacaoInterna.getlistaTbComunicacaoInternaPorAprovarPerfil2(this.nIdUOGestor);
+            }
+            
+            //Para construir campo destinatario
+            MainWindowQueries consultaDestinatario  = new MainWindowQueries();
+            List<TbCiDestinatario> listaDestinatario = new ArrayList<TbCiDestinatario>();
+        
+            String strDestinatarios = "";
+            //---------------------------------------------
+            for(TbComunicacaoInterna l : listaCiSemAprovar2){
+                try {
+                    nIdCoin = l.getIdCoin();
+                    strAssunto = l.getCoinAssunto();
+                    strConteudo = l.getCoinConteudo();
+                    nIdUsuario = l.getIdUsuario();
+                    strUsuarioNomeCompleto = l.getUsuNomeCompleto();
+                    nIdUO = l.getIdUnidadeOrganizacional();
+                    strUODescricao = l.getUnorDescricao();
+                    nIdUOGestor = l.getIdUoGestor();
+                    bAutorizado = l.getCoinAutorizado();
+                    nTipoCoin = l.getIdTipoCoin().getIdTipoCoin();
+                    strApensamento = l.getCoinApensamento();            
+                    nSequencial = l.getCoinNumero();
+                    bArquivadoUO = l.getCoinUoArquivado();
+                    bArquivadoUOGestor = l.getCoinUoGestorArquivado();            
+                    dataCriacao = l.getCoinDataCriacao();
+                    strDataCriacao = df.format(dataCriacao);            
+                    dataAutorizado = l.getCoinDataAutorizado();
+                    bCoinReadOnly = l.getCoinReadOnly();
+                    bTemAnexos = l.getCoinTemAnexos();
+                    nlIdTabelaFonte = 1;
+
+                    nlIdCoinGenesis = l.getIdCoinGenesis();
+                    nlIdUnorGenesis = l.getIdUnorGenesis();
+                    nlCoinNumeroGenesis = l.getCoinNumeroGenesis();
+                    strCoinHistoricoAnexos = l.getCoinHistoricoAnexos();
+                    strUnorDescricaoGenesis = l.getUnorDescricaoGenesis();
+
+                    strlAssinatura = l.getCoinAssinatura();
+
+                    bCancelado = l.getCoinCancelado();
+
+                    //Construção da CI sequencial            
+                    strAno = sdf.format(dataCriacao);
+                    strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
+                    //----------------------------------------------------------
+
+                    //Construção dos destinatarios
+                    strDestinatarios = "";
+                    TbComunicacaoInterna nTbIdCoin = new TbComunicacaoInterna(nIdCoin);
+                    listaDestinatario = consultaDestinatario.getlistaDestinatariosNaoAutorizados(nTbIdCoin);
+
+                    for (TbCiDestinatario lista : listaDestinatario){
+                        strDestinatarios = strDestinatarios.concat(lista.getUnorDescricaoDestinatario() + "; ");                        
+                    }
+
+                    //----------------------------------------------------------
+                    strTituloCiporAprovar = "ENVIADAS";
+
+
+    //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
+    //                        nIdUO,strUODescricao,nSequencial,dataCriacao,strDataCriacao,bAutorizado,bTemAnexos,1));
+                    obslistaTbCaixaEntrada2.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
+                            nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
+                            dataAutorizado, bCoinReadOnly, bTemAnexos ,nlIdTabelaFonte,
+                            nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
+                            strlDescricaoUODestinatario,
+                            strlAssinatura, bCoinLido, bCancelado,
+                            strCiSequencial, strDestinatarios, strTituloCiporAprovar));
+                } catch (Exception e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("ObservableList Error");
+                    alert.setContentText(e.toString());
+                    alert.showAndWait();
+                }
+            }
+            
+        }
+        ClAprovado.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_AutorizadoPeloGestor"));
+        ClIdCoin2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("intp_idCoin"));
+
+        ClICiSequencial2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Integer>("strp_CiSequencial"));
+
+        ClUODestinatario2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUODestinatario"));
+        ClDataEnvio2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_dataCriacao"));        
+        ClUORemitente2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_DescricaoUORemitente"));        
+        ClAutorRemitente2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_UsuarioNomeCompleto"));        
+        ClAssunto2.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,String>("strp_Assunto"));
+        TbViewGeral2.setItems(obslistaTbCaixaEntrada2);
+        
+        
+        TbViewGeral2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+            //Check whether item is selected and set value of selected item to Label
+                try{
+                    //TableView<TbCIPorAprovar> TbViewGeral = new TableView<>();
+                    if(TbViewGeral2.getSelectionModel().getSelectedItem() != null){
+                        //TbCIPorAprovar tbCiPorAprovar = TbViewGeral.getSelectionModel().getSelectedItem();
+                        //TbCIPorAprovar tbtbCiPorAprovar = new TbCIPorAprovar();
+
+                        TbCIPorAprovar tbCiPorAprovar = TbViewGeral2.getSelectionModel().getSelectedItem();
+                        int nCISequencial = 0;
+                        int nlIdCI = 0;
+                        boolean bTemAnexo = false;
+                        boolean bLido = false;
+                        boolean blCancelado = false;
+                        String strlBtnMarcarComoLido = "";
+
+                        String strCoinHistoricoAnexos = "";
+                        String strAssunto = "";
+
+                        String strDescricaoUO = "";
+                        String strYear = "";
+                        Date dataCriacao;
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy");        
+
+                        nlIdCI = tbCiPorAprovar.getIntp_idCoin();
+
+                        strDescricaoUO = tbCiPorAprovar.getStrp_UnorDescricaoGenesis();
+                        nCISequencial = tbCiPorAprovar.getIntp_CoinNumeroGenesis();                    
+                        dataCriacao = tbCiPorAprovar.getDataCriacao();
+                        bTemAnexo = tbCiPorAprovar.getBoolp_CoinTemAnexos();
+                        bLido = tbCiPorAprovar.getBoolp_CoinLido();
+                        blCancelado = tbCiPorAprovar.getBoolp_CoinCancelado();
+                        strAssunto = tbCiPorAprovar.getStrp_Assunto();
+
+                        strCoinHistoricoAnexos = tbCiPorAprovar.getStrp_CoinHistoricoAnexos();
+
+                        strYear = df.format(dataCriacao);
+
+                        //Verificamos se é Gestor ou não
+                        int nlIdUnidadeOrganizacional = Integer.parseInt(lblIdUO.getText());
+                        int nlIdUOGestor = Integer.parseInt(lblUOGestora.getText());
+                        int nlTipoPerfil = Integer.parseInt(lblIdPerfil.getText());
+
+                        if ((nlIdUnidadeOrganizacional == nlIdUOGestor) &&(nlTipoPerfil == 1)){
+                            btnAprovarCI.setDisable(false);
+                            btnEditarCI.setDisable(false);
+                            btnDesaprovarCI.setDisable(false);
+                        }else{
+                            btnAprovarCI.setDisable(true);
+                            btnEditarCI.setDisable(true);
+                            btnDesaprovarCI.setDisable(true);
+                        }
+
+                        //-----TableView2  
+                        //btnAprovarCI.setDisable(false); 
+                        btnEncaminharCI.setDisable(true);
+                        btnResponderCI.setDisable(true);
+                        btnArquivarCI.setDisable(true);
+                        btnDesarquivarCI.setDisable(true);
+                        btnHistoricoCI.setDisable(true);
+                        btnMarcarComoLido.setText("Marcar como Lido");
+                        btnMarcarComoLido.setDisable(true);                            
+                        btnMarcarcomoPendencia.setDisable(true);
+
+                        //btnEditarCI.setVisible(true);
+
+//                                //TableView2 Habilita botão Aprovar CI e desabilita Marcar como Lido
+//                                btnMarcarComoLido.setText("Marcar como Lido");
+//                                btnMarcarComoLido.setDisable(true);
+//                                btnEncaminharCI.setDisable(true);
+//                                btnMarcarcomoPendencia.setDisable(true);
+//                                btnAprovarCI.setDisable(false);
+
+//                                strlBtnMarcarComoLido = (bLido ? "Marcar como não Lido" : "Marcar como Lido");
+//                                btnMarcarComoLido.setText(strlBtnMarcarComoLido);
+                        htmlEditorCI.setHtmlText(tbCiPorAprovar.getStrp_Conteudo());  
+
+                        if (strAssunto.equals("CI Não foi autorizada pela Unidade Gestora")){
+                            lblNumeroSequencialCI.setText("CI-DESAPROVADA");
+
+                        }else {
+                            lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                        }
+
+                        //lblNumeroSequencialCI.setText(strDescricaoUO + "-" + String.format("%05d",nCISequencial)+"-" + strYear);
+                        if ((bTemAnexo) || (strCoinHistoricoAnexos.length()>0) ){
+                            PreencherTxtFAnexos(nlIdCI,strCoinHistoricoAnexos);
+                        }                    
+                        else {
+                            lviewAnexos.getItems().clear();
+                            txtFAnexos.getChildren().clear();
+                        }
+
+                    }
+                }catch (Exception e) {
+                        e.printStackTrace();
+                        //labelMessage.setText("Error on get row Data");
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Erro");
+                        alert.setHeaderText("Erro na carga da TableView2");
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();
+                }
+            }
+        });        
+        
         
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Informação");
@@ -3687,8 +4066,8 @@ public class FXMLMainController implements Initializable {
         
         String strDestinatarios = "";
         //----------------------------------------------------------------------
-        
-        
+        String strTituloCiporAprovar="";
+       
         //Método utilizado para preencher TableView: private void PreencherCaixaEntrada(int nlTipoPreenchimento)
         //Método utilizado para preencher TableView: private void PreencherCaixaSaida(int nlTipoPreenchimento)
         //Valores dos botões:
@@ -3796,6 +4175,7 @@ public class FXMLMainController implements Initializable {
             }
 
             //----------------------------------------------------------
+            strTituloCiporAprovar = "ENVIADAS";
             
             obslistaTbCaixaSaida.add(new TbCIPorAprovar(nIdCoin, strAssunto, strConteudo, nIdUsuario, strUsuarioNomeCompleto, nIdUO, strUODescricao, 
                     nIdUOGestor, bAutorizado, nTipoCoin, strApensamento, nSequencial, bArquivadoUO, bArquivadoUOGestor, dataCriacao, strDataCriacao, 
@@ -3803,7 +4183,7 @@ public class FXMLMainController implements Initializable {
                     nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                     strlDescricaoUODestinatario,
                     strlAssinatura, bCoinLido, bCancelado,
-                    strCiSequencial, strDestinatarios));
+                    strCiSequencial, strDestinatarios, strTituloCiporAprovar));
         }
         //	ClDataEnvio; ClUORemitente; ClAutorRemitente; ClAssunto;
         ClLido.setCellValueFactory(new PropertyValueFactory<TbCIPorAprovar,Boolean>("boolp_CoinLido"));
@@ -4065,7 +4445,8 @@ public class FXMLMainController implements Initializable {
         List<TbCiDestinatario> listaDestinatario = new ArrayList<TbCiDestinatario>();
         
         String strDestinatarios = "";
-        //----------------------------------------------------------------------
+        //---------------------------------------------------------------------- 
+        String strTituloCiporAprovar="";
         
         //Deve-se mostrar as Cis para aprovação só para usuário que faz parte da UO Gestora
         if (this.nIdUOGestor == this.nIdUnidadeOrganizacional){
@@ -4123,6 +4504,7 @@ public class FXMLMainController implements Initializable {
                     }
                     
                     //----------------------------------------------------------
+                    strTituloCiporAprovar = "ENVIADAS";
 
 
         //            obslistaTbCIPorAprovar.add(new TbCIPorAprovar(nIdCoin,strAssunto,strConteudo,nIdUsuario,strUsuarioNomeCompleto,
@@ -4133,7 +4515,7 @@ public class FXMLMainController implements Initializable {
                                 nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                                 strlDescricaoUODestinatario,
                                 strlAssinatura, bCoinLido, bCancelado,
-                                strCiSequencial, strDestinatarios));
+                                strCiSequencial, strDestinatarios, strTituloCiporAprovar));
                     } catch (Exception e){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -4526,6 +4908,9 @@ public class FXMLMainController implements Initializable {
         txtFAnexos.getChildren().clear();
     }
     private void PreencherCaixaEntrada(int nlTipoPreenchimento, boolean blPreencherTableView2){
+        
+        String strTituloCiporAprovar="";
+        
         int nlIdCoinDestinatario = 0;
         TbComunicacaoInterna nlIdCoin;
         int nlIdUsuarioRemitente = 0;
@@ -4743,6 +5128,7 @@ public class FXMLMainController implements Initializable {
                 strAno = sdf.format(dataCriacao);
                 strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
                 //----------------------------------------------------------
+                strTituloCiporAprovar = "RECEBIDAS";
                 
                 obslistaTbCaixaEntrada.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
                         strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
@@ -4753,7 +5139,7 @@ public class FXMLMainController implements Initializable {
                         bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                         nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                         nlTipoCoin, strlAssinatura, bCoinLido, bCancelado,
-                        strCiSequencial));
+                        strCiSequencial, strTituloCiporAprovar));
 
                 System.out.println();
             }
@@ -5001,6 +5387,8 @@ public class FXMLMainController implements Initializable {
                     strCiSequencial = strUnorDescricaoGenesis + "-" + String.format("%05d",nlCoinNumeroGenesis)+ "-" + strAno;
                     //----------------------------------------------------------
                     
+                    strTituloCiporAprovar = "RECEBIDAS";
+                    
                     obslistaTbCaixaEntrada2.add(new TbCIPorAprovar(nlIdCoinDestinatario, nIdCoin, nlIdUsuarioRemitente, 
                             strUsuarioNomeCompleto, nlIdUORemitente, strDescricaoUORemitente,nlIdUODestinatario, 
                             strDescricaoUODestinatario, nlIdUOGestorDestinatario, strDescricaoUOGestorDestinatario, 
@@ -5010,7 +5398,7 @@ public class FXMLMainController implements Initializable {
                             bCoinTemAnexos, bAutorizadoPeloGestorRemitente, strDataCriacao, nlIdTabelaFonte,
                             nlIdCoinGenesis, nlIdUnorGenesis, nlCoinNumeroGenesis, strCoinHistoricoAnexos, strUnorDescricaoGenesis,
                             nlTipoCoin, strlAssinatura, bCoinLido, bCancelado,
-                            strCiSequencial));
+                            strCiSequencial, strTituloCiporAprovar));
 
                     System.out.println();
                 }
