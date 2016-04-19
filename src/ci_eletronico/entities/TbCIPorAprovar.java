@@ -182,6 +182,9 @@ public class TbCIPorAprovar {
         this.strp_Destinatarios = new SimpleStringProperty(strDestinatarios);
         
         this.strp_CiAguardandoAprovacao = new SimpleStringProperty(strTituloCiporAprovar);
+        
+        //Para atender solicitação de Patricia (misturar Cis aguardando aprovação numa caixa só
+        //this.strp_Destinatarios = new SimpleStringProperty(strTituloCiporAprovar);
     }
 
     public TbCIPorAprovar(Integer nIdCoin, String strAssunto, String strConteudo, 
@@ -257,7 +260,7 @@ public class TbCIPorAprovar {
         
         this.strp_CiSequencial = new SimpleStringProperty(strCiSequencial);
         
-        this.strp_CiAguardandoAprovacao = new SimpleStringProperty(strTituloCiporAprovar);
+        this.strp_CiAguardandoAprovacao = new SimpleStringProperty(strTituloCiporAprovar);        
     }
     
 //    //Metodos para TableView
