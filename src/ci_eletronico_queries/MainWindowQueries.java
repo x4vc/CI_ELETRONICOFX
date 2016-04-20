@@ -337,6 +337,7 @@ public class MainWindowQueries {
                     break;
                 case 3:
                     ArquivarCI.setCoinDestinatarioUoArquivado(bArquivado);
+                    ArquivarCI.setCoinDestinatarioPendente(false);
                     break;
             }            
             em.merge(ArquivarCI);

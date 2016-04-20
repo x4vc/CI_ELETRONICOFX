@@ -42,19 +42,28 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByUsuNomeCompletoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.usuNomeCompletoRemitente = :usuNomeCompletoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoRemitente = :idUoRemitente"),
     @NamedQuery(name = "TbCiDestinatario.findByInorDescricaoRemitente", query = "SELECT t FROM TbCiDestinatario t WHERE t.inorDescricaoRemitente = :inorDescricaoRemitente"),
-    @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    //Solicitação de Patricia - Gestor não precisa aprovar para CI ser mostrada na Caixa de Recebidas
+    //@NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),    
+    @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinCaixaRecebidaGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    //--------------------------------------------------------------------------
     @NamedQuery(name = "TbCiDestinatario.findByIdUoDestinatarioPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinRemitenteGestorAutorizado = 1 AND t.coinDestinatarioGestorAutorizado = 1 AND t.coinDestinatarioPendente = 0 AND t.coinDestinatarioUoArquivado = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoDestinatario = :unorDescricaoDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatario", query =        "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 AND t.coinDestinatarioPendente = 0 AND t.coinRemitenteGestorAutorizado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByIdUoGestorDestinatarioPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoGestorDestinatario = :idUoGestorDestinatario AND t.coinDestinatarioGestorAutorizado = 0 AND t.coinDestinatarioUoGestorArquivado = 0 AND t.coinDestinatarioPendente = 0 AND t.coinRemitenteGestorAutorizado = 1 AND t.idTipoCoin IN :idTipoCoin  ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByUnorDescricaoGestorDestinatario", query = "SELECT t FROM TbCiDestinatario t WHERE t.unorDescricaoGestorDestinatario = :unorDescricaoGestorDestinatario"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioGestorAutorizado = :coinDestinatarioGestorAutorizado"),
+    //Solicitação de Patricia - Gestor não precisa aprovar para CI ser mostrada na Caixa de Recebidas
+    //@NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND (t.coinDestinatarioUoArquivado = 1 OR t.coinDestinatarioUoGestorArquivado = 1) AND t.coinDestinatarioPendente = 0  ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND (t.coinDestinatarioUoArquivado = 1 OR t.coinDestinatarioUoGestorArquivado = 1) AND t.coinDestinatarioPendente = 0  ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    //-------------------------------------------------------------------------
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoArquivadoPerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND (t.coinDestinatarioUoArquivado = 1 OR t.coinDestinatarioUoGestorArquivado = 1) AND t.coinDestinatarioPendente = 0  AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByGestorUoArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioUoGestorArquivado = 1 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioUoGestorArquivado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioUoGestorArquivado = :coinDestinatarioUoGestorArquivado"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioConteudo", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioConteudo = :coinDestinatarioConteudo"),
+    //Solicitação de Patricia - Gestor não precisa aprovar para CI ser mostrada na Caixa de Recebidas
+    //@NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioPendente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioPendente", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 ORDER BY t.coinDestinatarioDataCriacao DESC"),
+    //-------------------------------------------------------------------------
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioPendentePerfil2", query = "SELECT t FROM TbCiDestinatario t WHERE t.idUoDestinatario = :idUoDestinatario AND t.coinDestinatarioPendente = 1 AND t.coinDestinatarioUoArquivado = 0 AND t.idTipoCoin IN :idTipoCoin ORDER BY t.coinDestinatarioDataCriacao DESC"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioGestorDataAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioGestorDataAutorizado = :coinDestinatarioGestorDataAutorizado"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioLido", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioLido = :coinDestinatarioLido"),
@@ -64,6 +73,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TbCiDestinatario.findByCoinDestinatarioTemAnexos", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinDestinatarioTemAnexos = :coinDestinatarioTemAnexos"),
     @NamedQuery(name = "TbCiDestinatario.findByCoinRemitenteGestorAutorizado", query = "SELECT t FROM TbCiDestinatario t WHERE t.coinRemitenteGestorAutorizado = :coinRemitenteGestorAutorizado")})
 public class TbCiDestinatario implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "COIN_CAIXA_RECEBIDA_GESTOR_AUTORIZADO")
+    private boolean coinCaixaRecebidaGestorAutorizado;
     @Basic(optional = false)
     @Column(name = "COIN_DESTINATARIO_CONFIRMAR_LEITURA")
     private boolean coinDestinatarioConfirmarLeitura;
@@ -497,6 +509,14 @@ public class TbCiDestinatario implements Serializable {
 
     public void setCoinDestinatarioConfirmarLeitura(boolean coinDestinatarioConfirmarLeitura) {
         this.coinDestinatarioConfirmarLeitura = coinDestinatarioConfirmarLeitura;
+    }
+
+    public boolean getCoinCaixaRecebidaGestorAutorizado() {
+        return coinCaixaRecebidaGestorAutorizado;
+    }
+
+    public void setCoinCaixaRecebidaGestorAutorizado(boolean coinCaixaRecebidaGestorAutorizado) {
+        this.coinCaixaRecebidaGestorAutorizado = coinCaixaRecebidaGestorAutorizado;
     }
 
     

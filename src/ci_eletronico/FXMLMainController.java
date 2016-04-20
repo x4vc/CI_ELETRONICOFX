@@ -1848,7 +1848,9 @@ public class FXMLMainController implements Initializable {
             if (result.get() == ButtonType.OK){
                 //nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
                 nBotao = this.ngBotao;
-                nTabela = this.ngTabela;
+                //nTabela = this.ngTabela;
+                
+                nTabela = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idTabelaFonte();
                 
                 // Aprovamos CI
                 //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
@@ -2014,8 +2016,8 @@ public class FXMLMainController implements Initializable {
             if (result.get() == ButtonType.OK){
                 //nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
                 nBotao = this.ngBotao;
-                nTabela = this.ngTabela;
-                
+                //nTabela = this.ngTabela;
+                nTabela = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idTabelaFonte();
                 // Aprovamos CI
                 //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
                 // 0 ==> Sem tabela definida
@@ -2700,49 +2702,64 @@ public class FXMLMainController implements Initializable {
         }else{            
                 // do something
             int nlIdCI = 0;
+            int nTabela = 0;
             String strHtmlUpdateCI = "";
             
-            nlIdCI = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idCoin();
-            strHtmlUpdateCI = TbViewGeral2.getSelectionModel().getSelectedItem().getStrp_Conteudo();
-            UpdateCI(this,nlIdCI,strHtmlUpdateCI);
-            //Valores dos botões 
-            //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
-            //2-caixa de recebidas - btnCaixaEntrada
-            //3-caixa de recebidas (pendencias) - btnCaixaPendencias
-            //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
-            //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
-            //6-Caixa de enviados - btnCaixaSaida;
-            //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
-            int nlButtonSelected = 0;
-            nlButtonSelected = ngBotao;
-            //Refresh da TableView
+            nTabela = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idTabelaFonte();
             
-            switch(nlButtonSelected){
-                case 1:
-                    btnCaixaEntradaSolicitandoAprovacao.fire();
-                    break;
-                case 2:
-                    btnCaixaEntrada.fire();
-                    break;
-                case 3:
-                    btnCaixaPendencias.fire();
-                    break;
-                case 4:
-                    btnCaixaArquivadas.fire();
-                    break;
-                case 5:
-                    btnCaixaEnviadosArquivados.fire();
-                    break;
-                case 6:
-                    btnCaixaSaida.fire();
-                    break;
-                case 7:
-                    btnPendentesAprovacao.fire();
-                    break;
-                default:
-                    break;                
-            } 
+            if (1==nTabela){
+                nlIdCI = TbViewGeral2.getSelectionModel().getSelectedItem().getIntp_idCoin();
+                strHtmlUpdateCI = TbViewGeral2.getSelectionModel().getSelectedItem().getStrp_Conteudo();
+                UpdateCI(this,nlIdCI,strHtmlUpdateCI);
+                //Valores dos botões 
+                //1-caixa de recebidas (solicitando aprovação) - btnCaixaEntradaSolicitandoAprovacao
+                //2-caixa de recebidas - btnCaixaEntrada
+                //3-caixa de recebidas (pendencias) - btnCaixaPendencias
+                //4-caixa de recebidas (arquivadas) - btnCaixaArquivadas
+                //5-Caixa de enviados (arquivadas) - btnCaixaEnviadosArquivados
+                //6-Caixa de enviados - btnCaixaSaida;
+                //7-Caixa de enviados (solicitando aprovação) - btnPendentesAprovacao
+                int nlButtonSelected = 0;
+                nlButtonSelected = ngBotao;
+                //Refresh da TableView
+
+                switch(nlButtonSelected){
+                    case 1:
+                        btnCaixaEntradaSolicitandoAprovacao.fire();
+                        break;
+                    case 2:
+                        btnCaixaEntrada.fire();
+                        break;
+                    case 3:
+                        btnCaixaPendencias.fire();
+                        break;
+                    case 4:
+                        btnCaixaArquivadas.fire();
+                        break;
+                    case 5:
+                        btnCaixaEnviadosArquivados.fire();
+                        break;
+                    case 6:
+                        btnCaixaSaida.fire();
+                        break;
+                    case 7:
+                        btnPendentesAprovacao.fire();
+                        break;
+                    case 8: //handleBtnCaixaPendentesAprovacao()
+                        btnCiPorAprovar.fire();
+                        break;
+                    default:
+                        break;                
+                } 
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Advertência");
+                alert.setHeaderText("CI não pode ser editada.");
+                alert.setContentText("CIs criadas em outras UOs não podem ser editadas");
+                alert.showAndWait();
+            }
         }
+        
     }
     public void UpdateCI(FXMLMainController mainController, int nlIdCI, String strHtmlUpdateCI){
         try{
@@ -2974,7 +2991,8 @@ public class FXMLMainController implements Initializable {
             if (result.get() == ButtonType.OK){
                 //nIdCI = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idCoin();
                 nBotao = this.ngBotao;
-                nTabela = this.ngTabela;
+                //nTabela = this.ngTabela;
+                nTabela = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idTabelaFonte();
                 
                 // Aprovamos CI
                 //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
@@ -3372,7 +3390,8 @@ public class FXMLMainController implements Initializable {
                 boolean blcoinUOGestorArquivado = false;
                 
                 nBotao = this.ngBotao;
-                nTabela = this.ngTabela;
+                //nTabela = this.ngTabela;
+                nTabela = TbViewGeral.getSelectionModel().getSelectedItem().getIntp_idTabelaFonte();
                 
                 // Aprovamos CI
                 //Tabela a ser utilizada para atualizar status das CIs (aprovadas, arquivadas, desarquivadas)
@@ -3512,6 +3531,8 @@ public class FXMLMainController implements Initializable {
     @FXML
     private void handleBtnCaixaPendentesAprovacao(ActionEvent event) throws IOException {
         //Solicitação de Patricia para juntar todas as CIs pendentes de aprovação numa caixa só
+        clearTelasAguardandoAprovacao();
+        
         this.ngBotao = 8;
         
         lblCaixa.setText("");
@@ -4925,6 +4946,20 @@ public class FXMLMainController implements Initializable {
         lviewAnexos.getItems().clear();
         txtFAnexos.getChildren().clear();
     }
+    
+    private void clearTelasAguardandoAprovacao(){
+        int nlTblViewGeralSize = 0;
+        //Devemos fazer refresh da tableView
+        nlTblViewGeralSize = TbViewGeral2.getItems().size();
+        if (nlTblViewGeralSize > 0){
+            TbViewGeral2.getItems().clear();
+        }
+        htmlEditorCI.setHtmlText("");
+        lviewAnexos.getItems().clear();
+        txtFAnexos.getChildren().clear();
+        
+    }
+    
     private void PreencherCaixaEntrada(int nlTipoPreenchimento, boolean blPreencherTableView2){
         
         String strTituloCiporAprovar="";

@@ -118,7 +118,7 @@
                         </AnchorPane>
                      </content>
                   </TitledPane>
-                  <TitledPane fx:id="tPaneCisPorAprovar" animated="false" collapsible="false" prefHeight="110.0" prefWidth="141.0" stylesheets="@../resources/PersonalStyleSheet.css" text="CIs por Aprovar" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="385.0">
+                  <TitledPane fx:id="tPaneCisPorAprovar" animated="false" collapsible="false" prefHeight="110.0" prefWidth="141.0" stylesheets="@../resources/CIsPorAprovarStyleSheet.css" text="CIs por Aprovar" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="385.0">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="141.0">
                            <children>

@@ -1302,6 +1302,9 @@ public class NovaCIController implements Initializable {
             
             newTbCIDestinatario.setCoinDestinatarioConfirmarLeitura(checkBoxSolicitarConfirmarLeitura.isSelected());
             
+            //Solicitação de Patricia - Gestor não precisa aprovar para CI ser mostrada na Caixa de Recebidas
+            newTbCIDestinatario.setCoinCaixaRecebidaGestorAutorizado(true);
+            
             em.persist(newTbCIDestinatario);            
         }
         }catch(javax.persistence.PersistenceException e){
@@ -1435,6 +1438,10 @@ public class NovaCIController implements Initializable {
                 //------------------------------------------
                 newTbCIDestinatario.setIdTipoCoin(TipoCI);
                 newTbCIDestinatario.setCoinAssinatura(strMD5Assinatura);
+                
+                //Solicitação de Patricia - Gestor não precisa aprovar para CI ser mostrada na Caixa de Recebidas
+                newTbCIDestinatario.setCoinCaixaRecebidaGestorAutorizado(true);
+                        
                 em.persist(newTbCIDestinatario);            
             }
             }catch(javax.persistence.PersistenceException e){
